@@ -1,5 +1,9 @@
 node_modules/
 dist/
 
+# for incremental compilation
+tsconfig.tsbuildinfo
+
+# secrets
 discord_token
 owner_id
