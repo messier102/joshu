@@ -6,7 +6,7 @@ import ping from "./handlers/ping";
 export type CommandHandler = (command: Command) => void;
 
 export class CommandDispatcher {
-    command_handlers: Map<string, CommandHandler>;
+    private readonly command_handlers: Map<string, CommandHandler>;
 
     constructor() {
         // TODO: dynamic import based on files

@@ -9,17 +9,16 @@ const giverole: CommandHandler = async ({ args, source }) => {
     const target_member = source.guild?.members.cache.get(target_user_id);
     if (!target_member) return;
 
-    const role = await source.guild?.roles.create({
+    const role_options = {
         data: {
             name: role_name,
             color: role_color,
             permissions: 0,
             mentionable: true,
         },
-    });
-    if (!role) {
-        return;
-    }
+    };
+    const role = await source.guild?.roles.create(role_options);
+    if (!role) return;
 
     target_member.roles.add(role.id).then(() => {
         source.channel.send(
