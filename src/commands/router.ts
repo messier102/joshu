@@ -2,6 +2,7 @@ import { Command } from "./command";
 
 import giverole from "./handlers/giverole";
 import ping from "./handlers/ping";
+import say from "./handlers/say";
 
 export type CommandHandler = (command: Command) => void;
 
@@ -13,6 +14,7 @@ export class CommandRouter {
         this.command_handlers = new Map([
             ["ping", ping],
             ["giverole", giverole],
+            ["say", say]
         ]);
     }
 
