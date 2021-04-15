@@ -1,4 +1,4 @@
-import { CommandHandler } from "../dispatch";
+import { CommandHandler } from "../router";
 
 const ping: CommandHandler = ({ source }) => {
     source.reply("pong!");

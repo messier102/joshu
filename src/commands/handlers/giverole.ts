@@ -1,4 +1,4 @@
-import { CommandHandler } from "../dispatch";
+import { CommandHandler } from "../router";
 
 const giverole: CommandHandler = async ({ args, source }) => {
     const [target_user_mention, role_name, role_color] = args;

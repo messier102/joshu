@@ -5,7 +5,7 @@ import ping from "./handlers/ping";
 
 export type CommandHandler = (command: Command) => void;
 
-export class CommandDispatcher {
+export class CommandRouter {
     private readonly command_handlers: Map<string, CommandHandler>;
 
     constructor() {
@@ -16,7 +16,7 @@ export class CommandDispatcher {
         ]);
     }
 
-    dispatch_to_handler(command: Command): void {
+    route_to_handler(command: Command): void {
         const handle_command = this.command_handlers.get(command.name);
 
         if (handle_command) {
