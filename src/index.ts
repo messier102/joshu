@@ -2,8 +2,9 @@ import Discord from "discord.js";
 import { Command } from "./commands/command";
 import { CommandRouter } from "./commands/router";
 
-const DISCORD_TOKEN = process.argv[process.argv.length - 1];
-const PREFIX = "!";
+const DISCORD_TOKEN = process.argv[process.argv.length - 2];
+const OWNER_ID = process.argv[process.argv.length - 1];
+const PREFIX = "=";
 
 const client = new Discord.Client();
 const command_router = new CommandRouter();
@@ -13,6 +14,9 @@ client.on("ready", () => {
 });
 
 client.on("message", (message) => {
+    // temporary security measure
+    if (message.author.id !== OWNER_ID) return;
+
     if (message.author.bot) return;
     if (!message.content.startsWith(PREFIX)) return;
 
