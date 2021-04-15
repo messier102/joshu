@@ -1,4 +1,5 @@
 import Discord from "discord.js";
+import { Command, command_handlers } from "./commands";
 
 const client = new Discord.Client();
 
@@ -16,12 +17,19 @@ client.on("message", (message) => {
     // ignore messages not addressed to us
     if (!message.content.startsWith(prefix)) return;
 
-    const args = message.content.slice(prefix.length).split(" ");
-    const [command, ...command_args] = args;
+    const command = Command.from_raw_message(message, prefix);
 
-    if (command === "ping") {
-        message.channel.send("pong");
-    }
+    dispatch_command_to_handler(command);
 });
+
+function dispatch_command_to_handler(command: Command): void {
+    if (command.name in command_handlers) {
+        const command_handler = command_handlers[command.name];
+
+        command_handler(command);
+    } else {
+        command.source.reply("sorry, no such command.");
+    }
+}
 
 client.login(DISCORD_TOKEN);
