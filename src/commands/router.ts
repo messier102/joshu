@@ -1,11 +1,9 @@
-import { PermissionResolvable, Permissions } from "discord.js";
 import { Command } from "./command";
+import { CommandHandler } from "./handlers/base";
 
-import giverole from "./handlers/giverole";
-import ping from "./handlers/ping";
-import say from "./handlers/say";
-
-export type CommandHandler = (command: Command) => void;
+import GiveRole from "./handlers/giverole";
+import Ping from "./handlers/ping";
+import Say from "./handlers/say";
 
 export class CommandRouter {
     private readonly command_handlers: Map<string, CommandHandler>;
@@ -13,39 +11,26 @@ export class CommandRouter {
     constructor() {
         // TODO: dynamic import based on files
         this.command_handlers = new Map([
-            ["ping", ping],
-            [
-                "giverole",
-                with_permissions([Permissions.FLAGS.MANAGE_ROLES], giverole),
-            ],
-            ["say", say],
+            ["ping", new Ping()],
+            ["giverole", new GiveRole()],
+            ["say", new Say()],
         ]);
     }
 
     route_to_handler(command: Command): void {
-        const handle_command = this.command_handlers.get(command.name);
+        const command_handler = this.command_handlers.get(command.name);
 
-        if (handle_command) {
-            handle_command(command);
+        if (command_handler) {
+            if (command_handler.can_handle_command(command)) {
+                command_handler.handle_command(command);
+            } else {
+                command.source.reply(
+                    // TODO: specify reason
+                    "sorry, this command cannot be executed."
+                );
+            }
         } else {
             command.source.reply("sorry, no such command.");
         }
     }
-}
-
-// TODO: ideally, each command should define its own required permissions and other checks
-function with_permissions(
-    permissions: PermissionResolvable[],
-    handler: CommandHandler
-): CommandHandler {
-    return (command) => {
-        if (!command.source.member?.hasPermission(permissions)) {
-            command.source.reply(
-                "sorry, you don't have sufficient permissions for that."
-            );
-            return;
-        }
-
-        handler(command);
-    };
 }

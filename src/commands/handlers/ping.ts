@@ -1,7 +1,12 @@
-import { CommandHandler } from "../router";
+import { Command } from "../command";
+import { CommandHandler } from "./base";
 
-const ping: CommandHandler = ({ source }) => {
-    source.reply("pong!");
-};
+export default class Ping implements CommandHandler {
+    can_handle_command(): boolean {
+        return true;
+    }
 
-export default ping;
+    handle_command({ source }: Command): void {
+        source.reply("pong!");
+    }
+}

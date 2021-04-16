@@ -1,13 +1,27 @@
-import { CommandHandler } from "../router";
+import { Command } from "../command";
+import { CommandHandler } from "./base";
 
-const say: CommandHandler = ({ args, source }) => {
-    const [target_channel_id, ...message] = args;
+export default class Say implements CommandHandler {
+    can_handle_command({
+        source,
+        args: [target_channel_id],
+    }: Command): boolean {
+        const target_channel = source.client.channels.cache.get(
+            target_channel_id
+        );
 
-    const target_channel = source.client.channels.cache.get(target_channel_id);
-    if (!target_channel) return;
-    if (!target_channel.isText()) return;
+        return target_channel?.isText() ?? false;
+    }
 
-    target_channel.send(message.join(" "));
-};
+    handle_command({ source, args }: Command): void {
+        const [target_channel_id, ...message] = args;
 
-export default say;
+        const target_channel = source.client.channels.cache.get(
+            target_channel_id
+        );
+        if (!target_channel) return;
+        if (!target_channel.isText()) return;
+
+        target_channel.send(message.join(" "));
+    }
+}
