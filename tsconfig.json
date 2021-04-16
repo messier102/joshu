@@ -1,5 +1,5 @@
 {
-    "include": ["src/**/*"],
+    "include": ["src/**/*", "data/**/*"],
     "exclude": ["node_modules"],
 
     "compilerOptions": {
@@ -7,8 +7,8 @@
         "target": "es6",
         "module": "commonjs",
         "lib": ["ES2020.String"],
-        "outDir": "./dist",
-        "rootDir": "./src",
+        "outDir": "./build",
+        "rootDir": ".",
 
         "strict": true,
 

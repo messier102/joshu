@@ -1,10 +1,7 @@
 import Discord from "discord.js";
 import { Command } from "./commands/command";
 import { CommandRouter } from "./commands/router";
-
-const DISCORD_TOKEN = process.argv[process.argv.length - 2];
-const OWNER_ID = process.argv[process.argv.length - 1];
-const PREFIX = "=";
+import config from "../data/config";
 
 const client = new Discord.Client();
 const command_router = new CommandRouter();
@@ -15,13 +12,13 @@ client.on("ready", () => {
 
 client.on("message", (message) => {
     // temporary security measure
-    if (message.author.id !== OWNER_ID) return;
+    if (message.author.id !== config.owner_id) return;
 
     if (message.author.bot) return;
-    if (!message.content.startsWith(PREFIX)) return;
+    if (!message.content.startsWith(config.prefix)) return;
 
-    const command = Command.from_raw_message(message, PREFIX);
+    const command = Command.from_raw_message(message, config.prefix);
     command_router.route_to_handler(command);
 });
 
-client.login(DISCORD_TOKEN);
+client.login(config.discord_token);
