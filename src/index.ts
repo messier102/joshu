@@ -11,9 +11,6 @@ client.on("ready", () => {
 });
 
 client.on("message", (message) => {
-    // temporary security measure
-    if (message.author.id !== config.owner_id) return;
-
     if (message.author.bot) return;
     if (!message.content.startsWith(config.prefix)) return;
 
