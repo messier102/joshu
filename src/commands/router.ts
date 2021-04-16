@@ -1,5 +1,5 @@
 import { Command } from "./command";
-import { CommandHandler } from "./handlers/base";
+import { CommandHandler } from "./handler";
 
 import GiveRole from "./handlers/giverole";
 import Ping from "./handlers/ping";

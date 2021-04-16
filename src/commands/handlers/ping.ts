@@ -1,5 +1,5 @@
 import { Command } from "../command";
-import { CommandHandler } from "./base";
+import { CommandHandler } from "../handler";
 
 export default class Ping implements CommandHandler {
     can_handle_command(): boolean {

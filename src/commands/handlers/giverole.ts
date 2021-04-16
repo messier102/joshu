@@ -1,5 +1,5 @@
 import { Command } from "../command";
-import { CommandHandler } from "./base";
+import { CommandHandler } from "../handler";
 import { Permissions } from "discord.js";
 
 export default class GiveRole implements CommandHandler {
