@@ -1,20 +1,32 @@
 import { Command } from "./command";
 import { CommandHandler } from "./handler";
 
-import GiveRole from "./handlers/giverole";
-import Ping from "./handlers/ping";
-import Say from "./handlers/say";
+import fs from "fs/promises";
+import path from "path";
 
 export class CommandRouter {
-    private readonly command_handlers: Map<string, CommandHandler>;
+    private readonly command_handlers: Map<string, CommandHandler> = new Map();
 
     constructor() {
-        // TODO: dynamic import based on files
-        this.command_handlers = new Map([
-            ["ping", new Ping()],
-            ["giverole", new GiveRole()],
-            ["say", new Say()],
-        ]);
+        this.load_handlers();
+    }
+
+    private async load_handlers(): Promise<void> {
+        const handlers_dir = path.join(__dirname, "handlers");
+        const filenames = await fs.readdir(handlers_dir);
+
+        for (const filename of filenames) {
+            const handler_file = path.join(handlers_dir, filename);
+            const handler_module = await import(handler_file);
+            const handler_class: new () => CommandHandler =
+                handler_module.default;
+
+            const command_name = filename.split(".")[0];
+            this.command_handlers.set(command_name, new handler_class());
+        }
+
+        console.log("Loaded commands:");
+        console.log(this.command_handlers);
     }
 
     route_to_handler(command: Command): void {
