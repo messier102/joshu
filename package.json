@@ -2,11 +2,11 @@
     "name": "joshu",
     "version": "0.1.0",
     "description": "",
-    "main": "dist/index.js",
+    "main": "build/src/index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "build": "tsc",
-        "serve": "node dist/index.js",
+        "serve": "node build/src/index.js",
         "start": "tsc && npm run serve",
         "watch": "tsc-watch --onSuccess 'npm run serve'",
         "prepare": "husky install"

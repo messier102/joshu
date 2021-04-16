@@ -1,9 +1,6 @@
 node_modules/
 build/
 
-# for incremental compilation
-tsconfig.tsbuildinfo
-
 .eslintcache
 
 # secrets
