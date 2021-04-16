@@ -4,5 +4,7 @@ build/
 # for incremental compilation
 tsconfig.tsbuildinfo
 
+.eslintcache
+
 # secrets
 data/config.ts

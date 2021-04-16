@@ -1,6 +1,6 @@
-import Discord from "discord.js";
 import { Command } from "./commands/command";
 import { CommandRouter } from "./commands/router";
+import Discord from "discord.js";
 import config from "../data/config";
 
 const client = new Discord.Client();
