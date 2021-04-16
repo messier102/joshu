@@ -6,7 +6,7 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "build": "tsc",
-        "serve": "node build/src/index.js",
+        "serve": "node .",
         "start": "tsc && npm run serve",
         "watch": "tsc-watch --onSuccess 'npm run serve'",
         "prepare": "husky install"
