@@ -1,14 +1,6 @@
 import { CommandHandler } from "../router";
-import { Permissions } from "discord.js";
 
 const giverole: CommandHandler = async ({ args, source }) => {
-    if (!source.member?.hasPermission(Permissions.FLAGS.MANAGE_ROLES)) {
-        source.reply(
-            "sorry, you don't have sufficient permissions for that. (Missing: `Manage roles`)"
-        );
-        return;
-    }
-
     const [target_user_mention, role_name, role_color] = args;
 
     const target_user_id = user_id_from_mention(target_user_mention);

@@ -1,3 +1,4 @@
+import { PermissionResolvable, Permissions } from "discord.js";
 import { Command } from "./command";
 
 import giverole from "./handlers/giverole";
@@ -13,8 +14,11 @@ export class CommandRouter {
         // TODO: dynamic import based on files
         this.command_handlers = new Map([
             ["ping", ping],
-            ["giverole", giverole],
-            ["say", say]
+            [
+                "giverole",
+                with_permissions([Permissions.FLAGS.MANAGE_ROLES], giverole),
+            ],
+            ["say", say],
         ]);
     }
 
@@ -27,4 +31,21 @@ export class CommandRouter {
             command.source.reply("sorry, no such command.");
         }
     }
+}
+
+// TODO: ideally, each command should define its own required permissions and other checks
+function with_permissions(
+    permissions: PermissionResolvable[],
+    handler: CommandHandler
+): CommandHandler {
+    return (command) => {
+        if (!command.source.member?.hasPermission(permissions)) {
+            command.source.reply(
+                "sorry, you don't have sufficient permissions for that."
+            );
+            return;
+        }
+
+        handler(command);
+    };
 }
