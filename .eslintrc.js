@@ -17,5 +17,9 @@ module.exports = {
         quotes: ["error", "double"],
         semi: ["error", "always"],
         "sort-imports": ["error"],
+        "@typescript-eslint/no-unused-vars": [
+            "warn",
+            { varsIgnorePattern: "^_", argsIgnorePattern: "^_" },
+        ],
     },
 };
