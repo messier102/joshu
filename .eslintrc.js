@@ -16,7 +16,6 @@ module.exports = {
         "linebreak-style": ["error", "unix"],
         quotes: ["error", "double"],
         semi: ["error", "always"],
-        "sort-imports": ["error"],
         "@typescript-eslint/no-unused-vars": [
             "warn",
             { varsIgnorePattern: "^_", argsIgnorePattern: "^_" },
