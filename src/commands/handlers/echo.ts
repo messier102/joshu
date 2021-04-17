@@ -4,13 +4,11 @@ import { zip } from "lodash";
 
 export default class Echo implements CommandHandler {
     can_handle_command({ args }: Command): boolean {
-        const string_arg = (_arg: string) => true; // all args are initially strings
+        const arg_guards: ArgumentTypeGuard[] = [new StringArgument()];
 
-        const accepted_parameters = [string_arg];
-
-        const arg_types_match_accepted = zip(args, accepted_parameters).every(
-            ([arg, is_accepted_arg]) =>
-                arg && is_accepted_arg && is_accepted_arg(arg)
+        const arg_types_match_accepted = zip(args, arg_guards).every(
+            ([arg, arg_guard]) =>
+                arg && arg_guard && arg_guard.is_valid_argument(arg)
         );
 
         return arg_types_match_accepted;
@@ -18,5 +16,16 @@ export default class Echo implements CommandHandler {
 
     handle_command({ source, args }: Command): void {
         source.channel.send(args.join(" "));
+    }
+}
+
+interface ArgumentTypeGuard {
+    is_valid_argument(arg: string): boolean;
+}
+
+class StringArgument implements ArgumentTypeGuard {
+    is_valid_argument(_arg: string): boolean {
+        // all command args are valid strings
+        return true;
     }
 }
