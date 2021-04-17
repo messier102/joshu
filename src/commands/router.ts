@@ -38,7 +38,9 @@ export class CommandRouter {
             } else {
                 command.source.reply(
                     // TODO: specify reason
-                    "sorry, this command cannot be executed."
+                    `sorry, this command cannot be executed.\nUsage: \`${
+                        command.name
+                    } ${command_handler.usage()}\``
                 );
             }
         } else {

@@ -6,14 +6,18 @@ import { MentionArgument } from "../type_guards/mention";
 import { zip } from "lodash";
 
 export default class GiveRole implements CommandHandler {
-    can_handle_command({ args, source }: Command): boolean {
-        const arg_guards = [
-            new MentionArgument(),
-            new StringArgument(),
-            new StringArgument(),
-        ];
+    private readonly arg_guards = [
+        new MentionArgument(), // target user
+        new StringArgument(), // role name
+        new StringArgument(), // role color (name or hex)
+    ];
 
-        const args_are_valid = zip(args, arg_guards).every(
+    usage(): string {
+        return this.arg_guards.map((guard) => `<${guard.type}>`).join(" ");
+    }
+
+    can_handle_command({ args, source }: Command): boolean {
+        const args_are_valid = zip(args, this.arg_guards).every(
             ([arg, arg_guard]) =>
                 arg && arg_guard && arg_guard.is_valid_argument(arg)
         );

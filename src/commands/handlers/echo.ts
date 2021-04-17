@@ -4,15 +4,21 @@ import { CommandHandler } from "../handler";
 import { StringArgument } from "../type_guards/string";
 
 export default class Echo implements CommandHandler {
-    can_handle_command({ args }: Command): boolean {
-        const arg_guards = [new StringArgument()];
+    private readonly arg_guards = [
+        new StringArgument(), // message
+    ];
 
-        const arg_types_match_accepted = zip(args, arg_guards).every(
+    usage(): string {
+        return this.arg_guards.map((guard) => `<${guard.type}>`).join(" ");
+    }
+
+    can_handle_command({ args }: Command): boolean {
+        const args_are_valid = zip(args, this.arg_guards).every(
             ([arg, arg_guard]) =>
                 arg && arg_guard && arg_guard.is_valid_argument(arg)
         );
 
-        return arg_types_match_accepted;
+        return args_are_valid;
     }
 
     handle_command({ source, args }: Command): void {
