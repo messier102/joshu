@@ -1,14 +1,28 @@
 import { Command } from "../command";
 import { CommandHandler } from "../handler";
 import { Permissions } from "discord.js";
+import { StringArgument } from "../type_guards/string";
+import { MentionArgument } from "../type_guards/mention";
+import { zip } from "lodash";
 
 export default class GiveRole implements CommandHandler {
-    can_handle_command(command: Command): boolean {
-        return (
-            command.source.member?.hasPermission(
-                Permissions.FLAGS.MANAGE_ROLES
-            ) ?? false
+    can_handle_command({ args, source }: Command): boolean {
+        const arg_guards = [
+            new MentionArgument(),
+            new StringArgument(),
+            new StringArgument(),
+        ];
+
+        const args_are_valid = zip(args, arg_guards).every(
+            ([arg, arg_guard]) =>
+                arg && arg_guard && arg_guard.is_valid_argument(arg)
         );
+
+        const has_permission =
+            source.member?.hasPermission(Permissions.FLAGS.MANAGE_ROLES) ??
+            false;
+
+        return args_are_valid && has_permission;
     }
 
     async handle_command({ args, source }: Command): Promise<void> {
