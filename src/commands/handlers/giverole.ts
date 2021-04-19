@@ -4,22 +4,23 @@ import { Permissions } from "discord.js";
 import { StringArgument } from "../type_guards/string";
 import { MentionArgument } from "../type_guards/mention";
 import { zip } from "lodash";
+import { Parameter } from "../parameter";
 
 export default class GiveRole implements CommandHandler {
-    private readonly arg_guards = [
-        new MentionArgument(), // target user
-        new StringArgument(), // role name
-        new StringArgument(), // role color (name or hex)
+    private readonly parameters = [
+        new Parameter("target user", new MentionArgument()),
+        new Parameter("role name", new StringArgument()),
+        new Parameter("role color", new StringArgument()),
     ];
 
     usage(): string {
-        return this.arg_guards.map((guard) => `<${guard.type}>`).join(" ");
+        return this.parameters.join(" ");
     }
 
     can_handle_command({ args, source }: Command): boolean {
-        const args_are_valid = zip(args, this.arg_guards).every(
-            ([arg, arg_guard]) =>
-                arg && arg_guard && arg_guard.is_valid_argument(arg)
+        const args_are_valid = zip(args, this.parameters).every(
+            ([arg, param]) =>
+                arg && param && param.type_guard.is_valid_argument(arg)
         );
 
         const has_permission =

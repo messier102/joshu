@@ -1,21 +1,24 @@
 import { zip } from "lodash";
 import { Command } from "../command";
 import { CommandHandler } from "../handler";
+import { Parameter } from "../parameter";
 import { StringArgument } from "../type_guards/string";
 
 export default class Echo implements CommandHandler {
-    private readonly arg_guards = [
-        new StringArgument(), // message
+    private readonly parameters = [
+        new Parameter("message", new StringArgument()),
     ];
 
     usage(): string {
-        return this.arg_guards.map((guard) => `<${guard.type}>`).join(" ");
+        return this.parameters.join(" ");
     }
 
     can_handle_command({ args }: Command): boolean {
-        const args_are_valid = zip(args, this.arg_guards).every(
-            ([arg, arg_guard]) =>
-                arg && arg_guard && arg_guard.is_valid_argument(arg)
+        const args_are_valid = zip(args, this.parameters).every(
+            ([arg, expected_param]) =>
+                arg &&
+                expected_param &&
+                expected_param.type_guard.is_valid_argument(arg)
         );
 
         return args_are_valid;
