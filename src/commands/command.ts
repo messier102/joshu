@@ -17,7 +17,7 @@ export class Command {
 }
 
 function parse_arguments(message: string): string[] {
-    const contiguous_or_quoted = /([^\s"]+)|"([^"]*)"|'([^']*)'/gi;
+    const contiguous_or_quoted = /([^\s"']+)|"([^"]*)"|'([^']*)'/gi;
 
     // extract the arguments from capture groups
     const args = [...message.matchAll(contiguous_or_quoted)].map(
