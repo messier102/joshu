@@ -33,7 +33,17 @@ export class CommandRouter {
         const command_handler = this.command_handlers.get(request.name);
 
         if (command_handler) {
-            command_handler.execute(request, request.args);
+            try {
+                command_handler.execute(request, request.args);
+            } catch (e: unknown) {
+                const error = <Error>e;
+
+                request.source.reply(
+                    `error: \`${error.message}\`\nUsage: \`${
+                        request.name
+                    } ${command_handler.usage()}\``
+                );
+            }
         } else {
             request.source.reply("sorry, no such command.");
         }

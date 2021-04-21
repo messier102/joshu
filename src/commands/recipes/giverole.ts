@@ -6,7 +6,7 @@ import StringConverter from "../type_converters/StringConverter";
 
 export default <CommandRecipe>{
     parameters: [
-        new CommandParameter("target user", MentionConverter),
+        new CommandParameter("target user id", MentionConverter),
         new CommandParameter("role name", StringConverter),
         new CommandParameter("role color", StringConverter),
     ],

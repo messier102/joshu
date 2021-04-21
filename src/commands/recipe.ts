@@ -7,6 +7,10 @@ export class CommandParameter {
         public readonly name: string,
         public readonly type_converter: TypeConverter
     ) {}
+
+    toString(): string {
+        return `<${this.name.split(" ").join("_")}>`;
+    }
 }
 
 export type CommandRecipe = {

@@ -5,12 +5,15 @@ import { CommandRecipe } from "./recipe";
 export class Command {
     constructor(private recipe: CommandRecipe) {}
 
+    usage(): string {
+        return this.recipe.parameters.join(" ");
+    }
+
     execute(command: CommandRequest, args: string[]): void {
         console.log(command.name, args);
 
         if (args.length !== this.recipe.parameters.length) {
-            console.log("args length");
-            return;
+            throw new Error("wrong number of arguments");
         }
 
         const args_are_valid = zip(
@@ -19,8 +22,7 @@ export class Command {
         ).every(([arg, param]) => param?.type_converter.is_valid_type(arg!));
 
         if (!args_are_valid) {
-            console.log("args invalid");
-            return;
+            throw new Error("invalid argument types");
         }
 
         const has_permission =
@@ -28,8 +30,7 @@ export class Command {
             false;
 
         if (!has_permission) {
-            console.log("no perms");
-            return;
+            throw new Error("insufficient permissions");
         }
 
         const parsed_args = zip(
@@ -39,8 +40,9 @@ export class Command {
 
         if (this.recipe.can_execute) {
             if (!this.recipe.can_execute(command, parsed_args)) {
-                console.log("can't execute");
-                return;
+                throw new Error(
+                    "failed precheck (make sure the arguments are valid)"
+                );
             }
         }
 
