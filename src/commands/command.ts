@@ -41,7 +41,7 @@ export class Command {
         );
 
         if (this.recipe.can_execute) {
-            if (!this.recipe.can_execute(request, parsed_args)) {
+            if (!this.recipe.can_execute(request, ...parsed_args)) {
                 throw new Error(
                     "failed precheck (make sure the arguments are valid)"
                 );
