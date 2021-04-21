@@ -1,0 +1,1 @@
+-   check permissions on the bot as well as the user
