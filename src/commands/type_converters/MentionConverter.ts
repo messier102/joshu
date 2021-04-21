@@ -1,15 +1,16 @@
-import { TypeConverter } from "./TypeConverter";
-
-const mention_regex = /<@!(\d+)>/;
+import { ConversionError, TypeConverter } from "./TypeConverter";
 
 export default <TypeConverter>{
     type: "mention",
 
-    is_valid_type(value: string): boolean {
-        return mention_regex.test(value);
-    },
-
     convert(value: string): string {
-        return value.match(mention_regex)![1];
+        const mention_regex = /<@!(\d+)>/;
+        const match = value.match(mention_regex);
+
+        if (!match) {
+            throw new ConversionError(this.type, value);
+        }
+
+        return match[1];
     },
 };

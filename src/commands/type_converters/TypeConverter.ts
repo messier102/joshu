@@ -1,6 +1,14 @@
 export interface TypeConverter {
-    type: string;
+    readonly type: string;
 
-    is_valid_type(value: string): boolean;
     convert(value: string): unknown;
+}
+
+export class ConversionError extends Error {
+    constructor(
+        public readonly expected_type: string,
+        public readonly actual_value: string
+    ) {
+        super();
+    }
 }

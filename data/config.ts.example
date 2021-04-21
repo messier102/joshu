@@ -2,4 +2,12 @@ export default {
     discord_token: "your.discord.token",
     owner_id: "your.discord.user.id",
     prefix: "=",
+
+    reddit: {
+        userAgent: "",
+        clientId: "",
+        clientSecret: "",
+        username: "",
+        password: "",
+    },
 };

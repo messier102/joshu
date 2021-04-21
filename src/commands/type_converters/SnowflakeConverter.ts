@@ -1,17 +1,15 @@
-import { TypeConverter } from "./TypeConverter";
+import { ConversionError, TypeConverter } from "./TypeConverter";
 
 export default <TypeConverter>{
     type: "snowflake",
 
-    is_valid_type(value: string): boolean {
-        // discord snowflakes are at least 17 digits long
-        // see https://archive.md/nvaQA
+    convert(value: string): string {
         const snowflake_regex = /^\d{17,}$/;
 
-        return snowflake_regex.test(value);
-    },
+        if (!snowflake_regex.test(value)) {
+            throw new ConversionError(this.type, value);
+        }
 
-    convert(value: string): string {
         return value;
     },
 };

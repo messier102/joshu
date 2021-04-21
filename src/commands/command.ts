@@ -1,6 +1,7 @@
 import { zip } from "lodash";
 import { CommandRequest } from "./request";
 import { CommandRecipe } from "./recipe";
+import { ConversionError } from "./type_converters/TypeConverter";
 
 export class Command {
     constructor(private recipe: CommandRecipe) {}
@@ -9,43 +10,44 @@ export class Command {
         return this.recipe.parameters.join(" ");
     }
 
-    execute(command: CommandRequest, args: string[]): void {
-        console.log(command.name, args);
+    execute(request: CommandRequest, args: string[]): void {
+        console.log(request.name, args);
 
         if (args.length !== this.recipe.parameters.length) {
             throw new Error("wrong number of arguments");
         }
 
-        const args_are_valid = zip(
-            command.args,
-            this.recipe.parameters
-        ).every(([arg, param]) => param?.type_converter.is_valid_type(arg!));
-
-        if (!args_are_valid) {
-            throw new Error("invalid argument types");
-        }
-
         const has_permission =
-            command.source.member?.hasPermission(this.recipe.permissions) ??
+            request.source.member?.hasPermission(this.recipe.permissions) ??
             false;
 
         if (!has_permission) {
             throw new Error("insufficient permissions");
         }
 
-        const parsed_args = zip(
-            command.args,
-            this.recipe.parameters
-        ).map(([arg, param]) => param?.type_converter.convert(arg!));
+        const parsed_args = zip(request.args, this.recipe.parameters).map(
+            ([arg, param]) => {
+                try {
+                    return param?.type_converter.convert(arg!);
+                } catch (e: unknown) {
+                    if (e instanceof ConversionError) {
+                        request.source.reply(
+                            `expected a \`${e.expected_type}\`, got \`${e.actual_value}\` instead.`
+                        );
+                        return;
+                    }
+                }
+            }
+        );
 
         if (this.recipe.can_execute) {
-            if (!this.recipe.can_execute(command, parsed_args)) {
+            if (!this.recipe.can_execute(request, parsed_args)) {
                 throw new Error(
                     "failed precheck (make sure the arguments are valid)"
                 );
             }
         }
 
-        this.recipe.execute(command, ...parsed_args);
+        this.recipe.execute(request, ...parsed_args);
     }
 }
