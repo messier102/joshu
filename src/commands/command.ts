@@ -1,28 +1,49 @@
-import type Discord from "discord.js";
+import { zip } from "lodash";
+import { CommandRequest } from "./request";
+import { CommandRecipe } from "./recipe";
 
 export class Command {
-    constructor(
-        public readonly name: string,
-        public readonly args: string[],
-        public readonly source: Discord.Message
-    ) {}
+    constructor(private recipe: CommandRecipe) {}
 
-    static from_raw_message(message: Discord.Message, prefix: string): Command {
-        const message_stripped = message.content.slice(prefix.length);
-        const args = parse_arguments(message_stripped);
-        const [command_name, ...command_args] = args;
+    execute(command: CommandRequest, args: string[]): void {
+        console.log(command.name, args);
 
-        return new Command(command_name, command_args, message);
+        if (args.length !== this.recipe.parameters.length) {
+            console.log("args length");
+            return;
+        }
+
+        const args_are_valid = zip(
+            command.args,
+            this.recipe.parameters
+        ).every(([arg, param]) => param?.type_converter.is_valid_type(arg!));
+
+        if (!args_are_valid) {
+            console.log("args invalid");
+            return;
+        }
+
+        const has_permission =
+            command.source.member?.hasPermission(this.recipe.permissions) ??
+            false;
+
+        if (!has_permission) {
+            console.log("no perms");
+            return;
+        }
+
+        const parsed_args = zip(
+            command.args,
+            this.recipe.parameters
+        ).map(([arg, param]) => param?.type_converter.convert(arg!));
+
+        if (this.recipe.can_execute) {
+            if (!this.recipe.can_execute(command, parsed_args)) {
+                console.log("can't execute");
+                return;
+            }
+        }
+
+        this.recipe.execute(command, ...parsed_args);
     }
-}
-
-function parse_arguments(message: string): string[] {
-    const contiguous_or_quoted = /([^\s"']+)|"([^"]*)"|'([^']*)'/gi;
-
-    // extract the arguments from capture groups
-    const args = [...message.matchAll(contiguous_or_quoted)].map(
-        (match) => match[1] ?? match[2] ?? match[3]
-    );
-
-    return args;
 }

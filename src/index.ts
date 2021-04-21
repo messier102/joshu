@@ -1,4 +1,4 @@
-import { Command } from "./commands/command";
+import { CommandRequest } from "./commands/request";
 import { CommandRouter } from "./commands/router";
 import Discord from "discord.js";
 import config from "../data/config";
@@ -14,8 +14,8 @@ client.on("message", (message) => {
     if (message.author.bot) return;
     if (!message.content.startsWith(config.prefix)) return;
 
-    const command = Command.from_raw_message(message, config.prefix);
-    command_router.route_to_handler(command);
+    const request = CommandRequest.from_raw_message(message, config.prefix);
+    command_router.route_to_handler(request);
 });
 
 client.login(config.discord_token);
