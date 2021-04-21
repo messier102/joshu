@@ -4,7 +4,7 @@ export default <TypeConverter>{
     type: "mention",
 
     convert(value: string): string {
-        const mention_regex = /<@!(\d+)>/;
+        const mention_regex = /<@!?(\d+)>/;
         const match = value.match(mention_regex);
 
         if (!match) {
