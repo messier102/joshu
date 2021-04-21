@@ -22,7 +22,21 @@ export class CommandRouter {
 
             const command_name = filename.split(".")[0];
 
-            this.command_handlers.set(command_name, new Command(recipe));
+            const command = new Command(recipe);
+
+            this.command_handlers.set(command_name, command);
+
+            if (recipe.aliases) {
+                for (const alias of recipe.aliases) {
+                    if (this.command_handlers.has(alias)) {
+                        console.log(
+                            `Command alias collision: ${alias} already registered`
+                        );
+                    }
+
+                    this.command_handlers.set(alias, command);
+                }
+            }
         }
 
         console.log("Loaded commands:");

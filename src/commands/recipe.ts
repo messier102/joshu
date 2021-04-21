@@ -14,6 +14,7 @@ export class CommandParameter {
 }
 
 export type CommandRecipe = {
+    aliases?: readonly string[];
     parameters: readonly CommandParameter[];
     permissions: readonly PermissionResolvable[];
 

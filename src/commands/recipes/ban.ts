@@ -4,6 +4,7 @@ import MentionConverter from "../type_converters/MentionConverter";
 import { Permissions } from "discord.js";
 
 export default <CommandRecipe>{
+    aliases: ["axe", "expire", "terminate", "delete", "uninvite"],
     parameters: [new CommandParameter("target user", MentionConverter)],
     permissions: [Permissions.FLAGS.BAN_MEMBERS],
 
