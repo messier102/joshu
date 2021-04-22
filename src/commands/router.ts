@@ -3,6 +3,7 @@ import fs from "fs/promises";
 import { CommandRequest } from "./request";
 import { CommandExecutor } from "./executor";
 import { Command } from "./command";
+import { is_discord_reportable } from "./error";
 
 export class CommandRouter {
     private readonly command_routes: Map<string, Command> = new Map();
@@ -54,13 +55,20 @@ export class CommandRouter {
         try {
             executor.execute(request, request.args);
         } catch (e: unknown) {
-            const error = <Error>e;
-
-            request.source.reply(
-                `error: \`${error.message}\`\nUsage: \`${
-                    request.name
-                } ${executor.usage()}\``
-            );
+            if (is_discord_reportable(e)) {
+                request.source.reply(
+                    `error: ${e.to_discord_error()}.\nUsage: \`${
+                        request.name
+                    } ${executor.usage()}\``
+                );
+            } else if (e instanceof Error) {
+                // temporary
+                request.source.reply(
+                    `error: ${e.message}.\nUsage: \`${
+                        request.name
+                    } ${executor.usage()}\``
+                );
+            }
         }
     }
 }
