@@ -17,12 +17,14 @@ export class Command {
             throw new Error("wrong number of arguments");
         }
 
-        const has_permission =
-            request.source.member?.hasPermission(this.recipe.permissions) ??
-            false;
+        if (this.recipe.permissions.length > 0) {
+            const has_permission =
+                request.source.member?.hasPermission(this.recipe.permissions) ??
+                false;
 
-        if (!has_permission) {
-            throw new Error("insufficient permissions");
+            if (!has_permission) {
+                throw new Error("insufficient permissions");
+            }
         }
 
         const parsed_args = zip(request.args, this.recipe.parameters).map(
