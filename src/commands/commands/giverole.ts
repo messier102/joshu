@@ -1,10 +1,10 @@
 import { CommandRequest } from "../request";
 import { Permissions } from "discord.js";
-import { CommandParameter, CommandRecipe } from "../recipe";
+import { CommandParameter, Command } from "../command";
 import MentionConverter from "../type_converters/MentionConverter";
 import StringConverter from "../type_converters/StringConverter";
 
-export default <CommandRecipe>{
+export default <Command>{
     parameters: [
         new CommandParameter("target user id", MentionConverter),
         new CommandParameter("role name", StringConverter),

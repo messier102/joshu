@@ -1,9 +1,9 @@
 import { CommandRequest } from "../request";
-import { CommandParameter, CommandRecipe } from "../recipe";
+import { CommandParameter, Command } from "../command";
 import MentionConverter from "../type_converters/MentionConverter";
 import { Permissions } from "discord.js";
 
-export default <CommandRecipe>{
+export default <Command>{
     aliases: ["axe", "expire", "terminate", "delete", "uninvite"],
     parameters: [new CommandParameter("target user", MentionConverter)],
     permissions: [Permissions.FLAGS.BAN_MEMBERS],

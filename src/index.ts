@@ -15,7 +15,7 @@ client.on("message", (message) => {
     if (!message.content.startsWith(config.prefix)) return;
 
     const request = CommandRequest.from_raw_message(message, config.prefix);
-    command_router.route_to_handler(request);
+    command_router.route_request(request);
 });
 
 client.login(config.discord_token);

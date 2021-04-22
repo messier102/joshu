@@ -1,5 +1,5 @@
 import { CommandRequest } from "../request";
-import { CommandParameter, CommandRecipe } from "../recipe";
+import { CommandParameter, Command } from "../command";
 import { Permissions } from "discord.js";
 import StringConverter from "../type_converters/StringConverter";
 import snoowrap from "snoowrap";
@@ -7,7 +7,7 @@ import config from "../../../data/config";
 
 const reddit = new snoowrap(config.reddit);
 
-export default <CommandRecipe>{
+export default <Command>{
     parameters: [new CommandParameter("post title", StringConverter)],
     permissions: [Permissions.FLAGS.CREATE_INSTANT_INVITE],
 

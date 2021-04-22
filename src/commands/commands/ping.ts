@@ -1,7 +1,7 @@
 import { CommandRequest } from "../request";
-import { CommandRecipe } from "../recipe";
+import { Command } from "../command";
 
-export default <CommandRecipe>{
+export default <Command>{
     parameters: [],
     permissions: [],
 

@@ -1,65 +1,66 @@
 import path from "path";
 import fs from "fs/promises";
 import { CommandRequest } from "./request";
+import { CommandExecutor } from "./executor";
 import { Command } from "./command";
-import { CommandRecipe } from "./recipe";
 
 export class CommandRouter {
-    private readonly command_handlers: Map<string, Command> = new Map();
+    private readonly command_routes: Map<string, Command> = new Map();
 
     constructor() {
-        this.load_handlers();
+        this.load_routes();
     }
 
-    private async load_handlers(): Promise<void> {
-        const recipes_dir = path.join(__dirname, "recipes");
-        const filenames = await fs.readdir(recipes_dir);
+    private async load_routes(): Promise<void> {
+        const commands_dir = path.join(__dirname, "commands");
+        const filenames = await fs.readdir(commands_dir);
 
         for (const filename of filenames) {
-            const recipe_file = path.join(recipes_dir, filename);
-            const recipe_module = await import(recipe_file);
-            const recipe: CommandRecipe = recipe_module.default;
+            const command_file = path.join(commands_dir, filename);
+            const command_module = await import(command_file);
+            const command: Command = command_module.default;
 
             const command_name = filename.split(".")[0];
 
-            const command = new Command(recipe);
+            this.command_routes.set(command_name, command);
 
-            this.command_handlers.set(command_name, command);
-
-            if (recipe.aliases) {
-                for (const alias of recipe.aliases) {
-                    if (this.command_handlers.has(alias)) {
+            if (command.aliases) {
+                for (const alias of command.aliases) {
+                    if (this.command_routes.has(alias)) {
                         console.log(
                             `Command alias collision: ${alias} already registered`
                         );
                     }
 
-                    this.command_handlers.set(alias, command);
+                    this.command_routes.set(alias, command);
                 }
             }
         }
 
         console.log("Loaded commands:");
-        console.log(this.command_handlers);
+        console.log(this.command_routes);
     }
 
-    route_to_handler(request: CommandRequest): void {
-        const command_handler = this.command_handlers.get(request.name);
+    route_request(request: CommandRequest): void {
+        const command = this.command_routes.get(request.name);
 
-        if (command_handler) {
-            try {
-                command_handler.execute(request, request.args);
-            } catch (e: unknown) {
-                const error = <Error>e;
-
-                request.source.reply(
-                    `error: \`${error.message}\`\nUsage: \`${
-                        request.name
-                    } ${command_handler.usage()}\``
-                );
-            }
-        } else {
+        if (!command) {
             request.source.reply("sorry, no such command.");
+            return;
+        }
+
+        const executor = new CommandExecutor(command);
+
+        try {
+            executor.execute(request, request.args);
+        } catch (e: unknown) {
+            const error = <Error>e;
+
+            request.source.reply(
+                `error: \`${error.message}\`\nUsage: \`${
+                    request.name
+                } ${executor.usage()}\``
+            );
         }
     }
 }

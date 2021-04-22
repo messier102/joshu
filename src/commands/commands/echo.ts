@@ -1,8 +1,8 @@
 import { CommandRequest } from "../request";
-import { CommandParameter, CommandRecipe } from "../recipe";
+import { CommandParameter, Command } from "../command";
 import StringConverter from "../type_converters/StringConverter";
 
-export default <CommandRecipe>{
+export default <Command>{
     parameters: [new CommandParameter("message", StringConverter)],
     permissions: [],
 

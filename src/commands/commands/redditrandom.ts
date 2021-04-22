@@ -1,5 +1,5 @@
 import { CommandRequest } from "../request";
-import { CommandParameter, CommandRecipe } from "../recipe";
+import { CommandParameter, Command } from "../command";
 import snoowrap from "snoowrap";
 
 import config from "../../../data/config";
@@ -7,7 +7,7 @@ import StringConverter from "../type_converters/StringConverter";
 
 const reddit = new snoowrap(config.reddit);
 
-export default <CommandRecipe>{
+export default <Command>{
     parameters: [new CommandParameter("subreddit", StringConverter)],
     permissions: [],
 
