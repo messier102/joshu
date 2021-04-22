@@ -11,19 +11,29 @@ export class CommandExecutor {
     }
 
     execute(request: CommandRequest, args: string[]): void {
-        console.log(request.name, args);
+        // TODO: proper logging
+        console.log(request.name, args, request.source.author.tag);
 
         if (args.length !== this.recipe.parameters.length) {
             throw new Error("wrong number of arguments");
         }
 
         if (this.recipe.permissions.length > 0) {
-            const has_permission =
+            const user_has_permission =
                 request.source.member?.hasPermission(this.recipe.permissions) ??
                 false;
 
-            if (!has_permission) {
-                throw new Error("insufficient permissions");
+            if (!user_has_permission) {
+                throw new Error("insufficient user permissions");
+            }
+
+            const bot_has_permission =
+                request.source.guild?.me?.hasPermission(
+                    this.recipe.permissions
+                ) ?? false;
+
+            if (!bot_has_permission) {
+                throw new Error("insufficient bot permissions");
             }
         }
 
