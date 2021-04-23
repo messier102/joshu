@@ -1,1 +1,1 @@
--   check permissions on the bot as well as the user
+-   implement robust misspelled command suggestions, similar to what exists in git (help.c L:530)

@@ -4,6 +4,7 @@ import { CommandRequest } from "./request";
 import { CommandExecutor } from "./executor";
 import { Command } from "./command";
 import { is_discord_reportable } from "./error";
+import { find_similar_string, Weights } from "../find_similar_string";
 
 export class CommandRouter {
     private readonly command_routes: Map<string, Command> = new Map();
@@ -46,7 +47,14 @@ export class CommandRouter {
         const command = this.command_routes.get(request.name);
 
         if (!command) {
-            request.source.reply("sorry, no such command.");
+            const similar_commands = this.find_similar_commands(request.name);
+
+            const no_such_command_message =
+                similar_commands.length > 0
+                    ? `sorry, no such command. Did you mean \`${similar_commands[0]}\`?`
+                    : "sorry, no such command.";
+
+            request.source.reply(no_such_command_message);
             return;
         }
 
@@ -70,5 +78,22 @@ export class CommandRouter {
                 );
             }
         }
+    }
+
+    private find_similar_commands(command_name: string): string[] {
+        const command_names = [...this.command_routes.keys()];
+        const weights: Weights = {
+            substitution: 3,
+            insertion: 0,
+            deletion: 1,
+        };
+        const max_distance = 6;
+
+        return find_similar_string(
+            command_names,
+            weights,
+            max_distance,
+            command_name
+        );
     }
 }
