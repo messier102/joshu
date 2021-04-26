@@ -13,7 +13,7 @@
     },
     "keywords": [],
     "author": "messier102",
-    "license": "MIT",
+    "license": "ISC",
     "devDependencies": {
         "@types/lodash-es": "^4.17.4",
         "@typescript-eslint/eslint-plugin": "^4.22.0",
