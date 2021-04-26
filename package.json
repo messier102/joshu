@@ -16,6 +16,7 @@
     "license": "ISC",
     "devDependencies": {
         "@types/lodash-es": "^4.17.4",
+        "@types/node-fetch": "^2.5.10",
         "@typescript-eslint/eslint-plugin": "^4.22.0",
         "@typescript-eslint/parser": "^4.22.0",
         "eslint": "^7.24.0",
@@ -29,6 +30,7 @@
         "@types/node": "^14.14.39",
         "discord.js": "^12.5.3",
         "lodash": "^4.17.21",
+        "node-fetch": "^2.6.1",
         "snoowrap": "^1.22.0"
     },
     "lint-staged": {
