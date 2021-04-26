@@ -1,4 +1,5 @@
 import fetch from "node-fetch";
+import { ExchangeRate } from ".";
 
 type CryptonatorResponse = {
     ticker: {
@@ -13,13 +14,7 @@ type CryptonatorResponse = {
     error: string;
 };
 
-export type ExchangeRate = {
-    base_currency: string;
-    target_currency: string;
-    price: number;
-};
-
-export async function fetch_exchange_rate(
+export async function fetch_cryptonator(
     base_currency: string,
     target_currency: string
 ): Promise<ExchangeRate> {

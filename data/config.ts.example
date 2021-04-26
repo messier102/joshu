@@ -3,6 +3,8 @@ export default {
     owner_id: "your.discord.user.id",
     prefix: "=",
 
+    currency_converter_api_key: "",
+
     reddit: {
         userAgent: "",
         clientId: "",
