@@ -14,8 +14,8 @@ export async function fetch_exchange_rate(
     // TODO: implement handling pairs that aren't natively supported by either of the APIs
     // e.g. ETH -> RSD by combining ETH -> USD and USD -> RSD
     try {
-        return fetch_currency_converter(base_currency, target_currency);
-    } catch (e: unknown) {
-        return fetch_cryptonator(base_currency, target_currency);
+        return await fetch_currency_converter(base_currency, target_currency);
+    } catch (e) {
+        return await fetch_cryptonator(base_currency, target_currency);
     }
 }

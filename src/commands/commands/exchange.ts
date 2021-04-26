@@ -9,6 +9,8 @@ function humanize(num: number) {
 }
 
 export default <Command>{
+    aliases: ["convert", "conv"],
+
     parameters: [
         new CommandParameter("base currency", StringConverter),
         new CommandParameter("target currency", StringConverter),
@@ -22,6 +24,8 @@ export default <Command>{
         target_currency: string,
         amount: number
     ): Promise<void> {
+        source.channel.startTyping();
+
         try {
             const exchange_rate = await fetch_exchange_rate(
                 base_currency,
@@ -37,6 +41,8 @@ export default <Command>{
             );
         } catch (e) {
             source.channel.send(`error: ${(e as Error).message}`);
+        } finally {
+            source.channel.stopTyping();
         }
     },
 };
