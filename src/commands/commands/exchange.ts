@@ -24,8 +24,6 @@ export default <Command>{
         target_currency: string,
         amount: number
     ): Promise<void> {
-        source.channel.startTyping();
-
         const exchange_rate = await fetch_exchange_rate(
             base_currency,
             target_currency
@@ -41,7 +39,5 @@ export default <Command>{
         } else {
             source.channel.send(`error: couldn't fetch the exchange rate.`);
         }
-
-        source.channel.stopTyping();
     },
 };

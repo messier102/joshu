@@ -12,15 +12,12 @@ export default <Command>{
     permissions: [],
 
     execute({ source }: CommandRequest, subreddit: string): void {
-        source.channel.startTyping();
-
         reddit
             .getRandomSubmission(subreddit)
             .then((post) =>
                 source.channel.send(
                     `Random reddit post from \`r/${subreddit}\`:\nhttps://www.reddit.com${post.permalink}`
                 )
-            )
-            .finally(() => source.channel.stopTyping());
+            );
     },
 };

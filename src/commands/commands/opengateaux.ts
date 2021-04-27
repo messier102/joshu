@@ -12,8 +12,6 @@ export default <Command>{
     permissions: [Permissions.FLAGS.CREATE_INSTANT_INVITE],
 
     execute({ source }: CommandRequest, post_title: string): void {
-        source.channel.startTyping();
-
         source.guild?.systemChannel
             ?.createInvite({
                 unique: true,
@@ -41,7 +39,6 @@ export default <Command>{
                         source.reply(`Reddit error: \`${reason.toString()}\``);
                         console.log(reason);
                     });
-            })
-            .finally(() => source.channel.stopTyping());
+            });
     },
 };

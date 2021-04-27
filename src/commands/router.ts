@@ -61,6 +61,8 @@ export class CommandRouter {
         const executor = new CommandExecutor(command);
 
         try {
+            request.source.channel.startTyping();
+
             executor.execute(request, request.args);
         } catch (e: unknown) {
             if (is_discord_reportable(e)) {
@@ -77,6 +79,8 @@ export class CommandRouter {
                     } ${executor.usage()}\``
                 );
             }
+        } finally {
+            request.source.channel.stopTyping();
         }
     }
 
