@@ -4,12 +4,20 @@ import StringConverter from "../type_converters/StringConverter";
 import PositiveNumberConverter from "../type_converters/PositiveNumberConverter";
 import { fetch_exchange_rate } from "../../exchange_rate";
 
-function humanize(num: number): string {
+function format_decimal(num: number): string {
     // make sure we're properly representing very small fractions
     if (num >= 1) {
-        return num.toFixed(4).replace(/\.?0*$/, "");
+        return num.toFixed(4).replace(/\.?0*$/, ""); // strip trailing zeroes
     } else {
-        return num.toPrecision(4);
+        // grab up to 4 significant decimal places
+        const match = num.toFixed(20).match(/^0\.0*[1-9]{1,4}/);
+
+        if (match) {
+            return match[0];
+        } else {
+            // stupidly small fraction, fall back to exponential notation
+            return num.toString();
+        }
     }
 }
 
@@ -38,8 +46,10 @@ export default <Command>{
             const ex = exchange_rate.val;
 
             source.channel.send(
-                `${humanize(amount)} **${ex.base_currency}** = ` +
-                    `${humanize(amount * ex.price)} **${ex.target_currency}**`
+                `${format_decimal(amount)} **${ex.base_currency}** = ` +
+                    `${format_decimal(amount * ex.price)} **${
+                        ex.target_currency
+                    }**`
             );
         } else {
             source.channel.send(`error: couldn't fetch the exchange rate.`);
