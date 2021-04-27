@@ -1,4 +1,5 @@
 import fetch from "node-fetch";
+import { Err, Ok, Result } from "ts-results";
 import { ExchangeRate } from ".";
 
 type CryptonatorResponse = {
@@ -17,18 +18,18 @@ type CryptonatorResponse = {
 export async function fetch_cryptonator(
     base_currency: string,
     target_currency: string
-): Promise<ExchangeRate> {
+): Promise<Result<ExchangeRate, string>> {
     const api_endpoint = `https://api.cryptonator.com/api/ticker/${base_currency}-${target_currency}`;
     const response = await fetch(api_endpoint);
     const body: CryptonatorResponse = await response.json();
 
     if (!body.success) {
-        throw new Error(body.error);
+        return Err(body.error);
     }
 
-    return {
+    return Ok({
         base_currency: body.ticker.base,
         target_currency: body.ticker.target,
         price: Number.parseFloat(body.ticker.price),
-    };
+    });
 }

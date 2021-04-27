@@ -31,7 +31,8 @@
         "discord.js": "^12.5.3",
         "lodash": "^4.17.21",
         "node-fetch": "^2.6.1",
-        "snoowrap": "^1.22.0"
+        "snoowrap": "^1.22.0",
+        "ts-results": "^3.2.1"
     },
     "lint-staged": {
         "*.{js,ts}": "eslint --cache --fix",

@@ -1,6 +1,7 @@
 import { ExchangeRate } from ".";
 import config from "../../data/config";
 import fetch from "node-fetch";
+import { Err, Ok, Result } from "ts-results";
 
 type CurrencyConverterResponse = {
     [currency_pair: string]: number;
@@ -9,7 +10,7 @@ type CurrencyConverterResponse = {
 export async function fetch_currency_converter(
     base_currency: string,
     target_currency: string
-): Promise<ExchangeRate> {
+): Promise<Result<ExchangeRate, void>> {
     base_currency = base_currency.toUpperCase();
     target_currency = target_currency.toUpperCase();
 
@@ -25,8 +26,8 @@ export async function fetch_currency_converter(
     const body: CurrencyConverterResponse = await response.json();
 
     if (!body[currency_pair]) {
-        throw new Error("Pair not found");
+        return Err.EMPTY;
     }
 
-    return { base_currency, target_currency, price: body[currency_pair] };
+    return Ok({ base_currency, target_currency, price: body[currency_pair] });
 }

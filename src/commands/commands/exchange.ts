@@ -26,23 +26,22 @@ export default <Command>{
     ): Promise<void> {
         source.channel.startTyping();
 
-        try {
-            const exchange_rate = await fetch_exchange_rate(
-                base_currency,
-                target_currency
-            );
+        const exchange_rate = await fetch_exchange_rate(
+            base_currency,
+            target_currency
+        );
+
+        if (exchange_rate.some) {
+            const ex = exchange_rate.val;
 
             source.channel.send(
-                `${humanize(amount)} **${
-                    exchange_rate.base_currency
-                }** = ${humanize(amount * exchange_rate.price)} **${
-                    exchange_rate.target_currency
-                }**`
+                `${humanize(amount)} **${ex.base_currency}** = ` +
+                    ` ${humanize(amount * ex.price)} **${ex.target_currency}**`
             );
-        } catch (e) {
-            source.channel.send(`error: ${(e as Error).message}`);
-        } finally {
-            source.channel.stopTyping();
+        } else {
+            source.channel.send(`error: couldn't fetch the exchange rate.`);
         }
+
+        source.channel.stopTyping();
     },
 };
