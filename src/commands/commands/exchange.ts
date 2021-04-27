@@ -4,23 +4,6 @@ import StringConverter from "../type_converters/StringConverter";
 import PositiveNumberConverter from "../type_converters/PositiveNumberConverter";
 import { fetch_exchange_rate } from "../../exchange_rate";
 
-function format_decimal(num: number): string {
-    // make sure we're properly representing very small fractions
-    if (num >= 1) {
-        return num.toFixed(4).replace(/\.?0*$/, ""); // strip trailing zeroes
-    } else {
-        // grab up to 4 significant decimal places
-        const match = num.toFixed(20).match(/^0\.0*[1-9]{1,4}/);
-
-        if (match) {
-            return match[0];
-        } else {
-            // stupidly small fraction, fall back to exponential notation
-            return num.toString();
-        }
-    }
-}
-
 export default <Command>{
     aliases: ["convert", "conv"],
 
@@ -56,3 +39,40 @@ export default <Command>{
         }
     },
 };
+
+/**
+ * Formats a floating point number into a human-readable decimal representation
+ * with up to 4 significant decimal places, without trailing zeroes.
+ *
+ * If the number doesn't have a fractional part, returns only the whole part.
+ *
+ * @param num number to format
+ * @returns a string with the decimal representation of `num`
+ *
+ * @example
+ * ```ts
+ * format_decimal(1) === "1";
+ * format_decimal(1.23) === "1.23";
+ * format_decimal(1.23001) === "1.23";
+ * format_decimal(1.2345678) === "1.2345";
+ * format_decimal(0.000012345678) === "0.00001234";
+ * ```
+ */
+function format_decimal(num: number): string {
+    // make sure we're properly representing very small fractions
+    if (num >= 1) {
+        // ? toFixed defaults to exponential notation for numbers >= 1e+21
+        // ? maybe switch to a decimal number library
+        return num.toFixed(4).replace(/\.?0*$/, ""); // strip trailing zeroes
+    } else {
+        // grab up to 4 significant decimal places
+        const match = num.toFixed(20).match(/^0\.0*[1-9]{1,4}/);
+
+        if (match) {
+            return match[0];
+        } else {
+            // stupidly small fraction, fall back to exponential notation
+            return num.toString();
+        }
+    }
+}
