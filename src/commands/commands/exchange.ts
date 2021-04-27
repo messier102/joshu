@@ -4,8 +4,13 @@ import StringConverter from "../type_converters/StringConverter";
 import PositiveNumberConverter from "../type_converters/PositiveNumberConverter";
 import { fetch_exchange_rate } from "../../exchange_rate";
 
-function humanize(num: number) {
-    return num.toFixed(4).replace(/\.?0*$/, "");
+function humanize(num: number): string {
+    // make sure we're properly representing very small fractions
+    if (num >= 1) {
+        return num.toFixed(4).replace(/\.?0*$/, "");
+    } else {
+        return num.toPrecision(4);
+    }
 }
 
 export default <Command>{
