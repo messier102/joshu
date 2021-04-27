@@ -39,7 +39,7 @@ export default <Command>{
 
             source.channel.send(
                 `${humanize(amount)} **${ex.base_currency}** = ` +
-                    ` ${humanize(amount * ex.price)} **${ex.target_currency}**`
+                    `${humanize(amount * ex.price)} **${ex.target_currency}**`
             );
         } else {
             source.channel.send(`error: couldn't fetch the exchange rate.`);
