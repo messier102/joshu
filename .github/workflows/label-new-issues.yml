@@ -1,0 +1,19 @@
+name: Label new issues
+
+on:
+  issues:
+    types:
+      - opened
+      - reopened
+
+jobs:
+  label-new-issues:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Mark issue for triage
+        uses: andymckay/labeler@1.0.2
+        with:
+          add-labels: "awaiting triage"
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
