@@ -1,0 +1,33 @@
+name: Deploy master branch into production
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      
+      - uses: actions/setup-node@v2
+        with:
+            node-version: 16
+
+      - run: npm install -g pm2@latest
+
+      - name: Add deployment server to known hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.PROD_HOST }} > ~/.ssh/known_hosts
+
+      - name: Deploy into production
+        env:
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+          PROD_USER: ${{ secrets.PROD_USER }}
+          PROD_HOST: ${{ secrets.PROD_HOST }}
+        run: |
+          echo "$SSH_KEY" > ./production.key
+          chmod 400 ./production.key
+          pm2 deploy ecosystem.config.js production
