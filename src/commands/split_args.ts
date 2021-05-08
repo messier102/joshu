@@ -1,3 +1,5 @@
+import { range } from "../util";
+
 export function split_args(
     input: string,
     param_count: number,
@@ -8,7 +10,7 @@ export function split_args(
     const args = [];
     let remaining_input = input.trim();
 
-    for (let i = 0; i < param_count; i++) {
+    for (const i of range(0, param_count)) {
         if (!remaining_input) {
             throw new Error("too few arguments");
         }
