@@ -1,45 +1,32 @@
 export function split_args(
     input: string,
-    arg_count: number,
+    param_count: number,
     accept_remainder: boolean
 ): string[] {
-    const args = [];
+    const is_last_param = (idx: number) => idx === param_count - 1;
 
+    const args = [];
     let remaining_input = input.trim();
 
-    if (!remaining_input) {
-        throw new Error("too few arguments");
-    }
-
-    for (let i = 0; i < arg_count - 1; i++) {
+    for (let i = 0; i < param_count; i++) {
         if (!remaining_input) {
             throw new Error("too few arguments");
         }
 
-        const [arg, rest] = split_single_arg(remaining_input);
+        if (is_last_param(i) && accept_remainder) {
+            args.push(remaining_input);
+            remaining_input = "";
+        } else {
+            const [arg, rest] = split_single_arg(remaining_input);
 
-        args.push(arg);
-        remaining_input = rest.trim();
-    }
-
-    if (accept_remainder) {
-        if (!remaining_input) {
-            throw new Error("too few arguments");
-        }
-
-        args.push(remaining_input);
-    } else if (arg_count > 0) {
-        const [arg, rest] = split_single_arg(remaining_input);
-
-        args.push(arg);
-        remaining_input = rest.trim();
-
-        if (remaining_input) {
-            throw new Error("too many arguments");
+            args.push(arg);
+            remaining_input = rest.trim();
         }
     }
 
-    console.log(args);
+    if (remaining_input) {
+        throw new Error("too many arguments");
+    }
 
     return args;
 }
