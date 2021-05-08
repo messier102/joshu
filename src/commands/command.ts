@@ -17,7 +17,7 @@ export type Command = {
     aliases?: readonly string[];
     parameters: readonly CommandParameter[];
     permissions: readonly PermissionResolvable[];
-    accept_remainder?: boolean;
+    accept_remainder_arg?: boolean;
 
     can_execute?(request: CommandRequest, ...args: unknown[]): boolean;
     execute(request: CommandRequest, ...args: unknown[]): void;

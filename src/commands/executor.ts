@@ -71,7 +71,7 @@ export class CommandExecutor {
     private parse_args(input: string): unknown[] {
         const args = split_args(
             input,
-            this.command.accept_remainder
+            this.command.accept_remainder_arg
                 ? this.command.parameters.length - 1
                 : null
         );

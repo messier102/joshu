@@ -10,7 +10,7 @@ export default <Command>{
     ],
     permissions: [],
 
-    accept_remainder: true,
+    accept_remainder_arg: true,
 
     can_execute({ source }, target_channel_id: string): boolean {
         const target_channel = source.client.channels.cache.get(
