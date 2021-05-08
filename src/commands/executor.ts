@@ -35,7 +35,7 @@ export class CommandExecutor {
     }
 
     private parse_args(input: string): unknown[] {
-        const args = split_args(input);
+        const args = this.split_args(input);
 
         if (args.length !== this.command.parameters.length) {
             throw new NumberOfArgumentsError(
@@ -95,19 +95,44 @@ export class CommandExecutor {
             }
         }
     }
-}
 
-function split_args(input: string): string[] {
-    const args = [];
+    private split_args(input: string): string[] {
+        const args = [];
 
-    const quoted_arg_regex = /^"((?:\\"|[^"])*)"(.*)$/;
-    const simple_arg_regex = /^(\S+)(.*)$/;
+        let remaining_input = input.trim();
 
-    let remaining_input = input.trim();
-    while (remaining_input) {
-        if (remaining_input.startsWith(`"`)) {
+        if (this.command.accept_remainder) {
+            const split_param_count = this.command.parameters.length - 1;
+
+            for (let i = 0; i < split_param_count; i++) {
+                const [arg, rest] = this.split_arg(remaining_input);
+
+                args.push(arg);
+                remaining_input = rest.trim();
+            }
+
+            args.push(remaining_input);
+        } else {
+            while (remaining_input) {
+                const [arg, rest] = this.split_arg(remaining_input);
+
+                args.push(arg);
+                remaining_input = rest.trim();
+            }
+        }
+
+        console.log(args);
+
+        return args;
+    }
+
+    private split_arg(input: string): [string, string] {
+        const quoted_arg_regex = /^"((?:\\"|[^"])*)"(.*)$/;
+        const simple_arg_regex = /^(\S+)(.*)$/;
+
+        if (input.startsWith(`"`)) {
             // quoted argument
-            const match = remaining_input.match(quoted_arg_regex);
+            const match = input.match(quoted_arg_regex);
 
             if (!match) {
                 throw new Error("probably missing closing quote");
@@ -118,27 +143,21 @@ function split_args(input: string): string[] {
                 throw new Error("quoted arguments must be delimited by space");
             }
 
-            args.push(arg);
-            remaining_input = rest.trim();
+            return [arg, rest];
         } else {
             // simple argument
-            const match = remaining_input.match(simple_arg_regex);
+            const match = input.match(simple_arg_regex);
 
             if (!match) {
                 throw new Error("unreachable");
             }
 
             const [_, arg, rest] = match;
-            if (arg.includes("\"")) {
+            if (arg.includes(`"`)) {
                 throw new Error("unexpected quote mark inside argument");
             }
 
-            args.push(arg);
-            remaining_input = rest.trim();
+            return [arg, rest];
         }
     }
-
-    console.log(args);
-
-    return args;
 }
