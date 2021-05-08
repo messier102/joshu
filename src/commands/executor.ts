@@ -98,12 +98,47 @@ export class CommandExecutor {
 }
 
 function split_args(input: string): string[] {
-    const contiguous_or_quoted = /([^\s"']+)|"([^"]*)"|'([^']*)'/gi;
+    const args = [];
 
-    // extract the arguments from capture groups
-    const args = [...input.matchAll(contiguous_or_quoted)].map(
-        (match) => match[1] ?? match[2] ?? match[3]
-    );
+    const quoted_arg_regex = /^"((?:\\"|[^"])*)"(.*)$/;
+    const simple_arg_regex = /^(\S+)(.*)$/;
+
+    let remaining_input = input.trim();
+    while (remaining_input) {
+        if (remaining_input.startsWith(`"`)) {
+            // quoted argument
+            const match = remaining_input.match(quoted_arg_regex);
+
+            if (!match) {
+                throw new Error("probably missing closing quote");
+            }
+
+            const [_, arg, rest] = match;
+            if (rest && !rest.startsWith(" ")) {
+                throw new Error("quoted arguments must be delimited by space");
+            }
+
+            args.push(arg);
+            remaining_input = rest.trim();
+        } else {
+            // simple argument
+            const match = remaining_input.match(simple_arg_regex);
+
+            if (!match) {
+                throw new Error("unreachable");
+            }
+
+            const [_, arg, rest] = match;
+            if (arg.includes("\"")) {
+                throw new Error("unexpected quote mark inside argument");
+            }
+
+            args.push(arg);
+            remaining_input = rest.trim();
+        }
+    }
+
+    console.log(args);
 
     return args;
 }
