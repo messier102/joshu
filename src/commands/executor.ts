@@ -6,7 +6,6 @@ import {
     ArgumentTypeError,
     BotPermissionsError,
     UserPermissionsError,
-    NumberOfArgumentsError,
     PrecheckError,
 } from "./error";
 import { split_args } from "./split_args";
@@ -74,13 +73,6 @@ export class CommandExecutor {
             this.command.parameters.length,
             this.command.accept_remainder_arg ?? false
         );
-
-        if (args.length !== this.command.parameters.length) {
-            throw new NumberOfArgumentsError(
-                this.command.parameters.length,
-                args.length
-            );
-        }
 
         const parsed_args = (<[string, CommandParameter][]>(
             zip(args, this.command.parameters)
