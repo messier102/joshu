@@ -17,20 +17,26 @@ export class CommandExecutor {
         return this.command.parameters.join(" ");
     }
 
-    execute(request: CommandRequest, args: string[]): void {
+    execute(request: CommandRequest): void {
         // TODO: proper logging
-        console.log(request.name, args, request.source.author.tag);
+        console.log(
+            `[${request.source.author.tag}]`,
+            request.name,
+            request.args
+        );
 
         this.check_permissions(request);
 
-        const parsed_args = this.parse_args(args);
+        const parsed_args = this.parse_args(request.args);
 
         this.check_can_execute(request, parsed_args);
 
         this.command.execute(request, ...parsed_args);
     }
 
-    private parse_args(args: string[]): unknown[] {
+    private parse_args(input: string): unknown[] {
+        const args = split_args(input);
+
         if (args.length !== this.command.parameters.length) {
             throw new NumberOfArgumentsError(
                 this.command.parameters.length,
@@ -89,4 +95,15 @@ export class CommandExecutor {
             }
         }
     }
+}
+
+function split_args(input: string): string[] {
+    const contiguous_or_quoted = /([^\s"']+)|"([^"]*)"|'([^']*)'/gi;
+
+    // extract the arguments from capture groups
+    const args = [...input.matchAll(contiguous_or_quoted)].map(
+        (match) => match[1] ?? match[2] ?? match[3]
+    );
+
+    return args;
 }
