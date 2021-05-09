@@ -1,5 +1,24 @@
 import { range } from "../util";
 
+/**
+ * Splits a string of space-separated arguments into an array of strings, honoring quotes.
+ *
+ * An unquoted argument can be any contiguous sequence of characters except space and double quote `"`.
+ * If an argument begins with a double quote `"`, everything until the closing quote is treated as a single
+ * argument, including whitespace. To use a quote mark within a quoted argument, use the escape
+ * sequence `\"`. Quoted arguments must be separated by whitespace to avoid parsing ambiguity.
+ * Quoted arguments must be terminated by a closing quote.
+ *
+ * The string must have exactly `param_count` arguments. If `accept_remainder` is set to true,
+ * this function parses `param_count - 1` space-separated arguments and passes the remaining
+ * input as the final argument. Quotes and spaces in the remainder argument are treated literally.
+ * The remainder argument cannot be empty.
+ *
+ * @param input A string of potentially-quoted, space-separated arguments.
+ * @param param_count The expected number of arguments
+ * @param accept_remainder A flag that enables passing the remaining input as the last argument.
+ * @returns An array of individual argument strings
+ */
 export function split_args(
     input: string,
     param_count: number,
