@@ -63,7 +63,7 @@ export class CommandRouter {
         try {
             request.source.channel.startTyping();
 
-            executor.execute(request, request.args);
+            executor.execute(request);
         } catch (e: unknown) {
             if (is_discord_reportable(e)) {
                 request.source.reply(

@@ -6,9 +6,9 @@ import {
     ArgumentTypeError,
     BotPermissionsError,
     UserPermissionsError,
-    NumberOfArgumentsError,
     PrecheckError,
 } from "./error";
+import { split_args } from "./split_args";
 
 export class CommandExecutor {
     constructor(private readonly command: Command) {}
@@ -17,44 +17,21 @@ export class CommandExecutor {
         return this.command.parameters.join(" ");
     }
 
-    execute(request: CommandRequest, args: string[]): void {
+    execute(request: CommandRequest): void {
         // TODO: proper logging
-        console.log(request.name, args, request.source.author.tag);
+        console.log(
+            `[${request.source.author.tag}]`,
+            request.name,
+            request.args
+        );
 
         this.check_permissions(request);
 
-        const parsed_args = this.parse_args(args);
+        const parsed_args = this.parse_args(request.args);
 
         this.check_can_execute(request, parsed_args);
 
         this.command.execute(request, ...parsed_args);
-    }
-
-    private parse_args(args: string[]): unknown[] {
-        if (args.length !== this.command.parameters.length) {
-            throw new NumberOfArgumentsError(
-                this.command.parameters.length,
-                args.length
-            );
-        }
-
-        const parsed_args = (<[string, CommandParameter][]>(
-            zip(args, this.command.parameters)
-        )).map(([arg, param]) => {
-            try {
-                return param.type_converter.convert(arg);
-            } catch (e: unknown) {
-                if (e instanceof ConversionError) {
-                    throw new ArgumentTypeError(
-                        param.name,
-                        e.expected_type,
-                        e.actual_value
-                    );
-                }
-            }
-        });
-
-        return parsed_args;
     }
 
     private check_permissions(request: CommandRequest): void {
@@ -88,5 +65,32 @@ export class CommandExecutor {
                 throw new PrecheckError();
             }
         }
+    }
+
+    // unknown[] is required as we're dynamically converting stringly typed arguments
+    private parse_args(input: string): unknown[] {
+        const args = split_args(
+            input,
+            this.command.parameters.length,
+            this.command.accept_remainder_arg ?? false
+        );
+
+        const parsed_args = (<[string, CommandParameter][]>(
+            zip(args, this.command.parameters)
+        )).map(([arg, param]) => {
+            try {
+                return param.type_converter.convert(arg);
+            } catch (e: unknown) {
+                if (e instanceof ConversionError) {
+                    throw new ArgumentTypeError(
+                        param.name,
+                        e.expected_type,
+                        e.actual_value
+                    );
+                }
+            }
+        });
+
+        return parsed_args;
     }
 }

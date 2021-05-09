@@ -11,6 +11,8 @@ export default <Command>{
     parameters: [new CommandParameter("post title", StringConverter)],
     permissions: [Permissions.FLAGS.CREATE_INSTANT_INVITE],
 
+    accept_remainder_arg: true,
+
     execute({ source }: CommandRequest, post_title: string): void {
         source.guild?.systemChannel
             ?.createInvite({
