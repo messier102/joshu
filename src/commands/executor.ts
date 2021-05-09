@@ -67,6 +67,7 @@ export class CommandExecutor {
         }
     }
 
+    // unknown[] is required as we're dynamically converting stringly typed arguments
     private parse_args(input: string): unknown[] {
         const args = split_args(
             input,
