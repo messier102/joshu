@@ -73,7 +73,9 @@ function split_quoted_arg(input: string): [string, string] {
         throw new Error("quoted arguments must be delimited by space");
     }
 
-    return [arg, rest];
+    const arg_unescaped = arg.replace(/\\"/g, `"`);
+
+    return [arg_unescaped, rest];
 }
 
 function split_simple_arg(input: string): [string, string] {
