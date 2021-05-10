@@ -4,7 +4,7 @@ export default <TypeConverter>{
     type: "positive number",
 
     convert(value: string): number {
-        const number_regex = /\d+(\.\d+)?/;
+        const number_regex = /^\d+(\.\d+)?$/;
         const match = value.match(number_regex);
 
         if (!match) {

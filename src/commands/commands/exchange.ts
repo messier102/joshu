@@ -2,7 +2,7 @@ import { CommandRequest } from "../request";
 import { CommandParameter, Command } from "../command";
 import StringConverter from "../type_converters/StringConverter";
 import PositiveNumberConverter from "../type_converters/PositiveNumberConverter";
-import { fetch_exchange_rate } from "../../exchange_rate";
+import { convert_currency } from "../../services/coinmarketcap";
 
 export default <Command>{
     aliases: ["convert", "conv"],
@@ -20,22 +20,27 @@ export default <Command>{
         target_currency: string,
         amount: number
     ): Promise<void> {
-        const exchange_rate = await fetch_exchange_rate(
+        base_currency = base_currency.toUpperCase();
+        target_currency = target_currency.toUpperCase();
+
+        const conversion_result = await convert_currency(
             base_currency,
-            target_currency
+            target_currency,
+            amount
         );
 
-        if (exchange_rate.some) {
-            const ex = exchange_rate.val;
+        if (conversion_result.ok) {
+            const conversion = conversion_result.val;
 
-            source.channel.send(
-                `${format_decimal(amount)} **${ex.base_currency}** = ` +
-                    `${format_decimal(amount * ex.price)} **${
-                        ex.target_currency
-                    }**`
-            );
+            const amount_converted = conversion[target_currency].price;
+            const message =
+                `${format_decimal(amount)} **${base_currency}** = ` +
+                `${format_decimal(amount_converted)} **${target_currency}**`;
+
+            source.channel.send(message);
         } else {
-            source.channel.send(`error: couldn't fetch the exchange rate.`);
+            const error_message = conversion_result.val;
+            source.channel.send(`error: ${error_message}.`);
         }
     },
 };
