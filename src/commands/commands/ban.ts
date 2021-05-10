@@ -5,6 +5,46 @@ import { Permissions } from "discord.js";
 import dedent from "ts-dedent";
 import sample from "lodash/sample";
 
+export default <Command>{
+    aliases: [
+        "axe",
+        "expire",
+        "terminate",
+        "delete",
+        "uninvite",
+        "321",
+        "immolate",
+    ],
+
+    parameters: [new CommandParameter("target user", MentionConverter)],
+    permissions: [Permissions.FLAGS.BAN_MEMBERS],
+
+    async execute(
+        { name, source }: CommandRequest,
+        target_user_id: string
+    ): Promise<void> {
+        const user = source.guild?.members.cache.get(target_user_id);
+        await user?.ban();
+
+        const message_template = SPECIAL_BAN_MESSAGES.has(name)
+            ? (sample(SPECIAL_BAN_MESSAGES.get(name)) as string)
+            : (sample(COMMON_BAN_MESSAGES) as string);
+
+        const message = message_template.replace("%banned_user%", `${user}`);
+
+        source.channel.send(message);
+    },
+};
+
+const COMMON_BAN_MESSAGES = [
+    "Banned %banned_user%",
+    dedent`
+        batta batta batta batta SWING!....POP!!!
+        and the crowd goes wild, %banned_user% is outta here!
+        GOTCHA!
+    `,
+];
+
 const SPECIAL_BAN_MESSAGES = new Map([
     [
         "321",
@@ -50,43 +90,3 @@ const SPECIAL_BAN_MESSAGES = new Map([
         ],
     ],
 ]);
-
-const COMMON_BAN_MESSAGES = [
-    "Banned %banned_user%",
-    dedent`
-        batta batta batta batta SWING!....POP!!!
-        and the crowd goes wild, %banned_user% is outta here!
-        GOTCHA!
-    `,
-];
-
-export default <Command>{
-    aliases: [
-        "axe",
-        "expire",
-        "terminate",
-        "delete",
-        "uninvite",
-        "321",
-        "immolate",
-    ],
-
-    parameters: [new CommandParameter("target user", MentionConverter)],
-    permissions: [Permissions.FLAGS.BAN_MEMBERS],
-
-    async execute(
-        { name, source }: CommandRequest,
-        target_user_id: string
-    ): Promise<void> {
-        const user = source.guild?.members.cache.get(target_user_id);
-        await user?.ban();
-
-        const message_template = SPECIAL_BAN_MESSAGES.has(name)
-            ? (sample(SPECIAL_BAN_MESSAGES.get(name)) as string)
-            : (sample(COMMON_BAN_MESSAGES) as string);
-
-        const message = message_template.replace("%banned_user%", `${user}`);
-
-        source.channel.send(message);
-    },
-};
