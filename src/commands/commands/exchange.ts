@@ -2,7 +2,6 @@ import { CommandRequest } from "../request";
 import { CommandParameter, Command } from "../command";
 import StringConverter from "../type_converters/StringConverter";
 import PositiveNumberConverter from "../type_converters/PositiveNumberConverter";
-// import { fetch_exchange_rate } from "../../exchange_rate";
 import { convert_currency } from "../../exchange_rate/coinmarketcap";
 
 export default <Command>{
@@ -21,24 +20,6 @@ export default <Command>{
         target_currency: string,
         amount: number
     ): Promise<void> {
-        // const exchange_rate = await fetch_exchange_rate(
-        //     base_currency,
-        //     target_currency
-        // );
-
-        // if (exchange_rate.some) {
-        //     const ex = exchange_rate.val;
-
-        //     source.channel.send(
-        //         `${format_decimal(amount)} **${ex.base_currency}** = ` +
-        //             `${format_decimal(amount * ex.price)} **${
-        //                 ex.target_currency
-        //             }**`
-        //     );
-        // } else {
-        //     source.channel.send(`error: couldn't fetch the exchange rate.`);
-        // }
-
         base_currency = base_currency.toUpperCase();
         target_currency = target_currency.toUpperCase();
 
