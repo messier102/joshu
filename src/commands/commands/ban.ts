@@ -10,19 +10,19 @@ const SPECIAL_BAN_MESSAGES = new Map([
         "321",
         [
             dedent`
-            3 2 1 dead
-            sorry then I don't get it
-            %banned_user% see you later bye
-        `,
+                3 2 1 dead
+                sorry then I don't get it
+                %banned_user% see you later bye
+            `,
         ],
     ],
     [
         "terminate",
         [
             dedent`
-            Fellow %banned_user%.
-            Contract termination imminent
-        `,
+                Fellow %banned_user%.
+                Contract termination imminent
+            `,
         ],
     ],
     [
