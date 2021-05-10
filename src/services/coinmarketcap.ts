@@ -38,6 +38,10 @@ const COINMARKETCAP_API = axios.create({
     validateStatus: () => true,
 });
 
+/**
+ * See API documentation at
+ * https://coinmarketcap.com/api/documentation/v1/#operation/getV1ToolsPriceconversion
+ */
 export async function convert_currency(
     base_currency: string,
     target_currency: string,
