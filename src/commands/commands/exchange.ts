@@ -2,7 +2,7 @@ import { CommandRequest } from "../request";
 import { CommandParameter, Command } from "../command";
 import StringConverter from "../type_converters/StringConverter";
 import PositiveNumberConverter from "../type_converters/PositiveNumberConverter";
-import { convert_currency } from "../../exchange_rate/coinmarketcap";
+import { convert_currency } from "../../services/coinmarketcap";
 
 export default <Command>{
     aliases: ["convert", "conv"],
