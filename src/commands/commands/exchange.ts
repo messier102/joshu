@@ -31,8 +31,16 @@ export default <Command>{
 
         if (conversion_result.ok) {
             const conversion = conversion_result.val;
-
             const amount_converted = conversion[target_currency].price;
+
+            if (!amount_converted) {
+                source.channel.send(
+                    "error: conversion request was successful, but the API did not return a price.\n" +
+                        "(This usually means that the currency had existed in the past, but not anymore.)"
+                );
+                return;
+            }
+
             const message =
                 `${format_decimal(amount)} **${base_currency}** = ` +
                 `${format_decimal(amount_converted)} **${target_currency}**`;
