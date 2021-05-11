@@ -1,6 +1,6 @@
 import { CommandRequest } from "../request";
 import { CommandParameter, Command } from "../command";
-import { Client, GuildMember, Message, Permissions, User } from "discord.js";
+import { Client, GuildMember, Permissions, User } from "discord.js";
 import dedent from "ts-dedent";
 import sample from "lodash/sample";
 import MentionConverter from "../type_converters/MentionConverter";
@@ -103,7 +103,7 @@ function source_can_ban_target(
     return (
         source_member.roles.highest.comparePositionTo(
             target_member.roles.highest
-        ) < 0
+        ) > 0
     );
 }
 
