@@ -34,7 +34,15 @@ export default <Command>{
         try {
             const user = await resolve_user(source.client, target_user);
 
-            await source.guild?.members.ban(user);
+            try {
+                await source.guild?.members.ban(user);
+            } catch (e) {
+                source.reply(
+                    "sorry, I can't ban that user.\n" +
+                        "(This usually means that they have a role higher than mine.)"
+                );
+                return;
+            }
 
             const message_template = SPECIAL_BAN_MESSAGES.has(name)
                 ? (sample(SPECIAL_BAN_MESSAGES.get(name)) as string)
