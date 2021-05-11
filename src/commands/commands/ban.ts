@@ -4,6 +4,8 @@ import MentionConverter from "../type_converters/MentionConverter";
 import { Permissions } from "discord.js";
 import dedent from "ts-dedent";
 import sample from "lodash/sample";
+import SnowflakeConverter from "../type_converters/SnowflakeConverter";
+import { any } from "../type_converters/any";
 
 export default <Command>{
     aliases: [
@@ -16,7 +18,12 @@ export default <Command>{
         "immolate",
     ],
 
-    parameters: [new CommandParameter("target user", MentionConverter)],
+    parameters: [
+        new CommandParameter(
+            "target user",
+            any(MentionConverter, SnowflakeConverter)
+        ),
+    ],
     permissions: [Permissions.FLAGS.BAN_MEMBERS],
 
     async execute(
