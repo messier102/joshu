@@ -23,16 +23,24 @@ export default <Command>{
         { name, source }: CommandRequest,
         target_user_id: string
     ): Promise<void> {
-        const user = source.guild?.members.cache.get(target_user_id);
-        await user?.ban();
+        try {
+            const user = await source.client.users.fetch(target_user_id);
 
-        const message_template = SPECIAL_BAN_MESSAGES.has(name)
-            ? (sample(SPECIAL_BAN_MESSAGES.get(name)) as string)
-            : (sample(COMMON_BAN_MESSAGES) as string);
+            await source.guild?.members.ban(user);
 
-        const message = message_template.replace("%banned_user%", `${user}`);
+            const message_template = SPECIAL_BAN_MESSAGES.has(name)
+                ? (sample(SPECIAL_BAN_MESSAGES.get(name)) as string)
+                : (sample(COMMON_BAN_MESSAGES) as string);
 
-        source.channel.send(message);
+            const message = message_template.replace(
+                "%banned_user%",
+                `${user}`
+            );
+
+            source.channel.send(message);
+        } catch (e) {
+            source.reply("sorry, I don't know that user.");
+        }
     },
 };
 
