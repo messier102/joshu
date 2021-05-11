@@ -72,7 +72,7 @@ export default <Command>{
 
             const message = message_template.replace(
                 "%banned_user%",
-                `${target_user}`
+                `**${target_user.tag}**`
             );
 
             source.channel.send(message);
