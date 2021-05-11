@@ -1,6 +1,6 @@
 import { CommandRequest } from "../request";
 import { CommandParameter, Command } from "../command";
-import { Client, Permissions, User } from "discord.js";
+import { Client, GuildMember, Message, Permissions, User } from "discord.js";
 import dedent from "ts-dedent";
 import sample from "lodash/sample";
 import MentionConverter from "../type_converters/MentionConverter";
@@ -29,13 +29,30 @@ export default <Command>{
 
     async execute(
         { name, source }: CommandRequest,
-        target_user: string
+        target_user_id_or_tag: string
     ): Promise<void> {
         try {
-            const user = await resolve_user(source.client, target_user);
+            const target_user = await resolve_user(
+                source.client,
+                target_user_id_or_tag
+            );
+
+            const source_member = source.member;
+            const target_member = source.guild?.member(target_user);
+            if (
+                source_member &&
+                target_member &&
+                !source_can_ban_target(source_member, target_member)
+            ) {
+                source.reply(
+                    "sorry, you can't ban that user.\n" +
+                        "(They have a role higher than or equal to yours.)"
+                );
+                return;
+            }
 
             try {
-                await source.guild?.members.ban(user);
+                await source.guild?.members.ban(target_user);
             } catch (e) {
                 source.reply(
                     "sorry, I can't ban that user.\n" +
@@ -50,7 +67,7 @@ export default <Command>{
 
             const message = message_template.replace(
                 "%banned_user%",
-                `${user}`
+                `${target_user}`
             );
 
             source.channel.send(message);
@@ -77,6 +94,17 @@ async function resolve_user(
 
         return await client.users.fetch(user_id);
     }
+}
+
+function source_can_ban_target(
+    source_member: GuildMember,
+    target_member: GuildMember
+): boolean {
+    return (
+        source_member.roles.highest.comparePositionTo(
+            target_member.roles.highest
+        ) < 0
+    );
 }
 
 const COMMON_BAN_MESSAGES = [
