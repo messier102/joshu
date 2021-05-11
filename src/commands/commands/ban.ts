@@ -37,6 +37,11 @@ export default <Command>{
                 target_user_id_or_tag
             );
 
+            if (source.author === target_user) {
+                source.reply("you can't ban yourself, dummy.");
+                return;
+            }
+
             const source_member = source.member;
             const target_member = source.guild?.member(target_user);
             if (
