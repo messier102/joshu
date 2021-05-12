@@ -30,6 +30,7 @@
         "axios": "^0.21.1",
         "discord.js": "^12.5.3",
         "lodash": "^4.17.21",
+        "snoots": "1.0.0-dev.10",
         "snoowrap": "^1.22.0",
         "ts-dedent": "^2.1.1",
         "ts-results": "^3.2.1"
