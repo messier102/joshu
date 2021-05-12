@@ -1,23 +1,26 @@
 import { CommandRequest } from "../request";
 import { CommandParameter, Command } from "../command";
-import snoowrap from "snoowrap";
-
-import config from "../../../data/config";
 import StringConverter from "../type_converters/StringConverter";
-
-const reddit = new snoowrap(config.reddit);
+import { reddit } from "../../services/reddit";
 
 export default <Command>{
     parameters: [new CommandParameter("subreddit", StringConverter)],
     permissions: [],
 
-    execute({ source }: CommandRequest, subreddit: string): void {
-        reddit
-            .getRandomSubmission(subreddit)
-            .then((post) =>
-                source.channel.send(
-                    `Random reddit post from \`r/${subreddit}\`:\nhttps://www.reddit.com${post.permalink}`
-                )
+    async execute(
+        { source }: CommandRequest,
+        subreddit: string
+    ): Promise<void> {
+        try {
+            const random_post = await reddit.subreddits.getRandomPost(
+                subreddit
             );
+
+            source.channel.send(
+                `Random reddit post from \`r/${subreddit}\`:\nhttps://www.reddit.com${random_post.permalink}`
+            );
+        } catch (e) {
+            source.reply("sorry, couldn't fetch that subreddit.");
+        }
     },
 };
