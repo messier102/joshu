@@ -4,17 +4,7 @@ import RedditClient from "snoots";
 import config from "../../../data/config";
 import StringConverter from "../type_converters/StringConverter";
 
-const reddit = new RedditClient({
-    userAgent: config.reddit.userAgent,
-    creds: {
-        clientId: config.reddit.clientId,
-        clientSecret: config.reddit.clientSecret,
-    },
-    auth: {
-        username: config.reddit.username,
-        password: config.reddit.password,
-    },
-});
+const reddit = new RedditClient(config.reddit.client);
 
 export default <Command>{
     parameters: [new CommandParameter("subreddit", StringConverter)],

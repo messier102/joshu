@@ -6,13 +6,18 @@ export default {
     cmc_domain: "sandbox-api.coinmarketcap.com",
     cmc_api_key: "b54bcf4d-1bca-4e8e-9a24-22ff2c3d462c",
 
-    subreddit: "",
-
     reddit: {
-        userAgent: "",
-        clientId: "",
-        clientSecret: "",
-        username: "",
-        password: "",
+        opengateaux_subreddit: "",
+        client: {
+            userAgent: "",
+            creds: {
+                clientId: "",
+                clientSecret: "",
+            },
+            auth: {
+                username: "",
+                password: "",
+            },
+        },
     },
 };

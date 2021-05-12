@@ -5,17 +5,7 @@ import StringConverter from "../type_converters/StringConverter";
 import config from "../../../data/config";
 import RedditClient from "snoots";
 
-const reddit = new RedditClient({
-    userAgent: config.reddit.userAgent,
-    creds: {
-        clientId: config.reddit.clientId,
-        clientSecret: config.reddit.clientSecret,
-    },
-    auth: {
-        username: config.reddit.username,
-        password: config.reddit.password,
-    },
-});
+const reddit = new RedditClient(config.reddit.client);
 
 export default <Command>{
     parameters: [new CommandParameter("post title", StringConverter)],
@@ -38,7 +28,7 @@ export default <Command>{
 
         try {
             const post_id = await reddit.subreddits.postLink(
-                config.subreddit,
+                config.reddit.opengateaux_subreddit,
                 post_title,
                 invite.url
             );
