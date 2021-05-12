@@ -26,7 +26,7 @@ export default <Command>{
 
                 return reddit
                     .submitLink({
-                        subredditName: "discordservers",
+                        subredditName: config.subreddit,
                         title: post_title,
                         url: invite.url,
                     })
