@@ -1,10 +1,7 @@
 import { CommandRequest } from "../request";
 import { CommandParameter, Command } from "../command";
-import RedditClient from "snoots";
-import config from "../../../data/config";
 import StringConverter from "../type_converters/StringConverter";
-
-const reddit = new RedditClient(config.reddit.client);
+import { reddit } from "../../services/reddit";
 
 export default <Command>{
     parameters: [new CommandParameter("subreddit", StringConverter)],

@@ -3,9 +3,7 @@ import { CommandParameter, Command } from "../command";
 import { Permissions } from "discord.js";
 import StringConverter from "../type_converters/StringConverter";
 import config from "../../../data/config";
-import RedditClient from "snoots";
-
-const reddit = new RedditClient(config.reddit.client);
+import { reddit } from "../../services/reddit";
 
 export default <Command>{
     parameters: [new CommandParameter("post title", StringConverter)],
