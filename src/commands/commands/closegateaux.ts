@@ -18,7 +18,7 @@ export default <Command>{
         const old_invites = await source.guild.fetchInvites();
         for (const [_, old_invite] of old_invites) {
             if (old_invite.inviter === source.client.user) {
-                old_invite.delete();
+                await old_invite.delete();
             }
         }
 
