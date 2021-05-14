@@ -17,6 +17,7 @@ export default <Command>{
         "uninvite",
         "321",
         "immolate",
+        "shadowbolt",
     ],
 
     parameters: [
@@ -122,6 +123,13 @@ const COMMON_BAN_MESSAGES = [
 ];
 
 const SPECIAL_BAN_MESSAGES = new Map([
+    [
+        "shadowbolt",
+        [
+            `"May darkness take you, %banned_user%, for when I'm done, the Light will not recognize you."` +
+                ` \u2014 <@!242743883413323786>, presumably`,
+        ],
+    ],
     [
         "321",
         [
