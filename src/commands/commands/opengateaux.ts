@@ -44,12 +44,6 @@ export default <Command>{
             const old_posts = bot_user.getPosts();
 
             for await (const old_post of old_posts) {
-                // A workaround for a bug in snoots dev.12 which causes `getPosts()` to
-                // yield `undefined` if the user has no submissions.
-                if (!old_post) {
-                    continue;
-                }
-
                 await old_post.delete();
             }
 
