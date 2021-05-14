@@ -16,7 +16,7 @@ export default <Command>{
             const post_links = [];
 
             for await (const post of posts) {
-                post_links.push(`https://reddit.com/${post.permalink}`);
+                post_links.push(`https://reddit.com${post.permalink}`);
             }
 
             if (post_links.length > 0) {
