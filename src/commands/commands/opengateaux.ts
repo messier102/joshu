@@ -36,7 +36,8 @@ export default <Command>{
 
         if (!new_invite) {
             console.log("unable to create invite");
-            throw new Error("unable to create invite");
+            source.reply("unable to create invite");
+            return;
         }
 
         try {
