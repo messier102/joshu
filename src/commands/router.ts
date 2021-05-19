@@ -3,7 +3,6 @@ import fs from "fs/promises";
 import { CommandRequest } from "./request";
 import { CommandExecutor } from "./executor";
 import { Command } from "./command";
-import { is_discord_reportable } from "./error";
 import { find_similar_string, Weights } from "../find_similar_string";
 
 export class CommandRouter {
@@ -67,29 +66,14 @@ export class CommandRouter {
             if (!execution_result.ok) {
                 const error = execution_result.val;
 
-                if (is_discord_reportable(error)) {
-                    request.source.reply(
-                        `error: ${error.to_discord_error()}.\nUsage: \`${
-                            request.name
-                        } ${executor.usage()}\``
-                    );
-                } else if (error instanceof Error) {
-                    // temporary
-                    request.source.reply(
-                        `error: ${error.message}.\nUsage: \`${
-                            request.name
-                        } ${executor.usage()}\``
-                    );
-                }
-            }
-        } catch (e: unknown) {
-            if (is_discord_reportable(e)) {
                 request.source.reply(
-                    `error: ${e.to_discord_error()}.\nUsage: \`${
+                    `error: ${error.message}.\nUsage: \`${
                         request.name
                     } ${executor.usage()}\``
                 );
-            } else if (e instanceof Error) {
+            }
+        } catch (e: unknown) {
+            if (e instanceof Error) {
                 // temporary
                 request.source.reply(
                     `error: ${e.message}.\nUsage: \`${

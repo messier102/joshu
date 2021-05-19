@@ -1,13 +1,6 @@
 import { zip } from "lodash";
 import { CommandRequest } from "./request";
 import { Command, CommandParameter } from "./command";
-
-import {
-    ArgumentTypeError,
-    BotPermissionsError,
-    UserPermissionsError,
-    DiscordReportable,
-} from "./error";
 import { split_args } from "./split_args";
 import { Err, Ok, Result } from "ts-results";
 
@@ -18,7 +11,7 @@ export class CommandExecutor {
         return this.command.parameters.join(" ");
     }
 
-    execute(request: CommandRequest): Result<void, DiscordReportable | Error> {
+    execute(request: CommandRequest): Result<void, Error> {
         // TODO: proper logging
         console.log(
             `[${request.source.author.tag}]`,
@@ -41,9 +34,7 @@ export class CommandExecutor {
         return Ok.EMPTY;
     }
 
-    private check_permissions(
-        request: CommandRequest
-    ): Result<void, UserPermissionsError | BotPermissionsError> {
+    private check_permissions(request: CommandRequest): Result<void, Error> {
         if (this.command.permissions.length === 0) {
             return Ok.EMPTY;
         }
@@ -53,7 +44,9 @@ export class CommandExecutor {
             false;
 
         if (!user_has_permission) {
-            return Err(new UserPermissionsError());
+            return Err(
+                new Error("you don't have enough permissions to do that")
+            );
         }
 
         const bot_has_permission =
@@ -61,16 +54,14 @@ export class CommandExecutor {
             false;
 
         if (!bot_has_permission) {
-            return Err(new BotPermissionsError());
+            return Err(new Error("I don't have enough permissions to do that"));
         }
 
         return Ok.EMPTY;
     }
 
     // unknown[] is required as we're dynamically converting stringly typed arguments
-    private parse_args(
-        input: string
-    ): Result<unknown[], ArgumentTypeError | Error> {
+    private parse_args(input: string): Result<unknown[], Error> {
         const args_split_result = split_args(
             input,
             this.command.parameters.length,
@@ -97,10 +88,8 @@ export class CommandExecutor {
                 const conversion_error = conversion_result.val;
 
                 return Err(
-                    new ArgumentTypeError(
-                        param.name,
-                        conversion_error.expected_type,
-                        conversion_error.actual_value
+                    new Error(
+                        `\`${conversion_error.actual_value}\` in parameter \`${param}\` is not a \`${conversion_error.expected_type}\``
                     )
                 );
             }
