@@ -15,7 +15,12 @@ client.on("message", (message) => {
     if (!message.content.startsWith(config.prefix)) return;
 
     const request = CommandRequest.from_raw_message(message, config.prefix);
-    command_router.route_request(request);
+    if (!request.ok) {
+        message.channel.send(request.val.message);
+        return;
+    }
+
+    command_router.route_request(request.val);
 });
 
 client.login(config.discord_token);

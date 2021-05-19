@@ -1,4 +1,5 @@
 import type Discord from "discord.js";
+import { Err, Ok, Result } from "ts-results";
 
 export class CommandRequest {
     constructor(
@@ -10,18 +11,18 @@ export class CommandRequest {
     static from_raw_message(
         message: Discord.Message,
         prefix: string
-    ): CommandRequest {
+    ): Result<CommandRequest, Error> {
         const message_stripped = message.content.slice(prefix.length).trim();
 
         const request_regex = /^(\S+) *(.*)$/;
         const match = message_stripped.match(request_regex);
 
         if (!match) {
-            throw new Error(`Bad request: ${message_stripped}`);
+            return Err(new Error(`Bad request: ${message_stripped}`));
         }
 
         const [_, command_name, command_args] = match;
 
-        return new CommandRequest(command_name, command_args, message);
+        return Ok(new CommandRequest(command_name, command_args, message));
     }
 }
