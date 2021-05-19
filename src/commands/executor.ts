@@ -7,6 +7,7 @@ import {
     BotPermissionsError,
     UserPermissionsError,
     PrecheckError,
+    DiscordReportable,
 } from "./error";
 import { split_args } from "./split_args";
 import { Err, Ok, Result } from "ts-results";
@@ -18,12 +19,7 @@ export class CommandExecutor {
         return this.command.parameters.join(" ");
     }
 
-    execute(
-        request: CommandRequest
-    ): Result<
-        void,
-        ArgumentTypeError | UserPermissionsError | BotPermissionsError
-    > {
+    execute(request: CommandRequest): Result<void, DiscordReportable> {
         // TODO: proper logging
         console.log(
             `[${request.source.author.tag}]`,
@@ -41,7 +37,13 @@ export class CommandExecutor {
             return parsed_args;
         }
 
-        this.check_can_execute(request, parsed_args.val);
+        const can_execute_result = this.check_can_execute(
+            request,
+            parsed_args.val
+        );
+        if (!can_execute_result.ok) {
+            return can_execute_result;
+        }
 
         this.command.execute(request, ...parsed_args.val);
 
@@ -77,12 +79,14 @@ export class CommandExecutor {
     private check_can_execute(
         request: CommandRequest,
         parsed_args: unknown[]
-    ): void {
+    ): Result<void, PrecheckError> {
         if (this.command.can_execute) {
             if (!this.command.can_execute(request, ...parsed_args)) {
-                throw new PrecheckError();
+                return Err(new PrecheckError());
             }
         }
+
+        return Ok.EMPTY;
     }
 
     // unknown[] is required as we're dynamically converting stringly typed arguments
