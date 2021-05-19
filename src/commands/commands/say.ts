@@ -12,14 +12,6 @@ export default <Command>{
 
     accept_remainder_arg: true,
 
-    can_execute({ source }, target_channel_id: string): boolean {
-        const target_channel = source.client.channels.cache.get(
-            target_channel_id
-        );
-
-        return target_channel?.isText() ?? false;
-    },
-
     execute(
         { source }: CommandRequest,
         target_channel_id: string,

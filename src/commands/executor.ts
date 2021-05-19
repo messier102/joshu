@@ -6,7 +6,6 @@ import {
     ArgumentTypeError,
     BotPermissionsError,
     UserPermissionsError,
-    PrecheckError,
     DiscordReportable,
 } from "./error";
 import { split_args } from "./split_args";
@@ -37,14 +36,6 @@ export class CommandExecutor {
             return parsed_args;
         }
 
-        const can_execute_result = this.check_can_execute(
-            request,
-            parsed_args.val
-        );
-        if (!can_execute_result.ok) {
-            return can_execute_result;
-        }
-
         this.command.execute(request, ...parsed_args.val);
 
         return Ok.EMPTY;
@@ -71,19 +62,6 @@ export class CommandExecutor {
 
         if (!bot_has_permission) {
             return Err(new BotPermissionsError());
-        }
-
-        return Ok.EMPTY;
-    }
-
-    private check_can_execute(
-        request: CommandRequest,
-        parsed_args: unknown[]
-    ): Result<void, PrecheckError> {
-        if (this.command.can_execute) {
-            if (!this.command.can_execute(request, ...parsed_args)) {
-                return Err(new PrecheckError());
-            }
         }
 
         return Ok.EMPTY;

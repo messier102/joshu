@@ -44,9 +44,3 @@ export class BotPermissionsError implements DiscordReportable {
         return "I don't have enough permissions to do that";
     }
 }
-
-export class PrecheckError implements DiscordReportable {
-    to_discord_error(): string {
-        return "precheck failed - make sure the arguments are valid";
-    }
-}
