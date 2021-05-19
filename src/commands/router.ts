@@ -63,7 +63,18 @@ export class CommandRouter {
         try {
             request.source.channel.startTyping();
 
-            executor.execute(request);
+            const execution_result = executor.execute(request);
+            if (!execution_result.ok) {
+                const error = execution_result.val;
+
+                if (is_discord_reportable(error)) {
+                    request.source.reply(
+                        `error: ${error.to_discord_error()}.\nUsage: \`${
+                            request.name
+                        } ${executor.usage()}\``
+                    );
+                }
+            }
         } catch (e: unknown) {
             if (is_discord_reportable(e)) {
                 request.source.reply(
