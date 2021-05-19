@@ -1,7 +1,7 @@
 import { zip } from "lodash";
 import { CommandRequest } from "./request";
 import { Command, CommandParameter } from "./command";
-import { ConversionError } from "./type_converters/TypeConverter";
+
 import {
     ArgumentTypeError,
     BotPermissionsError,
@@ -78,16 +78,18 @@ export class CommandExecutor {
         const parsed_args = (<[string, CommandParameter][]>(
             zip(args, this.command.parameters)
         )).map(([arg, param]) => {
-            try {
-                return param.type_converter.convert(arg);
-            } catch (e: unknown) {
-                if (e instanceof ConversionError) {
-                    throw new ArgumentTypeError(
-                        param.name,
-                        e.expected_type,
-                        e.actual_value
-                    );
-                }
+            const conversion_result = param.type_converter.convert(arg);
+
+            if (conversion_result.ok) {
+                return conversion_result.val;
+            } else {
+                const conversion_error = conversion_result.val;
+
+                throw new ArgumentTypeError(
+                    param.name,
+                    conversion_error.expected_type,
+                    conversion_error.actual_value
+                );
             }
         });
 

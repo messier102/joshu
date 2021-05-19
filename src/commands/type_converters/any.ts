@@ -1,3 +1,4 @@
+import { Result } from "ts-results";
 import { ConversionError, TypeConverter } from "./TypeConverter";
 
 /**
@@ -10,17 +11,14 @@ import { ConversionError, TypeConverter } from "./TypeConverter";
 export function any(...converters: TypeConverter[]): TypeConverter {
     const type = converters.map((c) => c.type).join("|");
 
-    const convert = (value: string): unknown => {
-        for (const conv of converters) {
-            try {
-                const ret = conv.convert(value);
-                return ret;
-            } catch (e) {
-                continue;
-            }
-        }
+    const convert = (value: string): Result<unknown, ConversionError> => {
+        const conversion_result = Result.any(
+            ...converters.map((c) => c.convert(value))
+        );
 
-        throw new ConversionError(type, value);
+        return conversion_result.mapErr(
+            (_) => new ConversionError(type, value)
+        );
     };
 
     return { type, convert };

@@ -1,16 +1,17 @@
 import { ConversionError, TypeConverter } from "./TypeConverter";
+import { Err, Ok, Result } from "ts-results";
 
 export default <TypeConverter>{
     type: "user tag",
 
-    convert(value: string): string {
+    convert(value: string): Result<string, ConversionError> {
         const mention_regex = /^.+#\d{4}$/;
         const match = value.match(mention_regex);
 
         if (!match) {
-            throw new ConversionError(this.type, value);
+            return Err(new ConversionError(this.type, value));
         }
 
-        return match[0];
+        return Ok(match[0]);
     },
 };

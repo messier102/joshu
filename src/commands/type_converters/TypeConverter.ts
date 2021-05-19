@@ -1,7 +1,9 @@
+import { Result } from "ts-results";
+
 export interface TypeConverter {
     readonly type: string;
 
-    convert(value: string): unknown;
+    convert(value: string): Result<unknown, ConversionError>;
 }
 
 export class ConversionError extends Error {
