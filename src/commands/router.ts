@@ -73,6 +73,13 @@ export class CommandRouter {
                             request.name
                         } ${executor.usage()}\``
                     );
+                } else if (error instanceof Error) {
+                    // temporary
+                    request.source.reply(
+                        `error: ${error.message}.\nUsage: \`${
+                            request.name
+                        } ${executor.usage()}\``
+                    );
                 }
             }
         } catch (e: unknown) {

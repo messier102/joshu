@@ -19,7 +19,7 @@ export class CommandExecutor {
         return this.command.parameters.join(" ");
     }
 
-    execute(request: CommandRequest): Result<void, DiscordReportable> {
+    execute(request: CommandRequest): Result<void, DiscordReportable | Error> {
         // TODO: proper logging
         console.log(
             `[${request.source.author.tag}]`,
@@ -90,19 +90,24 @@ export class CommandExecutor {
     }
 
     // unknown[] is required as we're dynamically converting stringly typed arguments
-    private parse_args(input: string): Result<unknown[], ArgumentTypeError> {
-        const args = split_args(
+    private parse_args(
+        input: string
+    ): Result<unknown[], ArgumentTypeError | Error> {
+        const args_split_result = split_args(
             input,
             this.command.parameters.length,
             this.command.accept_remainder_arg ?? false
         );
+        if (args_split_result.err) {
+            return args_split_result;
+        }
 
         const parsed_args = [];
 
         // cast to get rid of nullable types
         // (args.length === parameters.length) is checked in earlier code
         const args_zipped = <[string, CommandParameter][]>(
-            zip(args, this.command.parameters)
+            zip(args_split_result.val, this.command.parameters)
         );
 
         for (const [arg, param] of args_zipped) {
