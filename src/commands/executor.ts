@@ -18,7 +18,12 @@ export class CommandExecutor {
         return this.command.parameters.join(" ");
     }
 
-    execute(request: CommandRequest): Result<void, ArgumentTypeError> {
+    execute(
+        request: CommandRequest
+    ): Result<
+        void,
+        ArgumentTypeError | UserPermissionsError | BotPermissionsError
+    > {
         // TODO: proper logging
         console.log(
             `[${request.source.author.tag}]`,
@@ -26,7 +31,10 @@ export class CommandExecutor {
             request.args
         );
 
-        this.check_permissions(request);
+        const permissions_check_result = this.check_permissions(request);
+        if (!permissions_check_result.ok) {
+            return permissions_check_result;
+        }
 
         const parsed_args = this.parse_args(request.args);
         if (!parsed_args.ok) {
@@ -40,9 +48,11 @@ export class CommandExecutor {
         return Ok.EMPTY;
     }
 
-    private check_permissions(request: CommandRequest): void {
+    private check_permissions(
+        request: CommandRequest
+    ): Result<void, UserPermissionsError | BotPermissionsError> {
         if (this.command.permissions.length === 0) {
-            return;
+            return Ok.EMPTY;
         }
 
         const user_has_permission =
@@ -50,7 +60,7 @@ export class CommandExecutor {
             false;
 
         if (!user_has_permission) {
-            throw new UserPermissionsError();
+            return Err(new UserPermissionsError());
         }
 
         const bot_has_permission =
@@ -58,8 +68,10 @@ export class CommandExecutor {
             false;
 
         if (!bot_has_permission) {
-            throw new BotPermissionsError();
+            return Err(new BotPermissionsError());
         }
+
+        return Ok.EMPTY;
     }
 
     private check_can_execute(
