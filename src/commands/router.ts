@@ -63,7 +63,7 @@ export class CommandRouter {
             request.source.channel.startTyping();
 
             const execution_result = executor.execute(request);
-            if (!execution_result.ok) {
+            if (execution_result.err) {
                 const error = execution_result.val;
 
                 request.source.reply(

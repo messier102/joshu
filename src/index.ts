@@ -15,7 +15,7 @@ client.on("message", (message) => {
     if (!message.content.startsWith(config.prefix)) return;
 
     const request = CommandRequest.from_raw_message(message, config.prefix);
-    if (!request.ok) {
+    if (request.err) {
         message.channel.send(request.val.message);
         return;
     }

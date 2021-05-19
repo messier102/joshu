@@ -20,12 +20,12 @@ export class CommandExecutor {
         );
 
         const permissions_check_result = this.check_permissions(request);
-        if (!permissions_check_result.ok) {
+        if (permissions_check_result.err) {
             return permissions_check_result;
         }
 
         const parsed_args = this.parse_args(request.args);
-        if (!parsed_args.ok) {
+        if (parsed_args.err) {
             return parsed_args;
         }
 
