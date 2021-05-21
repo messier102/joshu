@@ -20,19 +20,12 @@ export class CommandExecutor {
             request.args
         );
 
-        const permissions_check_result = this.check_permissions(request);
-        if (permissions_check_result.err) {
-            return permissions_check_result;
-        }
-
-        const parsed_args = this.parse_args(request.args);
-        if (parsed_args.err) {
-            return parsed_args;
-        }
-
-        this.command.execute(request, ...parsed_args.val);
-
-        return Ok.EMPTY;
+        return this.check_permissions(request)
+            .andThen(() => this.parse_args(request.args))
+            .andThen((parsed_args) => {
+                this.command.execute(request, ...parsed_args);
+                return Ok.EMPTY;
+            });
     }
 
     private check_permissions(request: CommandRequest): Result<void, Error> {
@@ -73,24 +66,19 @@ export class CommandExecutor {
     private convert_args(args: string[]): Result<unknown[], Error> {
         assert(args.length === this.command.parameters.length);
 
-        const converted_args = [];
+        const arg_param_pairs = [...zip(args, this.command.parameters)];
 
-        for (const [arg, param] of zip(args, this.command.parameters)) {
-            const maybe_converted_arg = param.type_converter.convert(arg);
+        const maybe_converted_args = arg_param_pairs.map(([arg, param]) =>
+            param.type_converter
+                .convert(arg)
+                .mapErr(
+                    (error) =>
+                        new Error(
+                            `\`${error.actual_value}\` in parameter \`${param}\` is not a \`${error.expected_type}\``
+                        )
+                )
+        );
 
-            if (maybe_converted_arg.ok) {
-                const converted_arg = maybe_converted_arg.val;
-                converted_args.push(converted_arg);
-            } else {
-                const error = maybe_converted_arg.val;
-                return Err(
-                    new Error(
-                        `\`${error.actual_value}\` in parameter \`${param}\` is not a \`${error.expected_type}\``
-                    )
-                );
-            }
-        }
-
-        return Ok(converted_args);
+        return Result.all(...maybe_converted_args);
     }
 }

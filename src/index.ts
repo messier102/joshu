@@ -14,18 +14,9 @@ client.on("message", (message) => {
     if (message.author.bot) return;
     if (!message.content.startsWith(config.prefix)) return;
 
-    const maybe_request = CommandRequest.from_raw_message(
-        message,
-        config.prefix
-    );
-
-    if (maybe_request.ok) {
-        const request = maybe_request.val;
-        command_router.route_request(request);
-    } else {
-        const error = maybe_request.val;
-        message.channel.send(error.message);
-    }
+    CommandRequest.from_raw_message(message, config.prefix)
+        .map((request) => command_router.route_request(request))
+        .mapErr((error) => message.channel.send(error.message));
 });
 
 client.login(config.discord_token);
