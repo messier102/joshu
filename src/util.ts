@@ -18,3 +18,25 @@ export function* range(
         yield i;
     }
 }
+
+export function* zip<T, U>(
+    left: readonly T[],
+    right: readonly U[]
+): Generator<[T, U]> {
+    const left_iter = left[Symbol.iterator]();
+    const right_iter = right[Symbol.iterator]();
+
+    while (true) {
+        const left_next = left_iter.next();
+        if (left_next.done) {
+            break;
+        }
+
+        const right_next = right_iter.next();
+        if (right_next.done) {
+            break;
+        }
+
+        yield [left_next.value, right_next.value];
+    }
+}

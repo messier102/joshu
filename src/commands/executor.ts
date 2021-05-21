@@ -1,8 +1,9 @@
-import { zip } from "lodash";
 import { CommandRequest } from "./request";
-import { Command, CommandParameter } from "./command";
+import { Command } from "./command";
 import { split_args } from "./split_args";
 import { Err, Ok, Result } from "ts-results";
+import { assert } from "node:console";
+import { zip } from "../util";
 
 export class CommandExecutor {
     constructor(private readonly command: Command) {}
@@ -62,39 +63,42 @@ export class CommandExecutor {
 
     // unknown[] is required as we're dynamically converting stringly typed arguments
     private parse_args(input: string): Result<unknown[], Error> {
-        const args_split_result = split_args(
+        const maybe_arg_strings = split_args(
             input,
             this.command.parameters.length,
             this.command.accept_remainder_arg ?? false
         );
-        if (args_split_result.err) {
-            return args_split_result;
+
+        if (maybe_arg_strings.ok) {
+            const arg_strings = maybe_arg_strings.val;
+            return this.convert_args(arg_strings);
+        } else {
+            const error = maybe_arg_strings.val;
+            return Err(error);
         }
+    }
 
-        const parsed_args = [];
+    private convert_args(args: string[]): Result<unknown[], Error> {
+        assert(args.length === this.command.parameters.length);
 
-        // cast to get rid of nullable types
-        // (args.length === parameters.length) is checked in earlier code
-        const args_zipped = <[string, CommandParameter][]>(
-            zip(args_split_result.val, this.command.parameters)
-        );
+        const converted_args = [];
 
-        for (const [arg, param] of args_zipped) {
-            const conversion_result = param.type_converter.convert(arg);
+        for (const [arg, param] of zip(args, this.command.parameters)) {
+            const maybe_converted_arg = param.type_converter.convert(arg);
 
-            if (conversion_result.ok) {
-                parsed_args.push(conversion_result.val);
+            if (maybe_converted_arg.ok) {
+                const converted_arg = maybe_converted_arg.val;
+                converted_args.push(converted_arg);
             } else {
-                const conversion_error = conversion_result.val;
-
+                const error = maybe_converted_arg.val;
                 return Err(
                     new Error(
-                        `\`${conversion_error.actual_value}\` in parameter \`${param}\` is not a \`${conversion_error.expected_type}\``
+                        `\`${error.actual_value}\` in parameter \`${param}\` is not a \`${error.expected_type}\``
                     )
                 );
             }
         }
 
-        return Ok(parsed_args);
+        return Ok(converted_args);
     }
 }
