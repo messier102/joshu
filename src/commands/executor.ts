@@ -63,19 +63,11 @@ export class CommandExecutor {
 
     // unknown[] is required as we're dynamically converting stringly typed arguments
     private parse_args(input: string): Result<unknown[], Error> {
-        const maybe_arg_strings = split_args(
+        return split_args(
             input,
             this.command.parameters.length,
             this.command.accept_remainder_arg ?? false
-        );
-
-        if (maybe_arg_strings.ok) {
-            const arg_strings = maybe_arg_strings.val;
-            return this.convert_args(arg_strings);
-        } else {
-            const error = maybe_arg_strings.val;
-            return Err(error);
-        }
+        ).andThen((arg_strings) => this.convert_args(arg_strings));
     }
 
     private convert_args(args: string[]): Result<unknown[], Error> {
