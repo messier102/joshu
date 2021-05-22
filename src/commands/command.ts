@@ -1,4 +1,5 @@
 import { PermissionResolvable } from "discord.js";
+import { Result } from "ts-results";
 import { CommandRequest } from "./request";
 import { TypeConverter } from "./type_converters/TypeConverter";
 
@@ -19,5 +20,8 @@ export type Command = {
     permissions: readonly PermissionResolvable[];
     accept_remainder_arg?: boolean;
 
-    execute(request: CommandRequest, ...args: unknown[]): void;
+    execute(
+        request: CommandRequest,
+        ...args: unknown[]
+    ): Promise<Result<string, string>>;
 };

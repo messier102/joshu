@@ -3,6 +3,7 @@ import { Permissions } from "discord.js";
 import { CommandParameter, Command } from "../command";
 import MentionConverter from "../type_converters/MentionConverter";
 import StringConverter from "../type_converters/StringConverter";
+import { Err, Ok, Result } from "ts-results";
 
 export default <Command>{
     parameters: [
@@ -17,9 +18,15 @@ export default <Command>{
         target_user_id: string,
         role_name: string,
         role_color: string
-    ): Promise<void> {
-        const target_member = source.guild?.members.cache.get(target_user_id);
-        if (!target_member) return;
+    ): Promise<Result<string, string>> {
+        if (!source.guild) {
+            return Err("this can only be done in a server.");
+        }
+
+        const target_member = source.guild.members.cache.get(target_user_id);
+        if (!target_member) {
+            return Err("I can't find this user in the server.");
+        }
 
         const role_options = {
             data: {
@@ -29,13 +36,10 @@ export default <Command>{
                 mentionable: true,
             },
         };
-        const role = await source.guild?.roles.create(role_options);
-        if (!role) return;
+        const role = await source.guild.roles.create(role_options);
 
-        target_member.roles.add(role.id).then(() => {
-            source.channel.send(
-                `Gave ${target_member} a new role \`${role.name}\``
-            );
-        });
+        await target_member.roles.add(role.id);
+
+        return Ok(`Gave ${target_member} a new role \`${role.name}\``);
     },
 };

@@ -12,7 +12,7 @@ export class CommandExecutor {
         return this.command.parameters.join(" ");
     }
 
-    execute(request: CommandRequest): Result<void, Error> {
+    async execute(request: CommandRequest): Promise<Result<string, Error>> {
         // TODO: proper logging
         console.log(
             `[${request.source.author.tag}]`,
@@ -20,12 +20,21 @@ export class CommandExecutor {
             request.args
         );
 
-        return this.check_permissions(request)
-            .andThen(() => this.parse_args(request.args))
-            .andThen((parsed_args) => {
-                this.command.execute(request, ...parsed_args);
-                return Ok.EMPTY;
-            });
+        const perm_check = this.check_permissions(request);
+        if (perm_check.err) {
+            return Err(perm_check.val);
+        }
+
+        const parsed_args = this.parse_args(request.args);
+        if (parsed_args.err) {
+            return Err(parsed_args.val);
+        }
+
+        const execution_result = await this.command.execute(
+            request,
+            ...parsed_args.val
+        );
+        return execution_result.mapErr(Error);
     }
 
     private check_permissions(request: CommandRequest): Result<void, Error> {

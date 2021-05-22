@@ -1,6 +1,7 @@
 import { CommandRequest } from "../request";
 import { Command } from "../command";
 import { reddit } from "../../services/reddit";
+import { Err, Ok, Result } from "ts-results";
 
 export default <Command>{
     parameters: [],
@@ -8,7 +9,7 @@ export default <Command>{
 
     accept_remainder_arg: true,
 
-    async execute({ source }: CommandRequest): Promise<void> {
+    async execute(_: CommandRequest): Promise<Result<string, string>> {
         try {
             const bot_user = await reddit.users.fetchMe();
             const posts = bot_user.getPosts();
@@ -20,17 +21,15 @@ export default <Command>{
             }
 
             if (post_links.length > 0) {
-                source.channel.send(
-                    "Currently active posts:\n" + post_links.join("\n")
-                );
+                return Ok("Currently active posts:\n" + post_links.join("\n"));
             } else {
-                source.channel.send(
+                return Ok(
                     "All gates are currently closed. Use `opengateaux` to open the gates."
                 );
             }
         } catch (reason) {
-            source.reply(`Reddit error: \`${reason.toString()}\``);
             console.log(reason);
+            return Err(`Reddit error: \`${reason.toString()}\``);
         }
     },
 };

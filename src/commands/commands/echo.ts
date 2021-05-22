@@ -1,6 +1,7 @@
 import { CommandRequest } from "../request";
 import { CommandParameter, Command } from "../command";
 import StringConverter from "../type_converters/StringConverter";
+import { Ok, Result } from "ts-results";
 
 export default <Command>{
     parameters: [new CommandParameter("message", StringConverter)],
@@ -8,7 +9,10 @@ export default <Command>{
 
     accept_remainder_arg: true,
 
-    execute({ source }: CommandRequest, message: string): void {
-        source.channel.send(message);
+    async execute(
+        _: CommandRequest,
+        message: string
+    ): Promise<Result<string, string>> {
+        return Ok(message);
     },
 };

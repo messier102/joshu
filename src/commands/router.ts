@@ -42,7 +42,7 @@ export class CommandRouter {
         console.log(this.command_routes);
     }
 
-    route_request(request: CommandRequest): void {
+    async route_request(request: CommandRequest): Promise<void> {
         const command = this.command_routes.get(request.name);
 
         if (!command) {
@@ -62,16 +62,16 @@ export class CommandRouter {
         try {
             request.source.channel.startTyping();
 
-            const execution_result = executor.execute(request);
-            if (execution_result.err) {
-                const error = execution_result.val;
-
-                request.source.reply(
-                    `error: ${error.message}.\nUsage: \`${
-                        request.name
-                    } ${executor.usage()}\``
+            const execution_result = await executor.execute(request);
+            execution_result
+                .map((response) => request.source.reply(response))
+                .mapErr((error) =>
+                    request.source.reply(
+                        `error: ${error.message}.\nUsage: \`${
+                            request.name
+                        } ${executor.usage()}\``
+                    )
                 );
-            }
         } catch (e: unknown) {
             if (e instanceof Error) {
                 // temporary

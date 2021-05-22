@@ -7,7 +7,7 @@ import MentionConverter from "../type_converters/MentionConverter";
 import SnowflakeConverter from "../type_converters/SnowflakeConverter";
 import UserTagConverter from "../type_converters/UserTagConverter";
 import { any } from "../type_converters/any";
-import { None, Option, Some } from "ts-results";
+import { Err, None, Ok, Option, Result, Some } from "ts-results";
 
 export default <Command>{
     aliases: [
@@ -32,22 +32,20 @@ export default <Command>{
     async execute(
         { name, source }: CommandRequest,
         target_user_id_or_tag: string
-    ): Promise<void> {
+    ): Promise<Result<string, string>> {
         const maybe_target_user = await resolve_user(
             source.client,
             target_user_id_or_tag
         );
 
         if (!maybe_target_user.some) {
-            source.reply("sorry, I don't know that user.");
-            return;
+            return Err("sorry, I don't know that user.");
         }
 
         const target_user = maybe_target_user.val;
 
         if (source.author === target_user) {
-            source.reply("you can't ban yourself, dummy.");
-            return;
+            return Err("you can't ban yourself, dummy.");
         }
 
         const source_member = source.member;
@@ -57,21 +55,19 @@ export default <Command>{
             target_member &&
             !source_can_ban_target(source_member, target_member)
         ) {
-            source.reply(
+            return Err(
                 "sorry, you can't ban that user.\n" +
                     "(They have a role higher than or equal to yours.)"
             );
-            return;
         }
 
         try {
             await source.guild?.members.ban(target_user);
         } catch (e) {
-            source.reply(
+            return Err(
                 "sorry, I can't ban that user.\n" +
                     "(This usually means that they have a role higher than mine.)"
             );
-            return;
         }
 
         const message_template = SPECIAL_BAN_MESSAGES.has(name)
@@ -83,7 +79,7 @@ export default <Command>{
             `**${target_user.tag}**`
         );
 
-        source.channel.send(message);
+        return Ok(message);
     },
 };
 

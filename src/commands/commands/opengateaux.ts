@@ -4,6 +4,7 @@ import { Permissions } from "discord.js";
 import StringConverter from "../type_converters/StringConverter";
 import config from "../../../data/config";
 import { reddit } from "../../services/reddit";
+import { Err, Ok, Result } from "ts-results";
 
 export default <Command>{
     parameters: [new CommandParameter("post title", StringConverter)],
@@ -17,10 +18,9 @@ export default <Command>{
     async execute(
         { source }: CommandRequest,
         post_title: string
-    ): Promise<void> {
+    ): Promise<Result<string, string>> {
         if (!source.guild) {
-            source.reply("sorry, this can only be done in a server.");
-            return;
+            return Err("sorry, this can only be done in a server.");
         }
 
         const old_invites = await source.guild.fetchInvites();
@@ -35,9 +35,7 @@ export default <Command>{
         });
 
         if (!new_invite) {
-            console.log("unable to create invite");
-            source.reply("unable to create invite");
-            return;
+            return Err("unable to create invite");
         }
 
         try {
@@ -57,12 +55,12 @@ export default <Command>{
             const new_post = await reddit.posts.fetch(new_post_id);
             await new_post.unmarkNsfw();
 
-            source.channel.send(
+            return Ok(
                 `Opened the gates: https://www.reddit.com${new_post.permalink}`
             );
         } catch (reason) {
-            source.reply(`Reddit error: \`${reason.toString()}\``);
             console.log(reason);
+            return Err(`Reddit error: \`${reason.toString()}\``);
         }
     },
 };
