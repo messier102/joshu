@@ -64,7 +64,15 @@ export class CommandRouter {
 
             const execution_result = await executor.execute(request);
             execution_result
-                .map((response) => request.source.reply(response))
+                .map((response) => {
+                    if (response.kind === "empty") {
+                        // do nothing
+                    } else if (response.kind === "send") {
+                        request.source.channel.send(response.message);
+                    } else if (response.kind === "reply") {
+                        request.source.reply(response.message);
+                    }
+                })
                 .mapErr((error) =>
                     request.source.reply(
                         `error: ${error.message}.\nUsage: \`${

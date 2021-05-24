@@ -4,8 +4,9 @@ import StringConverter from "../type_converters/StringConverter";
 import PositiveNumberConverter from "../type_converters/PositiveNumberConverter";
 import { convert_currency } from "../../services/coinmarketcap";
 import { Err, Ok, Result } from "ts-results";
+import { CommandResponse, Send } from "../response";
 
-export default <Command>{
+export default Command({
     aliases: ["convert", "conv"],
 
     parameters: [
@@ -20,7 +21,7 @@ export default <Command>{
         base_currency: string,
         target_currency: string,
         amount: number
-    ): Promise<Result<string, string>> {
+    ): Promise<Result<CommandResponse, string>> {
         base_currency = base_currency.toUpperCase();
         target_currency = target_currency.toUpperCase();
 
@@ -45,13 +46,13 @@ export default <Command>{
                 `${format_decimal(amount)} **${base_currency}** = ` +
                 `${format_decimal(amount_converted)} **${target_currency}**`;
 
-            return Ok(message);
+            return Ok(Send(message));
         } else {
             const error_message = conversion_result.val;
             return Err(`error: ${error_message}.`);
         }
     },
-};
+});
 
 /**
  * Formats a floating point number into a human-readable decimal representation

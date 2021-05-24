@@ -2,8 +2,9 @@ import { CommandRequest } from "../request";
 import { CommandParameter, Command } from "../command";
 import StringConverter from "../type_converters/StringConverter";
 import { Ok, Result } from "ts-results";
+import { CommandResponse, Send } from "../response";
 
-export default <Command>{
+export default Command({
     parameters: [new CommandParameter("message", StringConverter)],
     permissions: [],
 
@@ -12,7 +13,7 @@ export default <Command>{
     async execute(
         _: CommandRequest,
         message: string
-    ): Promise<Result<string, string>> {
-        return Ok(message);
+    ): Promise<Result<CommandResponse, string>> {
+        return Ok(Send(message));
     },
-};
+});

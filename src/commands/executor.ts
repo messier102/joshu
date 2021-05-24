@@ -1,5 +1,6 @@
 import { CommandRequest } from "./request";
 import { Command } from "./command";
+import { CommandResponse } from "./response";
 import { split_args } from "./split_args";
 import { Err, Ok, Result } from "ts-results";
 import { assert } from "node:console";
@@ -12,7 +13,9 @@ export class CommandExecutor {
         return this.command.parameters.join(" ");
     }
 
-    async execute(request: CommandRequest): Promise<Result<string, Error>> {
+    async execute(
+        request: CommandRequest
+    ): Promise<Result<CommandResponse, Error>> {
         // TODO: proper logging
         console.log(
             `[${request.source.author.tag}]`,

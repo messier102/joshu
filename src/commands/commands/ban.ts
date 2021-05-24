@@ -1,5 +1,6 @@
 import { CommandRequest } from "../request";
 import { CommandParameter, Command } from "../command";
+import { CommandResponse, Reply } from "../response";
 import { Client, GuildMember, Permissions, User } from "discord.js";
 import dedent from "ts-dedent";
 import sample from "lodash/sample";
@@ -9,7 +10,7 @@ import UserTagConverter from "../type_converters/UserTagConverter";
 import { any } from "../type_converters/any";
 import { Err, None, Ok, Option, Result, Some } from "ts-results";
 
-export default <Command>{
+export default Command({
     aliases: [
         "axe",
         "expire",
@@ -32,7 +33,7 @@ export default <Command>{
     async execute(
         { name, source }: CommandRequest,
         target_user_id_or_tag: string
-    ): Promise<Result<string, string>> {
+    ): Promise<Result<CommandResponse, string>> {
         const maybe_target_user = await resolve_user(
             source.client,
             target_user_id_or_tag
@@ -79,9 +80,9 @@ export default <Command>{
             `**${target_user.tag}**`
         );
 
-        return Ok(message);
+        return Ok(Reply(message));
     },
-};
+});
 
 async function resolve_user(
     client: Client,

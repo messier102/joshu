@@ -3,8 +3,9 @@ import { CommandParameter, Command } from "../command";
 import SnowflakeConverter from "../type_converters/SnowflakeConverter";
 import StringConverter from "../type_converters/StringConverter";
 import { Err, Ok, Result } from "ts-results";
+import { CommandResponse, Empty, Reply } from "../response";
 
-export default <Command>{
+export default Command({
     parameters: [
         new CommandParameter("target channel id", SnowflakeConverter),
         new CommandParameter("message", StringConverter),
@@ -17,7 +18,7 @@ export default <Command>{
         { source }: CommandRequest,
         target_channel_id: string,
         message: string
-    ): Promise<Result<string, string>> {
+    ): Promise<Result<CommandResponse, string>> {
         const target_channel = source.client.channels.cache.get(
             target_channel_id
         );
@@ -27,9 +28,9 @@ export default <Command>{
 
         target_channel.send(message);
         if (target_channel !== source.channel) {
-            return Ok("message sent.");
+            return Ok(Reply("message sent."));
         } else {
-            return Ok("");
+            return Ok(Empty());
         }
     },
-};
+});

@@ -1,5 +1,6 @@
 import { PermissionResolvable } from "discord.js";
 import { Result } from "ts-results";
+import { CommandResponse } from "./response";
 import { CommandRequest } from "./request";
 import { TypeConverter } from "./type_converters/TypeConverter";
 
@@ -23,5 +24,9 @@ export type Command = {
     execute(
         request: CommandRequest,
         ...args: unknown[]
-    ): Promise<Result<string, string>>;
+    ): Promise<Result<CommandResponse, string>>;
 };
+
+export function Command(command: Command): Command {
+    return command;
+}
