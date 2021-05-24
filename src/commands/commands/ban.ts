@@ -1,6 +1,6 @@
 import { CommandRequest } from "../request";
 import { CommandParameter, Command } from "../command";
-import { CommandResponse, Reply } from "../response";
+import { CommandResponse } from "../response";
 import { Client, GuildMember, Permissions, User } from "discord.js";
 import dedent from "ts-dedent";
 import sample from "lodash/sample";
@@ -80,7 +80,7 @@ export default Command({
             `**${target_user.tag}**`
         );
 
-        return Ok(Reply(message));
+        return Ok(CommandResponse.Reply(message));
     },
 });
 

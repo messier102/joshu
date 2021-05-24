@@ -1,6 +1,6 @@
 import { CommandRequest } from "../request";
 import { Command } from "../command";
-import { CommandResponse, Send } from "../response";
+import { CommandResponse } from "../response";
 import { Permissions } from "discord.js";
 import { reddit } from "../../services/reddit";
 import { Err, Ok, Result } from "ts-results";
@@ -33,7 +33,9 @@ export default Command({
                 await old_post.delete();
             }
 
-            return Ok(Send("Closed the gates. Sleep safe, citizen."));
+            return Ok(
+                CommandResponse.Send("Closed the gates. Sleep safe, citizen.")
+            );
         } catch (reason) {
             console.log(reason);
             return Err(`Reddit error: \`${reason.toString()}\``);

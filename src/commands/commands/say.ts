@@ -3,7 +3,7 @@ import { CommandParameter, Command } from "../command";
 import SnowflakeConverter from "../type_converters/SnowflakeConverter";
 import StringConverter from "../type_converters/StringConverter";
 import { Err, Ok, Result } from "ts-results";
-import { CommandResponse, Empty, Reply } from "../response";
+import { CommandResponse } from "../response";
 
 export default Command({
     parameters: [
@@ -28,9 +28,9 @@ export default Command({
 
         target_channel.send(message);
         if (target_channel !== source.channel) {
-            return Ok(Reply("message sent."));
+            return Ok(CommandResponse.Reply("message sent."));
         } else {
-            return Ok(Empty());
+            return Ok(CommandResponse.Empty());
         }
     },
 });

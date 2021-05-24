@@ -4,7 +4,7 @@ import { CommandParameter, Command } from "../command";
 import MentionConverter from "../type_converters/MentionConverter";
 import StringConverter from "../type_converters/StringConverter";
 import { Err, Ok, Result } from "ts-results";
-import { CommandResponse, Send } from "../response";
+import { CommandResponse } from "../response";
 
 export default Command({
     parameters: [
@@ -41,6 +41,10 @@ export default Command({
 
         await target_member.roles.add(role.id);
 
-        return Ok(Send(`Gave ${target_member} a new role \`${role.name}\``));
+        return Ok(
+            CommandResponse.Send(
+                `Gave ${target_member} a new role \`${role.name}\``
+            )
+        );
     },
 });

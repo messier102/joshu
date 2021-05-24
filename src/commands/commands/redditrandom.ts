@@ -3,7 +3,7 @@ import { CommandParameter, Command } from "../command";
 import StringConverter from "../type_converters/StringConverter";
 import { reddit } from "../../services/reddit";
 import { Err, Ok, Result } from "ts-results";
-import { CommandResponse, Send } from "../response";
+import { CommandResponse } from "../response";
 
 export default Command({
     parameters: [new CommandParameter("subreddit", StringConverter)],
@@ -19,7 +19,7 @@ export default Command({
             );
 
             return Ok(
-                Send(
+                CommandResponse.Send(
                     `Random reddit post from \`r/${subreddit}\`:\nhttps://www.reddit.com${random_post.permalink}`
                 )
             );

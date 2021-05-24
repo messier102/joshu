@@ -1,16 +1,22 @@
-export type CommandResponse =
-    | { kind: "empty" }
-    | { kind: "send"; message: string }
-    | { kind: "reply"; message: string };
+// imagine having tagged unions natively in the language
+// couldn't be TypeScript
 
-export function Empty(): CommandResponse {
-    return { kind: "empty" };
-}
+type Empty = { kind: "empty" };
+type Send = { kind: "send"; message: string };
+type Reply = { kind: "reply"; message: string };
 
-export function Send(message: string): CommandResponse {
-    return { kind: "send", message };
-}
+export type CommandResponse = Empty | Send | Reply;
 
-export function Reply(message: string): CommandResponse {
-    return { kind: "reply", message };
-}
+export const CommandResponse = {
+    Empty(): Empty {
+        return { kind: "empty" };
+    },
+
+    Send(message: string): Send {
+        return { kind: "send", message };
+    },
+
+    Reply(message: string): Reply {
+        return { kind: "reply", message };
+    },
+};
