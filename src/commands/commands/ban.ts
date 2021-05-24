@@ -38,7 +38,7 @@ export default <Command>{
             target_user_id_or_tag
         );
 
-        if (!maybe_target_user.some) {
+        if (maybe_target_user.none) {
             return Err("sorry, I don't know that user.");
         }
 
