@@ -27,10 +27,6 @@ export default Command({
         }
 
         target_channel.send(message);
-        if (target_channel !== source.channel) {
-            return Ok(CommandResponse.Message("Message sent."));
-        } else {
-            return Ok(CommandResponse.Empty());
-        }
+        return Ok(CommandResponse.Message("Message sent."));
     },
 });

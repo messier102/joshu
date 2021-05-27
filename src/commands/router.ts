@@ -65,9 +65,7 @@ export class CommandRouter {
             const execution_result = await executor.execute(request);
             execution_result
                 .map((response) => {
-                    if (response.kind === "empty") {
-                        // do nothing
-                    } else if (response.kind === "message") {
+                    if (response.kind === "message") {
                         request.source.channel.send(response.message);
                     }
                 })
