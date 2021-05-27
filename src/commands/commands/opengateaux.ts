@@ -5,7 +5,6 @@ import StringConverter from "../type_converters/StringConverter";
 import config from "../../../data/config";
 import { reddit } from "../../services/reddit";
 import { Err, Ok, Result } from "ts-results";
-import { CommandResponse } from "../response";
 
 export default Command({
     parameters: [new CommandParameter("post title", StringConverter)],
@@ -19,7 +18,7 @@ export default Command({
     async execute(
         { source }: CommandRequest,
         post_title: string
-    ): Promise<Result<CommandResponse, string>> {
+    ): Promise<Result<string, string>> {
         if (!source.guild) {
             return Err("sorry, this can only be done in a server.");
         }
@@ -57,9 +56,7 @@ export default Command({
             await new_post.unmarkNsfw();
 
             return Ok(
-                CommandResponse.Message(
-                    `Opened the gates: https://www.reddit.com${new_post.permalink}`
-                )
+                `Opened the gates: https://www.reddit.com${new_post.permalink}`
             );
         } catch (reason) {
             console.log(reason);

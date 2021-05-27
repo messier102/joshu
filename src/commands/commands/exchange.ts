@@ -4,7 +4,6 @@ import StringConverter from "../type_converters/StringConverter";
 import PositiveNumberConverter from "../type_converters/PositiveNumberConverter";
 import { convert_currency } from "../../services/coinmarketcap";
 import { Err, Ok, Result } from "ts-results";
-import { CommandResponse } from "../response";
 
 export default Command({
     aliases: ["convert", "conv"],
@@ -21,7 +20,7 @@ export default Command({
         base_currency: string,
         target_currency: string,
         amount: number
-    ): Promise<Result<CommandResponse, string>> {
+    ): Promise<Result<string, string>> {
         base_currency = base_currency.toUpperCase();
         target_currency = target_currency.toUpperCase();
 
@@ -46,7 +45,7 @@ export default Command({
                 `${format_decimal(amount)} **${base_currency}** = ` +
                 `${format_decimal(amount_converted)} **${target_currency}**`;
 
-            return Ok(CommandResponse.Message(message));
+            return Ok(message);
         } else {
             const error_message = conversion_result.val;
             return Err(`${error_message}.`);

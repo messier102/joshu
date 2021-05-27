@@ -1,6 +1,5 @@
 import { CommandRequest } from "../request";
 import { CommandParameter, Command } from "../command";
-import { CommandResponse } from "../response";
 import { Client, GuildMember, Permissions, User } from "discord.js";
 import dedent from "ts-dedent";
 import sample from "lodash/sample";
@@ -33,7 +32,7 @@ export default Command({
     async execute(
         { name, source }: CommandRequest,
         target_user_id_or_tag: string
-    ): Promise<Result<CommandResponse, string>> {
+    ): Promise<Result<string, string>> {
         const maybe_target_user = await resolve_user(
             source.client,
             target_user_id_or_tag
@@ -80,7 +79,7 @@ export default Command({
             `**${target_user.tag}**`
         );
 
-        return Ok(CommandResponse.Message(message));
+        return Ok(message);
     },
 });
 

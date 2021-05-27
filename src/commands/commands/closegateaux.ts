@@ -1,6 +1,5 @@
 import { CommandRequest } from "../request";
 import { Command } from "../command";
-import { CommandResponse } from "../response";
 import { Permissions } from "discord.js";
 import { reddit } from "../../services/reddit";
 import { Err, Ok, Result } from "ts-results";
@@ -11,9 +10,7 @@ export default Command({
 
     accept_remainder_arg: true,
 
-    async execute({
-        source,
-    }: CommandRequest): Promise<Result<CommandResponse, string>> {
+    async execute({ source }: CommandRequest): Promise<Result<string, string>> {
         if (!source.guild) {
             return Err("sorry, this can only be done in a server.");
         }
@@ -33,11 +30,7 @@ export default Command({
                 await old_post.delete();
             }
 
-            return Ok(
-                CommandResponse.Message(
-                    "Closed the gates. Sleep safe, citizen."
-                )
-            );
+            return Ok("Closed the gates. Sleep safe, citizen.");
         } catch (reason) {
             console.log(reason);
             return Err(`Reddit error: \`${reason.toString()}\``);

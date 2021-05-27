@@ -2,7 +2,6 @@ import { CommandRequest } from "../request";
 import { CommandParameter, Command } from "../command";
 import StringConverter from "../type_converters/StringConverter";
 import { Ok, Result } from "ts-results";
-import { CommandResponse } from "../response";
 
 export default Command({
     parameters: [new CommandParameter("message", StringConverter)],
@@ -13,7 +12,7 @@ export default Command({
     async execute(
         _: CommandRequest,
         message: string
-    ): Promise<Result<CommandResponse, string>> {
-        return Ok(CommandResponse.Message(message));
+    ): Promise<Result<string, string>> {
+        return Ok(message);
     },
 });

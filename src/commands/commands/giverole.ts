@@ -4,7 +4,6 @@ import { CommandParameter, Command } from "../command";
 import MentionConverter from "../type_converters/MentionConverter";
 import StringConverter from "../type_converters/StringConverter";
 import { Err, Ok, Result } from "ts-results";
-import { CommandResponse } from "../response";
 
 export default Command({
     parameters: [
@@ -19,7 +18,7 @@ export default Command({
         target_user_id: string,
         role_name: string,
         role_color: string
-    ): Promise<Result<CommandResponse, string>> {
+    ): Promise<Result<string, string>> {
         if (!source.guild) {
             return Err("this can only be done in a server.");
         }
@@ -41,10 +40,6 @@ export default Command({
 
         await target_member.roles.add(role.id);
 
-        return Ok(
-            CommandResponse.Message(
-                `Gave ${target_member} a new role \`${role.name}\``
-            )
-        );
+        return Ok(`Gave ${target_member} a new role \`${role.name}\``);
     },
 });
