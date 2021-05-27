@@ -14,6 +14,6 @@ export default Command({
         _: CommandRequest,
         message: string
     ): Promise<Result<CommandResponse, string>> {
-        return Ok(CommandResponse.Send(message));
+        return Ok(CommandResponse.Message(message));
     },
 });

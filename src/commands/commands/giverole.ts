@@ -42,7 +42,7 @@ export default Command({
         await target_member.roles.add(role.id);
 
         return Ok(
-            CommandResponse.Send(
+            CommandResponse.Message(
                 `Gave ${target_member} a new role \`${role.name}\``
             )
         );

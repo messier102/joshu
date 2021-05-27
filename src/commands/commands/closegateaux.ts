@@ -34,7 +34,9 @@ export default Command({
             }
 
             return Ok(
-                CommandResponse.Send("Closed the gates. Sleep safe, citizen.")
+                CommandResponse.Message(
+                    "Closed the gates. Sleep safe, citizen."
+                )
             );
         } catch (reason) {
             console.log(reason);

@@ -8,6 +8,6 @@ export default Command({
     permissions: [],
 
     async execute(_: CommandRequest): Promise<Result<CommandResponse, string>> {
-        return Ok(CommandResponse.Reply("pong!"));
+        return Ok(CommandResponse.Message("Pong!"));
     },
 });

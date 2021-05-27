@@ -37,7 +37,7 @@ export default Command({
 
             if (!amount_converted) {
                 return Err(
-                    "error: conversion request was successful, but the API did not return a price.\n" +
+                    "conversion request was successful, but the API did not return a price.\n" +
                         "(This usually means that the currency had existed in the past, but not anymore.)"
                 );
             }
@@ -46,10 +46,10 @@ export default Command({
                 `${format_decimal(amount)} **${base_currency}** = ` +
                 `${format_decimal(amount_converted)} **${target_currency}**`;
 
-            return Ok(CommandResponse.Send(message));
+            return Ok(CommandResponse.Message(message));
         } else {
             const error_message = conversion_result.val;
-            return Err(`error: ${error_message}.`);
+            return Err(`${error_message}.`);
         }
     },
 });

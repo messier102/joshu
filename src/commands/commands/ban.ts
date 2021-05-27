@@ -80,7 +80,7 @@ export default Command({
             `**${target_user.tag}**`
         );
 
-        return Ok(CommandResponse.Reply(message));
+        return Ok(CommandResponse.Message(message));
     },
 });
 

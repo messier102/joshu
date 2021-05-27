@@ -57,7 +57,7 @@ export default Command({
             await new_post.unmarkNsfw();
 
             return Ok(
-                CommandResponse.Send(
+                CommandResponse.Message(
                     `Opened the gates: https://www.reddit.com${new_post.permalink}`
                 )
             );

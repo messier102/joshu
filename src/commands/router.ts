@@ -67,10 +67,8 @@ export class CommandRouter {
                 .map((response) => {
                     if (response.kind === "empty") {
                         // do nothing
-                    } else if (response.kind === "send") {
+                    } else if (response.kind === "message") {
                         request.source.channel.send(response.message);
-                    } else if (response.kind === "reply") {
-                        request.source.reply(response.message);
                     }
                 })
                 .mapErr((error) =>

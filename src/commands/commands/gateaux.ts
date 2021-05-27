@@ -23,13 +23,13 @@ export default Command({
 
             if (post_links.length > 0) {
                 return Ok(
-                    CommandResponse.Send(
+                    CommandResponse.Message(
                         "Currently active posts:\n" + post_links.join("\n")
                     )
                 );
             } else {
                 return Ok(
-                    CommandResponse.Send(
+                    CommandResponse.Message(
                         "All gates are currently closed. Use `opengateaux` to open the gates."
                     )
                 );

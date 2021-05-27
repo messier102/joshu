@@ -19,7 +19,7 @@ export default Command({
             );
 
             return Ok(
-                CommandResponse.Send(
+                CommandResponse.Message(
                     `Random reddit post from \`r/${subreddit}\`:\nhttps://www.reddit.com${random_post.permalink}`
                 )
             );
