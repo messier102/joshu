@@ -27,7 +27,11 @@ export class CommandExecutor {
 
         const parsed_args = this.parse_args(request.args);
         if (parsed_args.err) {
-            return Err(parsed_args.val);
+            return Err(
+                `${parsed_args.val}.\n\nUsage: \`${
+                    request.name
+                } ${this.usage()}\``
+            );
         }
 
         const execution_result = await this.command.execute(
