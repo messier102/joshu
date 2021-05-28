@@ -1,16 +1,17 @@
 import { ConversionError, TypeConverter } from "./TypeConverter";
+import { Err, Ok, Result } from "ts-results";
 
 export default <TypeConverter>{
     type: "mention",
 
-    convert(value: string): string {
+    convert(value: string): Result<string, ConversionError> {
         const mention_regex = /^<@!?(\d+)>$/;
         const match = value.match(mention_regex);
 
         if (!match) {
-            throw new ConversionError(this.type, value);
+            return Err(new ConversionError(this.type, value));
         }
 
-        return match[1];
+        return Ok(match[1]);
     },
 };

@@ -1,16 +1,17 @@
 import { ConversionError, TypeConverter } from "./TypeConverter";
+import { Err, Ok, Result } from "ts-results";
 
 export default <TypeConverter>{
     type: "positive number",
 
-    convert(value: string): number {
+    convert(value: string): Result<number, ConversionError> {
         const number_regex = /^\d+(\.\d+)?$/;
         const match = value.match(number_regex);
 
         if (!match) {
-            throw new ConversionError(this.type, value);
+            return Err(new ConversionError(this.type, value));
         }
 
-        return Number.parseFloat(match[0]);
+        return Ok(Number.parseFloat(match[0]));
     },
 };

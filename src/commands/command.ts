@@ -1,4 +1,5 @@
 import { PermissionResolvable } from "discord.js";
+import { Result } from "ts-results";
 import { CommandRequest } from "./request";
 import { TypeConverter } from "./type_converters/TypeConverter";
 
@@ -19,6 +20,14 @@ export type Command = {
     permissions: readonly PermissionResolvable[];
     accept_remainder_arg?: boolean;
 
-    can_execute?(request: CommandRequest, ...args: unknown[]): boolean;
-    execute(request: CommandRequest, ...args: unknown[]): void;
+    execute(
+        request: CommandRequest,
+        ...args: unknown[]
+    ): Promise<Result<string, string>>;
 };
+
+// casting arbitrary object to `Command` bypasses some type checks (particularly
+// return type of `execute`), so we use this constructor function instead
+export function Command(command: Command): Command {
+    return command;
+}

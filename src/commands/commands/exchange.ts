@@ -3,8 +3,9 @@ import { CommandParameter, Command } from "../command";
 import StringConverter from "../type_converters/StringConverter";
 import PositiveNumberConverter from "../type_converters/PositiveNumberConverter";
 import { convert_currency } from "../../services/coinmarketcap";
+import { Err, Ok, Result } from "ts-results";
 
-export default <Command>{
+export default Command({
     aliases: ["convert", "conv"],
 
     parameters: [
@@ -15,11 +16,11 @@ export default <Command>{
     permissions: [],
 
     async execute(
-        { source }: CommandRequest,
+        _: CommandRequest,
         base_currency: string,
         target_currency: string,
         amount: number
-    ): Promise<void> {
+    ): Promise<Result<string, string>> {
         base_currency = base_currency.toUpperCase();
         target_currency = target_currency.toUpperCase();
 
@@ -34,24 +35,23 @@ export default <Command>{
             const amount_converted = conversion[target_currency].price;
 
             if (!amount_converted) {
-                source.channel.send(
-                    "error: conversion request was successful, but the API did not return a price.\n" +
+                return Err(
+                    "conversion request was successful, but the API did not return a price.\n" +
                         "(This usually means that the currency had existed in the past, but not anymore.)"
                 );
-                return;
             }
 
             const message =
                 `${format_decimal(amount)} **${base_currency}** = ` +
                 `${format_decimal(amount_converted)} **${target_currency}**`;
 
-            source.channel.send(message);
+            return Ok(message);
         } else {
             const error_message = conversion_result.val;
-            source.channel.send(`error: ${error_message}.`);
+            return Err(`API error: ${error_message}.`);
         }
     },
-};
+});
 
 /**
  * Formats a floating point number into a human-readable decimal representation

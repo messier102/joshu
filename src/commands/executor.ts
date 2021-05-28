@@ -1,14 +1,9 @@
-import { zip } from "lodash";
 import { CommandRequest } from "./request";
-import { Command, CommandParameter } from "./command";
-import { ConversionError } from "./type_converters/TypeConverter";
-import {
-    ArgumentTypeError,
-    BotPermissionsError,
-    UserPermissionsError,
-    PrecheckError,
-} from "./error";
+import { Command } from "./command";
 import { split_args } from "./split_args";
+import { Err, Ok, Result } from "ts-results";
+import { assert } from "node:console";
+import { zip } from "../util";
 
 export class CommandExecutor {
     constructor(private readonly command: Command) {}
@@ -17,7 +12,7 @@ export class CommandExecutor {
         return this.command.parameters.join(" ");
     }
 
-    execute(request: CommandRequest): void {
+    async execute(request: CommandRequest): Promise<Result<string, string>> {
         // TODO: proper logging
         console.log(
             `[${request.source.author.tag}]`,
@@ -25,18 +20,27 @@ export class CommandExecutor {
             request.args
         );
 
-        this.check_permissions(request);
+        const perm_check = this.check_permissions(request);
+        if (perm_check.err) {
+            return Err(perm_check.val);
+        }
 
         const parsed_args = this.parse_args(request.args);
+        if (parsed_args.err) {
+            return Err(parsed_args.val);
+        }
 
-        this.check_can_execute(request, parsed_args);
-
-        this.command.execute(request, ...parsed_args);
+        const execution_result = await this.command.execute(
+            request,
+            ...parsed_args.val
+        );
+        return execution_result;
     }
 
-    private check_permissions(request: CommandRequest): void {
+    private check_permissions(request: CommandRequest): Result<void, string> {
         if (this.command.permissions.length === 0) {
-            return;
+            // no permissions required
+            return Ok.EMPTY;
         }
 
         const user_has_permission =
@@ -44,7 +48,7 @@ export class CommandExecutor {
             false;
 
         if (!user_has_permission) {
-            throw new UserPermissionsError();
+            return Err("you don't have enough permissions to do that");
         }
 
         const bot_has_permission =
@@ -52,45 +56,36 @@ export class CommandExecutor {
             false;
 
         if (!bot_has_permission) {
-            throw new BotPermissionsError();
+            return Err("I don't have enough permissions to do that");
         }
+
+        return Ok.EMPTY;
     }
 
-    private check_can_execute(
-        request: CommandRequest,
-        parsed_args: unknown[]
-    ): void {
-        if (this.command.can_execute) {
-            if (!this.command.can_execute(request, ...parsed_args)) {
-                throw new PrecheckError();
-            }
-        }
-    }
-
-    // unknown[] is required as we're dynamically converting stringly typed arguments
-    private parse_args(input: string): unknown[] {
-        const args = split_args(
+    // unknown[] is required as we're dynamically converting stringly typed
+    // arguments
+    private parse_args(input: string): Result<unknown[], string> {
+        return split_args(
             input,
             this.command.parameters.length,
             this.command.accept_remainder_arg ?? false
+        ).andThen((arg_strings) => this.convert_args(arg_strings));
+    }
+
+    private convert_args(args: string[]): Result<unknown[], string> {
+        assert(args.length === this.command.parameters.length);
+
+        const arg_param_pairs = [...zip(args, this.command.parameters)];
+
+        const maybe_converted_args = arg_param_pairs.map(([arg, param]) =>
+            param.type_converter
+                .convert(arg)
+                .mapErr(
+                    (error) =>
+                        `\`${error.actual_value}\` in parameter \`${param}\` is not a \`${error.expected_type}\``
+                )
         );
 
-        const parsed_args = (<[string, CommandParameter][]>(
-            zip(args, this.command.parameters)
-        )).map(([arg, param]) => {
-            try {
-                return param.type_converter.convert(arg);
-            } catch (e: unknown) {
-                if (e instanceof ConversionError) {
-                    throw new ArgumentTypeError(
-                        param.name,
-                        e.expected_type,
-                        e.actual_value
-                    );
-                }
-            }
-        });
-
-        return parsed_args;
+        return Result.all(...maybe_converted_args);
     }
 }

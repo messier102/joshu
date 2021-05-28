@@ -1,15 +1,16 @@
 import { ConversionError, TypeConverter } from "./TypeConverter";
+import { Err, Ok, Result } from "ts-results";
 
 export default <TypeConverter>{
     type: "snowflake",
 
-    convert(value: string): string {
+    convert(value: string): Result<string, ConversionError> {
         const snowflake_regex = /^\d{17,}$/;
 
         if (!snowflake_regex.test(value)) {
-            throw new ConversionError(this.type, value);
+            return Err(new ConversionError(this.type, value));
         }
 
-        return value;
+        return Ok(value);
     },
 };

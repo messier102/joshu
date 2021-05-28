@@ -10,12 +10,21 @@ client.on("ready", () => {
     console.log(`Logged in as ${client.user?.tag}`);
 });
 
-client.on("message", (message) => {
+client.on("message", async (message) => {
     if (message.author.bot) return;
     if (!message.content.startsWith(config.prefix)) return;
 
     const request = CommandRequest.from_raw_message(message, config.prefix);
-    command_router.route_request(request);
+
+    if (request.ok) {
+        const response = await command_router.route_request(request.val);
+
+        response
+            .map((res) => message.channel.send(res))
+            .mapErr((error) => message.reply(error));
+    } else {
+        message.channel.send(request.val);
+    }
 });
 
 client.login(config.discord_token);

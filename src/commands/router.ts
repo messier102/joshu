@@ -3,8 +3,8 @@ import fs from "fs/promises";
 import { CommandRequest } from "./request";
 import { CommandExecutor } from "./executor";
 import { Command } from "./command";
-import { is_discord_reportable } from "./error";
 import { find_similar_string, Weights } from "../find_similar_string";
+import { Err, Result } from "ts-results";
 
 export class CommandRouter {
     private readonly command_routes: Map<string, Command> = new Map();
@@ -43,7 +43,9 @@ export class CommandRouter {
         console.log(this.command_routes);
     }
 
-    route_request(request: CommandRequest): void {
+    async route_request(
+        request: CommandRequest
+    ): Promise<Result<string, string>> {
         const command = this.command_routes.get(request.name);
 
         if (!command) {
@@ -54,8 +56,7 @@ export class CommandRouter {
                     ? `sorry, no such command. Did you mean \`${similar_commands[0]}\`?`
                     : "sorry, no such command.";
 
-            request.source.reply(no_such_command_message);
-            return;
+            return Err(no_such_command_message);
         }
 
         const executor = new CommandExecutor(command);
@@ -63,24 +64,27 @@ export class CommandRouter {
         try {
             request.source.channel.startTyping();
 
-            executor.execute(request);
-        } catch (e: unknown) {
-            if (is_discord_reportable(e)) {
-                request.source.reply(
-                    `error: ${e.to_discord_error()}.\nUsage: \`${
-                        request.name
-                    } ${executor.usage()}\``
-                );
-            } else if (e instanceof Error) {
-                // temporary
-                request.source.reply(
-                    `error: ${e.message}.\nUsage: \`${
-                        request.name
-                    } ${executor.usage()}\``
-                );
-            }
-        } finally {
+            const execution_result = await executor.execute(request);
+
             request.source.channel.stopTyping();
+
+            return execution_result.mapErr(
+                (error) =>
+                    `error: ${error}.\nUsage: \`${
+                        request.name
+                    } ${executor.usage()}\``
+            );
+        } catch (e: unknown) {
+            request.source.channel.stopTyping();
+
+            const error = e as Error;
+
+            // temporary
+            return Err(
+                `error: ${error.message}.\nUsage: \`${
+                    request.name
+                } ${executor.usage()}\``
+            );
         }
     }
 

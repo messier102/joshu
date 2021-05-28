@@ -1,9 +1,10 @@
-import { TypeConverter } from "./TypeConverter";
+import { ConversionError, TypeConverter } from "./TypeConverter";
+import { Ok, Result } from "ts-results";
 
 export default <TypeConverter>{
     type: "string",
 
-    convert(value: string): string {
-        return value;
+    convert(value: string): Result<string, ConversionError> {
+        return Ok(value);
     },
 };

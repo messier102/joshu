@@ -1,11 +1,12 @@
 import { CommandRequest } from "../request";
 import { Command } from "../command";
+import { Ok, Result } from "ts-results";
 
-export default <Command>{
+export default Command({
     parameters: [],
     permissions: [],
 
-    execute({ source }: CommandRequest): void {
-        source.reply("pong!");
+    async execute(_: CommandRequest): Promise<Result<string, string>> {
+        return Ok("Pong!");
     },
-};
+});

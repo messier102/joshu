@@ -7,8 +7,9 @@ import MentionConverter from "../type_converters/MentionConverter";
 import SnowflakeConverter from "../type_converters/SnowflakeConverter";
 import UserTagConverter from "../type_converters/UserTagConverter";
 import { any } from "../type_converters/any";
+import { Err, None, Ok, Option, Result, Some } from "ts-results";
 
-export default <Command>{
+export default Command({
     aliases: [
         "axe",
         "expire",
@@ -31,74 +32,84 @@ export default <Command>{
     async execute(
         { name, source }: CommandRequest,
         target_user_id_or_tag: string
-    ): Promise<void> {
-        try {
-            const target_user = await resolve_user(
-                source.client,
-                target_user_id_or_tag
-            );
+    ): Promise<Result<string, string>> {
+        const maybe_target_user = await resolve_user(
+            source.client,
+            target_user_id_or_tag
+        );
 
-            if (source.author === target_user) {
-                source.reply("you can't ban yourself, dummy.");
-                return;
-            }
-
-            const source_member = source.member;
-            const target_member = source.guild?.member(target_user);
-            if (
-                source_member &&
-                target_member &&
-                !source_can_ban_target(source_member, target_member)
-            ) {
-                source.reply(
-                    "sorry, you can't ban that user.\n" +
-                        "(They have a role higher than or equal to yours.)"
-                );
-                return;
-            }
-
-            try {
-                await source.guild?.members.ban(target_user);
-            } catch (e) {
-                source.reply(
-                    "sorry, I can't ban that user.\n" +
-                        "(This usually means that they have a role higher than mine.)"
-                );
-                return;
-            }
-
-            const message_template = SPECIAL_BAN_MESSAGES.has(name)
-                ? (sample(SPECIAL_BAN_MESSAGES.get(name)) as string)
-                : (sample(COMMON_BAN_MESSAGES) as string);
-
-            const message = message_template.replace(
-                "%banned_user%",
-                `**${target_user.tag}**`
-            );
-
-            source.channel.send(message);
-        } catch (e) {
-            source.reply("sorry, I don't know that user.");
+        if (!maybe_target_user.some) {
+            return Err("sorry, I don't know that user.");
         }
+
+        const target_user = maybe_target_user.val;
+
+        if (source.author === target_user) {
+            return Err("you can't ban yourself, dummy.");
+        }
+
+        const source_member = source.member;
+        const target_member = source.guild?.member(target_user);
+        if (
+            source_member &&
+            target_member &&
+            !source_can_ban_target(source_member, target_member)
+        ) {
+            return Err(
+                "sorry, you can't ban that user.\n" +
+                    "(They have a role higher than or equal to yours.)"
+            );
+        }
+
+        try {
+            await source.guild?.members.ban(target_user);
+        } catch (e) {
+            return Err(
+                "sorry, I can't ban that user.\n" +
+                    "(This usually means that they have a role higher than mine.)"
+            );
+        }
+
+        const message_template = SPECIAL_BAN_MESSAGES.has(name)
+            ? (sample(SPECIAL_BAN_MESSAGES.get(name)) as string)
+            : (sample(COMMON_BAN_MESSAGES) as string);
+
+        const message = message_template.replace(
+            "%banned_user%",
+            `**${target_user.tag}**`
+        );
+
+        return Ok(message);
     },
-};
+});
 
 async function resolve_user(
     client: Client,
     user_id_or_tag: string
-): Promise<User> {
-    if (user_id_or_tag.includes("#")) {
-        const user_tag = user_id_or_tag;
-        const user = client.users.cache.find((user) => user.tag === user_tag);
-        if (!user) {
-            throw new Error("No such user");
-        }
+): Promise<Option<User>> {
+    return user_id_or_tag.includes("#")
+        ? resolve_user_by_tag(client, user_id_or_tag)
+        : resolve_user_by_id(client, user_id_or_tag);
+}
 
-        return user;
-    } else {
-        const user_id = user_id_or_tag;
+async function resolve_user_by_tag(
+    client: Client,
+    user_tag: string
+): Promise<Option<User>> {
+    const user = client.users.cache.find((user) => user.tag === user_tag);
 
-        return await client.users.fetch(user_id);
+    return user ? Some(user) : None;
+}
+
+async function resolve_user_by_id(
+    client: Client,
+    user_id: string
+): Promise<Option<User>> {
+    try {
+        const user = await client.users.fetch(user_id);
+        return Some(user);
+    } catch (e) {
+        return None;
     }
 }
 
