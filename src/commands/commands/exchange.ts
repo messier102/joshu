@@ -48,7 +48,7 @@ export default Command({
             return Ok(message);
         } else {
             const error_message = conversion_result.val;
-            return Err(`${error_message}.`);
+            return Err(`API error: ${error_message}.`);
         }
     },
 });

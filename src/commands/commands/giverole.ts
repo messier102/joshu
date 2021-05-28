@@ -23,7 +23,7 @@ export default Command({
             return Err("this can only be done in a server.");
         }
 
-        const target_member = source.guild.members.cache.get(target_user_id);
+        const target_member = await source.guild.members.fetch(target_user_id);
         if (!target_member) {
             return Err("I can't find this user in the server.");
         }

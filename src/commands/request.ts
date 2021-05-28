@@ -11,14 +11,14 @@ export class CommandRequest {
     static from_raw_message(
         message: Discord.Message,
         prefix: string
-    ): Result<CommandRequest, Error> {
+    ): Result<CommandRequest, string> {
         const message_stripped = message.content.slice(prefix.length).trim();
 
         const request_regex = /^(\S+) *(.*)$/;
         const match = message_stripped.match(request_regex);
 
         if (!match) {
-            return Err(new Error(`Bad request: ${message_stripped}`));
+            return Err(`Bad request: ${message_stripped}`);
         }
 
         const [_, command_name, command_args] = match;

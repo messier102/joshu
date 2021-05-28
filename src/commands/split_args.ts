@@ -24,7 +24,7 @@ export function split_args(
     input: string,
     param_count: number,
     accept_remainder: boolean
-): Result<string[], Error> {
+): Result<string[], string> {
     const is_last_param = (idx: number) => idx === param_count - 1;
 
     const args = [];
@@ -32,7 +32,7 @@ export function split_args(
 
     for (const i of range(0, param_count)) {
         if (!remaining_input) {
-            return Err(new Error("too few arguments"));
+            return Err("too few arguments");
         }
 
         if (is_last_param(i) && accept_remainder) {
@@ -52,13 +52,13 @@ export function split_args(
     }
 
     if (remaining_input) {
-        return Err(new Error("too many arguments"));
+        return Err("too many arguments");
     }
 
     return Ok(args);
 }
 
-function split_single_arg(input: string): Result<[string, string], Error> {
+function split_single_arg(input: string): Result<[string, string], string> {
     if (input.startsWith(`"`)) {
         return split_quoted_arg(input);
     } else {
@@ -66,17 +66,17 @@ function split_single_arg(input: string): Result<[string, string], Error> {
     }
 }
 
-function split_quoted_arg(input: string): Result<[string, string], Error> {
+function split_quoted_arg(input: string): Result<[string, string], string> {
     const quoted_arg_regex = /^"((?:\\"|[^"])*)"(.*)$/;
     const match = input.match(quoted_arg_regex);
 
     if (!match) {
-        return Err(new Error("probably missing closing quote"));
+        return Err("probably missing closing quote");
     }
 
     const [_, arg, rest] = match;
     if (rest && !rest.startsWith(" ")) {
-        return Err(new Error("quoted arguments must be delimited by space"));
+        return Err("quoted arguments must be delimited by space");
     }
 
     const arg_unescaped = arg.replace(/\\"/g, `"`);
@@ -84,17 +84,17 @@ function split_quoted_arg(input: string): Result<[string, string], Error> {
     return Ok([arg_unescaped, rest] as [string, string]);
 }
 
-function split_simple_arg(input: string): Result<[string, string], Error> {
+function split_simple_arg(input: string): Result<[string, string], string> {
     const simple_arg_regex = /^(\S+)(.*)$/;
     const match = input.match(simple_arg_regex);
 
     if (!match) {
-        return Err(new Error("unexpected end of input"));
+        return Err("unexpected end of input");
     }
 
     const [_, arg, rest] = match;
     if (arg.includes(`"`)) {
-        return Err(new Error("unexpected quote mark inside argument"));
+        return Err("unexpected quote mark inside argument");
     }
 
     return Ok([arg, rest] as [string, string]);

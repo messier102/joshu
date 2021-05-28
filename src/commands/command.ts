@@ -26,6 +26,8 @@ export type Command = {
     ): Promise<Result<string, string>>;
 };
 
+// casting arbitrary object to `Command` bypasses some type checks (particularly
+// return type of `execute`), so we use this constructor function instead
 export function Command(command: Command): Command {
     return command;
 }

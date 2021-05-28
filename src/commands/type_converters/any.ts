@@ -2,8 +2,8 @@ import { Result } from "ts-results";
 import { ConversionError, TypeConverter } from "./TypeConverter";
 
 /**
- * Combines multiple `TypeConverter`s into a single converter that applies
- * them in order and returns the value of the first successful conversion.
+ * Combines multiple `TypeConverter`s into a single converter that applies them
+ * in order and returns the value of the first successful conversion.
  *
  * @param converters A list of converters to apply.
  * @returns A single combined converter.

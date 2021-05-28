@@ -18,11 +18,11 @@ export default Command({
         target_channel_id: string,
         message: string
     ): Promise<Result<string, string>> {
-        const target_channel = source.client.channels.cache.get(
+        const target_channel = await source.client.channels.fetch(
             target_channel_id
         );
         if (!target_channel || !target_channel.isText()) {
-            return Err("this doesn't seem to be a valid channel.");
+            return Err("this doesn't seem to be a valid channel");
         }
 
         target_channel.send(message);

@@ -1,6 +1,5 @@
 import { CommandRequest } from "./request";
 import { Command } from "./command";
-import { CommandResponse } from "./response";
 import { split_args } from "./split_args";
 import { Err, Ok, Result } from "ts-results";
 import { assert } from "node:console";
@@ -13,9 +12,7 @@ export class CommandExecutor {
         return this.command.parameters.join(" ");
     }
 
-    async execute(
-        request: CommandRequest
-    ): Promise<Result<CommandResponse, Error>> {
+    async execute(request: CommandRequest): Promise<Result<string, string>> {
         // TODO: proper logging
         console.log(
             `[${request.source.author.tag}]`,
@@ -37,11 +34,12 @@ export class CommandExecutor {
             request,
             ...parsed_args.val
         );
-        return execution_result.mapErr(Error);
+        return execution_result;
     }
 
-    private check_permissions(request: CommandRequest): Result<void, Error> {
+    private check_permissions(request: CommandRequest): Result<void, string> {
         if (this.command.permissions.length === 0) {
+            // no permissions required
             return Ok.EMPTY;
         }
 
@@ -50,9 +48,7 @@ export class CommandExecutor {
             false;
 
         if (!user_has_permission) {
-            return Err(
-                new Error("you don't have enough permissions to do that")
-            );
+            return Err("you don't have enough permissions to do that");
         }
 
         const bot_has_permission =
@@ -60,14 +56,15 @@ export class CommandExecutor {
             false;
 
         if (!bot_has_permission) {
-            return Err(new Error("I don't have enough permissions to do that"));
+            return Err("I don't have enough permissions to do that");
         }
 
         return Ok.EMPTY;
     }
 
-    // unknown[] is required as we're dynamically converting stringly typed arguments
-    private parse_args(input: string): Result<unknown[], Error> {
+    // unknown[] is required as we're dynamically converting stringly typed
+    // arguments
+    private parse_args(input: string): Result<unknown[], string> {
         return split_args(
             input,
             this.command.parameters.length,
@@ -75,7 +72,7 @@ export class CommandExecutor {
         ).andThen((arg_strings) => this.convert_args(arg_strings));
     }
 
-    private convert_args(args: string[]): Result<unknown[], Error> {
+    private convert_args(args: string[]): Result<unknown[], string> {
         assert(args.length === this.command.parameters.length);
 
         const arg_param_pairs = [...zip(args, this.command.parameters)];
@@ -85,9 +82,7 @@ export class CommandExecutor {
                 .convert(arg)
                 .mapErr(
                     (error) =>
-                        new Error(
-                            `\`${error.actual_value}\` in parameter \`${param}\` is not a \`${error.expected_type}\``
-                        )
+                        `\`${error.actual_value}\` in parameter \`${param}\` is not a \`${error.expected_type}\``
                 )
         );
 
