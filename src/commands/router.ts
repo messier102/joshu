@@ -70,9 +70,7 @@ export class CommandRouter {
 
             return execution_result.mapErr(
                 (error) =>
-                    `error: ${error}.\nUsage: \`${
-                        request.name
-                    } ${executor.usage()}\``
+                    `${error}.\nUsage: \`${request.name} ${executor.usage()}\``
             );
         } catch (e: unknown) {
             request.source.channel.stopTyping();
