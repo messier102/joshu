@@ -1,6 +1,12 @@
 import { CommandRequest } from "../request";
 import { CommandParameter, Command } from "../command";
-import { Client, GuildMember, Permissions, User } from "discord.js";
+import {
+    Client,
+    GuildMember,
+    MessageEmbed,
+    Permissions,
+    User,
+} from "discord.js";
 import dedent from "ts-dedent";
 import sample from "lodash/sample";
 import MentionConverter from "../type_converters/MentionConverter";
@@ -75,12 +81,7 @@ export default Command({
             ? (sample(SPECIAL_BAN_MESSAGES.get(name)) as string)
             : (sample(COMMON_BAN_MESSAGES) as string);
 
-        const message = message_template.replace(
-            "%banned_user%",
-            `**${target_user.tag}**`
-        );
-
-        return CommandResponse.Ok(message);
+        return new BanOk(target_user, message_template);
     },
 });
 
@@ -125,8 +126,26 @@ function source_can_ban_target(
     );
 }
 
+class BanOk implements CommandResponse {
+    constructor(
+        public readonly user: User,
+        public readonly ban_message_template: string
+    ) {}
+
+    to_embed(): MessageEmbed {
+        const ban_message_rendered = this.ban_message_template.replace(
+            "%banned_user%",
+            `**${this.user.username}**`
+        );
+
+        return new MessageEmbed()
+            .setColor("GREEN")
+            .setDescription(ban_message_rendered)
+            .setFooter(`Banned ${this.user.tag}`);
+    }
+}
+
 const COMMON_BAN_MESSAGES = [
-    "Banned %banned_user%",
     dedent`
         batta batta batta batta SWING!....POP!!!
         and the crowd goes wild, %banned_user% is outta here!
