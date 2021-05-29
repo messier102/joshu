@@ -19,11 +19,9 @@ export default Command({
                 posts.push(post);
             }
 
-            if (posts.length > 0) {
-                return new GateauxOpenOk(posts);
-            } else {
-                return new GateauxClosedOk();
-            }
+            return posts.length > 0
+                ? new GateauxOpenOk(posts)
+                : new GateauxClosedOk();
         } catch (reason) {
             return CommandResponse.Error(`Reddit error: \`${reason}\``);
         }
