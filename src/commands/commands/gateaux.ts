@@ -2,6 +2,7 @@ import { CommandRequest } from "../request";
 import { Command } from "../command";
 import { reddit } from "../../services/reddit";
 import { CommandResponse } from "../response";
+import { MessageEmbed } from "discord.js";
 
 export default Command({
     parameters: [],
@@ -25,9 +26,7 @@ export default Command({
                     "Currently active posts:\n" + post_links.join("\n")
                 );
             } else {
-                return CommandResponse.Ok(
-                    "All gates are currently closed. Use `opengateaux` to open the gates."
-                );
+                return new GateauxClosedOk();
             }
         } catch (reason) {
             console.log(reason);
@@ -37,3 +36,12 @@ export default Command({
         }
     },
 });
+
+class GateauxClosedOk implements CommandResponse {
+    to_embed(): MessageEmbed {
+        return new MessageEmbed()
+            .setColor("GREEN")
+            .setDescription("All gates are currently closed.")
+            .setFooter(`Use "opengateaux" to open the gates`);
+    }
+}
