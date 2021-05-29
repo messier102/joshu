@@ -2,7 +2,7 @@ import { CommandRequest } from "../request";
 import { Command } from "../command";
 import { reddit } from "../../services/reddit";
 import { CommandResponse } from "../response";
-import { MessageEmbed } from "discord.js";
+import { EmbedFieldData, MessageEmbed } from "discord.js";
 import type { Post } from "snoots";
 
 export default Command({
@@ -32,25 +32,24 @@ class GateauxOpenOk implements CommandResponse {
     constructor(public readonly posts: Post[]) {}
 
     to_embed(): MessageEmbed {
-        const embed = new MessageEmbed()
+        return new MessageEmbed()
             .setColor("GREEN")
             .setDescription("Currently active posts:")
+            .addFields(this.posts.map(this.render_post_field))
             .setFooter(`Use "closegateaux" to close the gates`);
+    }
 
-        for (const post of this.posts) {
-            const title = `r/${post.subreddit}・${post.title}`;
+    private render_post_field(post: Post): EmbedFieldData {
+        const post_title = `r/${post.subreddit}・${post.title}`;
 
-            const upvote_count = pluralize(post.score, "upvote");
-            const comment_count = pluralize(post.numComments, "comment");
-            const upvote_ratio = `${post.upvoteRatio * 100}% upvoted`;
-            const permalink = `https://reddit.com${post.permalink}`;
+        const upvote_count = pluralize(post.score, "upvote");
+        const comment_count = pluralize(post.numComments, "comment");
+        const upvote_ratio = `${post.upvoteRatio * 100}% upvoted`;
+        const permalink = `https://reddit.com${post.permalink}`;
 
-            const post_info = `${upvote_count} (${upvote_ratio}), ${comment_count} ([link](${permalink}))`;
+        const post_info = `${upvote_count} (${upvote_ratio}), ${comment_count} ([link](${permalink}))`;
 
-            embed.addField(title, post_info);
-        }
-
-        return embed;
+        return { name: post_title, value: post_info };
     }
 }
 
