@@ -5,6 +5,7 @@ import { Err, Ok, Result } from "ts-results";
 import { assert } from "node:console";
 import { zip } from "../util";
 import { CommandResponse } from "./response";
+import { MessageEmbed } from "discord.js";
 
 export class CommandExecutor {
     constructor(private readonly command: Command) {}
@@ -28,10 +29,9 @@ export class CommandExecutor {
 
         const parsed_args = this.parse_args(request.args);
         if (parsed_args.err) {
-            return CommandResponse.Error(
-                `${parsed_args.val}.\n\nUsage: \`${
-                    request.name
-                } ${this.usage()}\``
+            return new ArgumentError(
+                parsed_args.val,
+                `${request.name} ${this.usage()}`
             );
         }
 
@@ -92,5 +92,16 @@ export class CommandExecutor {
         );
 
         return Result.all(...maybe_converted_args);
+    }
+}
+
+class ArgumentError implements CommandResponse {
+    constructor(public reason: string, public usage_hint: string) {}
+
+    to_embed(): MessageEmbed {
+        return new MessageEmbed()
+            .setColor("RED")
+            .addField("Error", this.reason)
+            .setFooter(this.usage_hint);
     }
 }

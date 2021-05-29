@@ -59,26 +59,7 @@ export class CommandRouter {
 
         const executor = new CommandExecutor(command);
 
-        try {
-            request.source.channel.startTyping();
-
-            const execution_result = await executor.execute(request);
-
-            request.source.channel.stopTyping();
-
-            return execution_result;
-        } catch (e: unknown) {
-            request.source.channel.stopTyping();
-
-            const error = e as Error;
-
-            // temporary
-            return CommandResponse.Error(
-                `error: ${error.message}.\nUsage: \`${
-                    request.name
-                } ${executor.usage()}\``
-            );
-        }
+        return await executor.execute(request);
     }
 
     private find_similar_commands(command_name: string): string[] {

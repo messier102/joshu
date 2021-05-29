@@ -18,7 +18,9 @@ client.on("message", async (message) => {
     const request = CommandRequest.from_raw_message(message, config.prefix);
 
     if (request.ok) {
+        message.channel.startTyping();
         const response = await command_router.route_request(request.val);
+        message.channel.stopTyping();
 
         message.channel.send(response.to_embed());
     } else {
