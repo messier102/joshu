@@ -1,5 +1,5 @@
 import { PermissionResolvable } from "discord.js";
-import { Result } from "ts-results";
+import { CommandResponse } from "./response";
 import { CommandRequest } from "./request";
 import { TypeConverter } from "./type_converters/TypeConverter";
 
@@ -23,7 +23,7 @@ export type Command = {
     execute(
         request: CommandRequest,
         ...args: unknown[]
-    ): Promise<Result<string, string>>;
+    ): Promise<CommandResponse>;
 };
 
 // casting arbitrary object to `Command` bypasses some type checks (particularly

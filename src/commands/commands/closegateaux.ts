@@ -2,7 +2,7 @@ import { CommandRequest } from "../request";
 import { Command } from "../command";
 import { Permissions } from "discord.js";
 import { reddit } from "../../services/reddit";
-import { Err, Ok, Result } from "ts-results";
+import { CommandResponse } from "../response";
 
 export default Command({
     parameters: [],
@@ -10,9 +10,11 @@ export default Command({
 
     accept_remainder_arg: true,
 
-    async execute({ source }: CommandRequest): Promise<Result<string, string>> {
+    async execute({ source }: CommandRequest): Promise<CommandResponse> {
         if (!source.guild) {
-            return Err("sorry, this can only be done in a server.");
+            return CommandResponse.Error(
+                "sorry, this can only be done in a server."
+            );
         }
 
         const old_invites = await source.guild.fetchInvites();
@@ -30,10 +32,12 @@ export default Command({
                 await old_post.delete();
             }
 
-            return Ok("Closed the gates. Sleep safe, citizen.");
+            return CommandResponse.Ok("Closed the gates. Sleep safe, citizen.");
         } catch (reason) {
             console.log(reason);
-            return Err(`Reddit error: \`${reason.toString()}\``);
+            return CommandResponse.Error(
+                `Reddit error: \`${reason.toString()}\``
+            );
         }
     },
 });

@@ -3,7 +3,7 @@ import { Permissions } from "discord.js";
 import { CommandParameter, Command } from "../command";
 import MentionConverter from "../type_converters/MentionConverter";
 import StringConverter from "../type_converters/StringConverter";
-import { Err, Ok, Result } from "ts-results";
+import { CommandResponse } from "../response";
 
 export default Command({
     parameters: [
@@ -18,14 +18,16 @@ export default Command({
         target_user_id: string,
         role_name: string,
         role_color: string
-    ): Promise<Result<string, string>> {
+    ): Promise<CommandResponse> {
         if (!source.guild) {
-            return Err("this can only be done in a server.");
+            return CommandResponse.Error("this can only be done in a server.");
         }
 
         const target_member = await source.guild.members.fetch(target_user_id);
         if (!target_member) {
-            return Err("I can't find this user in the server.");
+            return CommandResponse.Error(
+                "I can't find this user in the server."
+            );
         }
 
         const role_options = {
@@ -40,6 +42,8 @@ export default Command({
 
         await target_member.roles.add(role.id);
 
-        return Ok(`Gave ${target_member} a new role \`${role.name}\``);
+        return CommandResponse.Ok(
+            `Gave ${target_member} a new role \`${role.name}\``
+        );
     },
 });
