@@ -96,7 +96,10 @@ export class CommandExecutor {
 }
 
 class ArgumentError implements CommandResponse {
-    constructor(public reason: string, public usage_hint: string) {}
+    constructor(
+        public readonly reason: string,
+        public readonly usage_hint: string
+    ) {}
 
     to_embed(): MessageEmbed {
         return new MessageEmbed()
