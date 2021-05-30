@@ -4,6 +4,7 @@ import { reddit } from "../../services/reddit";
 import { CommandResponse } from "../response";
 import { EmbedFieldData, MessageEmbed } from "discord.js";
 import type { Post } from "snoots";
+import { pluralize } from "../../util";
 
 export default Command({
     parameters: [],
@@ -63,10 +64,4 @@ class GateauxClosedOk implements CommandResponse {
             .setDescription("All gates are currently closed.")
             .setFooter(`Use "opengateaux" to open the gates`);
     }
-}
-
-function pluralize(amount: number, unit: string) {
-    const is_plural = amount !== 1;
-
-    return `${amount} ${unit}${is_plural ? "s" : ""}`;
 }

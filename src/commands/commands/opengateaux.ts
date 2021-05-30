@@ -6,6 +6,7 @@ import config from "../../../data/config";
 import { reddit } from "../../services/reddit";
 import { CommandResponse } from "../response";
 import { Post } from "snoots";
+import { pluralize } from "../../util";
 
 export default Command({
     parameters: [new CommandParameter("post title", StringConverter)],
@@ -94,10 +95,4 @@ class GateauxOpenOk implements CommandResponse {
             value: post_info,
         };
     }
-}
-
-function pluralize(amount: number, unit: string) {
-    const is_plural = amount !== 1;
-
-    return `${amount} ${unit}${is_plural ? "s" : ""}`;
 }

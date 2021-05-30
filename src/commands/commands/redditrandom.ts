@@ -5,6 +5,7 @@ import { reddit } from "../../services/reddit";
 import { CommandResponse } from "../response";
 import { Post } from "snoots";
 import { MessageEmbed } from "discord.js";
+import { pluralize } from "../../util";
 
 export default Command({
     aliases: ["rr"],
@@ -78,10 +79,4 @@ function is_image_post(post: Post): boolean {
 
     const image_extensions = ["jpg", "png", "gif"];
     return image_extensions.some((ext) => post.url.endsWith(`.${ext}`));
-}
-
-function pluralize(amount: number, unit: string) {
-    const is_plural = amount !== 1;
-
-    return `${amount} ${unit}${is_plural ? "s" : ""}`;
 }
