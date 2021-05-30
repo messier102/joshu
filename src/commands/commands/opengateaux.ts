@@ -3,10 +3,9 @@ import { CommandParameter, Command } from "../command";
 import { EmbedFieldData, MessageEmbed, Permissions } from "discord.js";
 import StringConverter from "../type_converters/StringConverter";
 import config from "../../../data/config";
-import { reddit } from "../../services/reddit";
+import { absolute_url, post_stats, reddit } from "../../services/reddit";
 import { CommandResponse } from "../response";
 import { Post } from "snoots";
-import { pluralize } from "../../util";
 
 export default Command({
     parameters: [new CommandParameter("post title", StringConverter)],
@@ -81,18 +80,9 @@ class GateauxOpenOk implements CommandResponse {
     }
 
     private render_post_field(post: Post): EmbedFieldData {
-        const post_title = `r/${post.subreddit}・${post.title}`;
-
-        const upvote_count = pluralize(post.score, "upvote");
-        const comment_count = pluralize(post.numComments, "comment");
-        const upvote_ratio = `${post.upvoteRatio * 100}% upvoted`;
-        const permalink = `https://reddit.com${post.permalink}`;
-
-        const post_info = `${upvote_count} (${upvote_ratio}), ${comment_count} ([link](${permalink}))`;
-
         return {
-            name: post_title,
-            value: post_info,
+            name: `r/${post.subreddit}・${post.title}`,
+            value: `${post_stats(post)} ([link](${absolute_url(post)}))`,
         };
     }
 }

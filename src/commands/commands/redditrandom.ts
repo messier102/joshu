@@ -1,11 +1,16 @@
 import { CommandRequest } from "../request";
 import { CommandParameter, Command } from "../command";
 import StringConverter from "../type_converters/StringConverter";
-import { reddit } from "../../services/reddit";
+import {
+    absolute_url,
+    is_image_post,
+    post_stats,
+    reddit,
+    text_preview,
+} from "../../services/reddit";
 import { CommandResponse } from "../response";
 import { Post } from "snoots";
 import { MessageEmbed } from "discord.js";
-import { pluralize } from "../../util";
 
 export default Command({
     aliases: ["rr"],
@@ -51,32 +56,4 @@ class RandomPostOk implements CommandResponse {
 
         return embed;
     }
-}
-
-function absolute_url(post: Post) {
-    return `https://reddit.com${post.permalink}`;
-}
-
-function post_stats(post: Post): string {
-    const upvote_count = pluralize(post.score, "upvote");
-    const comment_count = pluralize(post.numComments, "comment");
-    const upvote_ratio = `${post.upvoteRatio * 100}% upvoted`;
-
-    return `${upvote_count} (${upvote_ratio}), ${comment_count}`;
-}
-
-function text_preview(post: Post, max_length: number): string {
-    return post.body.length > max_length
-        ? post.body.slice(0, max_length).trimEnd() +
-              `... ([read\u00A0more](${absolute_url(post)}))` // non-breaking space
-        : post.body;
-}
-
-function is_image_post(post: Post): boolean {
-    if (post.isSelf) {
-        return false;
-    }
-
-    const image_extensions = ["jpg", "png", "gif"];
-    return image_extensions.some((ext) => post.url.endsWith(`.${ext}`));
 }
