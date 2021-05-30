@@ -49,7 +49,10 @@ class GateauxOpenOk implements CommandResponse {
 
         const post_info = `${upvote_count} (${upvote_ratio}), ${comment_count} ([link](${permalink}))`;
 
-        return { name: post_title, value: post_info };
+        return {
+            name: post.removed ? `[REMOVED] ~~${post_title}~~` : post_title,
+            value: post_info,
+        };
     }
 }
 
