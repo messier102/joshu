@@ -1,10 +1,11 @@
 import { CommandRequest } from "../request";
 import { CommandParameter, Command } from "../command";
-import { Permissions } from "discord.js";
+import { EmbedFieldData, MessageEmbed, Permissions } from "discord.js";
 import StringConverter from "../type_converters/StringConverter";
 import config from "../../../data/config";
 import { reddit } from "../../services/reddit";
 import { CommandResponse } from "../response";
+import { Post } from "snoots";
 
 export default Command({
     parameters: [new CommandParameter("post title", StringConverter)],
@@ -57,9 +58,7 @@ export default Command({
             const new_post = await reddit.posts.fetch(new_post_id);
             await new_post.unmarkNsfw();
 
-            return CommandResponse.Ok(
-                `Opened the gates: https://www.reddit.com${new_post.permalink}`
-            );
+            return new GateauxOpenOk(new_post);
         } catch (reason) {
             console.log(reason);
             return CommandResponse.Error(
@@ -68,3 +67,37 @@ export default Command({
         }
     },
 });
+
+class GateauxOpenOk implements CommandResponse {
+    constructor(public readonly new_post: Post) {}
+
+    to_embed(): MessageEmbed {
+        return new MessageEmbed()
+            .setColor("GREEN")
+            .setDescription("Opened the gates:")
+            .addFields(this.render_post_field(this.new_post))
+            .setFooter(`Use "gateaux" to view active posts`);
+    }
+
+    private render_post_field(post: Post): EmbedFieldData {
+        const post_title = `r/${post.subreddit}・${post.title}`;
+
+        const upvote_count = pluralize(post.score, "upvote");
+        const comment_count = pluralize(post.numComments, "comment");
+        const upvote_ratio = `${post.upvoteRatio * 100}% upvoted`;
+        const permalink = `https://reddit.com${post.permalink}`;
+
+        const post_info = `${upvote_count} (${upvote_ratio}), ${comment_count} ([link](${permalink}))`;
+
+        return {
+            name: post_title,
+            value: post_info,
+        };
+    }
+}
+
+function pluralize(amount: number, unit: string) {
+    const is_plural = amount !== 1;
+
+    return `${amount} ${unit}${is_plural ? "s" : ""}`;
+}
