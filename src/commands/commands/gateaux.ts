@@ -1,35 +1,61 @@
 import { CommandRequest } from "../request";
 import { Command } from "../command";
-import { reddit } from "../../services/reddit";
-import { Err, Ok, Result } from "ts-results";
+import { absolute_url, post_stats, reddit } from "../../services/reddit";
+import { CommandResponse, CommandResponseOk } from "../response";
+import { EmbedFieldData, MessageEmbed } from "discord.js";
+import type { Post } from "snoots";
 
 export default Command({
     parameters: [],
     permissions: [],
 
-    accept_remainder_arg: true,
-
-    async execute(_: CommandRequest): Promise<Result<string, string>> {
+    async execute(_: CommandRequest): Promise<CommandResponse> {
         try {
             const bot_user = await reddit.users.fetchMe();
-            const posts = bot_user.getPosts();
+            const posts_listing = bot_user.getPosts();
 
-            const post_links = [];
-
-            for await (const post of posts) {
-                post_links.push(`https://reddit.com${post.permalink}`);
+            const posts = [];
+            for await (const post of posts_listing) {
+                posts.push(post);
             }
 
-            if (post_links.length > 0) {
-                return Ok("Currently active posts:\n" + post_links.join("\n"));
-            } else {
-                return Ok(
-                    "All gates are currently closed. Use `opengateaux` to open the gates."
-                );
-            }
+            return posts.length > 0
+                ? new GateauxOpenOk(posts)
+                : new GateauxClosedOk();
         } catch (reason) {
-            console.log(reason);
-            return Err(`Reddit error: \`${reason.toString()}\``);
+            return CommandResponse.Error(`Reddit error: \`${reason}\``);
         }
     },
 });
+
+class GateauxOpenOk extends CommandResponseOk {
+    constructor(public readonly posts: Post[]) {
+        super();
+    }
+
+    to_embed(): MessageEmbed {
+        return super
+            .to_embed()
+            .setDescription("Currently active posts:")
+            .addFields(this.posts.map(this.render_post_field))
+            .setFooter(`Use "closegateaux" to close the gates`);
+    }
+
+    private render_post_field(post: Post): EmbedFieldData {
+        const post_title = `r/${post.subreddit}・${post.title}`;
+
+        return {
+            name: post.removed ? `[REMOVED] ~~${post_title}~~` : post_title,
+            value: `${post_stats(post)} ([link](${absolute_url(post)}))`,
+        };
+    }
+}
+
+class GateauxClosedOk extends CommandResponseOk {
+    to_embed(): MessageEmbed {
+        return super
+            .to_embed()
+            .setDescription("All gates are currently closed.")
+            .setFooter(`Use "opengateaux" to open the gates`);
+    }
+}

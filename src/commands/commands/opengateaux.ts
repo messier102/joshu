@@ -1,10 +1,11 @@
 import { CommandRequest } from "../request";
 import { CommandParameter, Command } from "../command";
-import { Permissions } from "discord.js";
+import { EmbedFieldData, MessageEmbed, Permissions } from "discord.js";
 import StringConverter from "../type_converters/StringConverter";
 import config from "../../../data/config";
-import { reddit } from "../../services/reddit";
-import { Err, Ok, Result } from "ts-results";
+import { absolute_url, post_stats, reddit } from "../../services/reddit";
+import { CommandResponse, CommandResponseOk } from "../response";
+import { Post } from "snoots";
 
 export default Command({
     parameters: [new CommandParameter("post title", StringConverter)],
@@ -18,9 +19,11 @@ export default Command({
     async execute(
         { source }: CommandRequest,
         post_title: string
-    ): Promise<Result<string, string>> {
+    ): Promise<CommandResponse> {
         if (!source.guild) {
-            return Err("sorry, this can only be done in a server.");
+            return CommandResponse.Error(
+                "sorry, this can only be done in a server."
+            );
         }
 
         const old_invites = await source.guild.fetchInvites();
@@ -35,7 +38,7 @@ export default Command({
         });
 
         if (!new_invite) {
-            return Err("unable to create invite");
+            return CommandResponse.Error("unable to create invite");
         }
 
         try {
@@ -55,12 +58,33 @@ export default Command({
             const new_post = await reddit.posts.fetch(new_post_id);
             await new_post.unmarkNsfw();
 
-            return Ok(
-                `Opened the gates: https://www.reddit.com${new_post.permalink}`
-            );
+            return new GateauxOpenOk(new_post);
         } catch (reason) {
             console.log(reason);
-            return Err(`Reddit error: \`${reason.toString()}\``);
+            return CommandResponse.Error(
+                `Reddit error: \`${reason.toString()}\``
+            );
         }
     },
 });
+
+class GateauxOpenOk extends CommandResponseOk {
+    constructor(public readonly new_post: Post) {
+        super();
+    }
+
+    to_embed(): MessageEmbed {
+        return super
+            .to_embed()
+            .setDescription("Opened the gates:")
+            .addFields(this.render_post_field(this.new_post))
+            .setFooter(`Use "gateaux" to view active posts`);
+    }
+
+    private render_post_field(post: Post): EmbedFieldData {
+        return {
+            name: `r/${post.subreddit}・${post.title}`,
+            value: `${post_stats(post)} ([link](${absolute_url(post)}))`,
+        };
+    }
+}

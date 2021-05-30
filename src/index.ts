@@ -2,6 +2,7 @@ import { CommandRequest } from "./commands/request";
 import { CommandRouter } from "./commands/router";
 import Discord from "discord.js";
 import config from "../data/config";
+import { CommandResponse } from "./commands/response";
 
 const client = new Discord.Client();
 const command_router = new CommandRouter();
@@ -17,13 +18,13 @@ client.on("message", async (message) => {
     const request = CommandRequest.from_raw_message(message, config.prefix);
 
     if (request.ok) {
+        message.channel.startTyping();
         const response = await command_router.route_request(request.val);
+        message.channel.stopTyping();
 
-        response
-            .map((res) => message.channel.send(res))
-            .mapErr((error) => message.reply(error));
+        message.channel.send(response.to_embed());
     } else {
-        message.channel.send(request.val);
+        message.channel.send(CommandResponse.Error(request.val).to_embed());
     }
 });
 

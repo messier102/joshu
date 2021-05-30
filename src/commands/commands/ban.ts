@@ -1,13 +1,20 @@
 import { CommandRequest } from "../request";
 import { CommandParameter, Command } from "../command";
-import { Client, GuildMember, Permissions, User } from "discord.js";
+import {
+    Client,
+    GuildMember,
+    MessageEmbed,
+    Permissions,
+    User,
+} from "discord.js";
 import dedent from "ts-dedent";
 import sample from "lodash/sample";
 import MentionConverter from "../type_converters/MentionConverter";
 import SnowflakeConverter from "../type_converters/SnowflakeConverter";
 import UserTagConverter from "../type_converters/UserTagConverter";
 import { any } from "../type_converters/any";
-import { Err, None, Ok, Option, Result, Some } from "ts-results";
+import { None, Option, Some } from "ts-results";
+import { CommandResponse, CommandResponseOk } from "../response";
 
 export default Command({
     aliases: [
@@ -32,20 +39,20 @@ export default Command({
     async execute(
         { name, source }: CommandRequest,
         target_user_id_or_tag: string
-    ): Promise<Result<string, string>> {
+    ): Promise<CommandResponse> {
         const maybe_target_user = await resolve_user(
             source.client,
             target_user_id_or_tag
         );
 
         if (!maybe_target_user.some) {
-            return Err("sorry, I don't know that user.");
+            return CommandResponse.Error("sorry, I don't know that user.");
         }
 
         const target_user = maybe_target_user.val;
 
         if (source.author === target_user) {
-            return Err("you can't ban yourself, dummy.");
+            return CommandResponse.Error("you can't ban yourself, dummy.");
         }
 
         const source_member = source.member;
@@ -55,7 +62,7 @@ export default Command({
             target_member &&
             !source_can_ban_target(source_member, target_member)
         ) {
-            return Err(
+            return CommandResponse.Error(
                 "sorry, you can't ban that user.\n" +
                     "(They have a role higher than or equal to yours.)"
             );
@@ -64,7 +71,7 @@ export default Command({
         try {
             await source.guild?.members.ban(target_user);
         } catch (e) {
-            return Err(
+            return CommandResponse.Error(
                 "sorry, I can't ban that user.\n" +
                     "(This usually means that they have a role higher than mine.)"
             );
@@ -74,12 +81,7 @@ export default Command({
             ? (sample(SPECIAL_BAN_MESSAGES.get(name)) as string)
             : (sample(COMMON_BAN_MESSAGES) as string);
 
-        const message = message_template.replace(
-            "%banned_user%",
-            `**${target_user.tag}**`
-        );
-
-        return Ok(message);
+        return new BanOk(target_user, message_template);
     },
 });
 
@@ -124,8 +126,28 @@ function source_can_ban_target(
     );
 }
 
+class BanOk extends CommandResponseOk {
+    constructor(
+        public readonly user: User,
+        public readonly ban_message_template: string
+    ) {
+        super();
+    }
+
+    to_embed(): MessageEmbed {
+        const ban_message_rendered = this.ban_message_template.replace(
+            "%banned_user%",
+            `**${this.user.username}**`
+        );
+
+        return super
+            .to_embed()
+            .setDescription(ban_message_rendered)
+            .setFooter(`Banned ${this.user.tag}`);
+    }
+}
+
 const COMMON_BAN_MESSAGES = [
-    "Banned %banned_user%",
     dedent`
         batta batta batta batta SWING!....POP!!!
         and the crowd goes wild, %banned_user% is outta here!

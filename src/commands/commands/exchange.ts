@@ -3,7 +3,7 @@ import { CommandParameter, Command } from "../command";
 import StringConverter from "../type_converters/StringConverter";
 import PositiveNumberConverter from "../type_converters/PositiveNumberConverter";
 import { convert_currency } from "../../services/coinmarketcap";
-import { Err, Ok, Result } from "ts-results";
+import { CommandResponse } from "../response";
 
 export default Command({
     aliases: ["convert", "conv"],
@@ -20,7 +20,7 @@ export default Command({
         base_currency: string,
         target_currency: string,
         amount: number
-    ): Promise<Result<string, string>> {
+    ): Promise<CommandResponse> {
         base_currency = base_currency.toUpperCase();
         target_currency = target_currency.toUpperCase();
 
@@ -35,7 +35,7 @@ export default Command({
             const amount_converted = conversion[target_currency].price;
 
             if (!amount_converted) {
-                return Err(
+                return CommandResponse.Error(
                     "conversion request was successful, but the API did not return a price.\n" +
                         "(This usually means that the currency had existed in the past, but not anymore.)"
                 );
@@ -45,10 +45,10 @@ export default Command({
                 `${format_decimal(amount)} **${base_currency}** = ` +
                 `${format_decimal(amount_converted)} **${target_currency}**`;
 
-            return Ok(message);
+            return CommandResponse.Ok(message);
         } else {
             const error_message = conversion_result.val;
-            return Err(`API error: ${error_message}.`);
+            return CommandResponse.Error(`API error: ${error_message}.`);
         }
     },
 });

@@ -4,7 +4,7 @@ import { CommandRequest } from "./request";
 import { CommandExecutor } from "./executor";
 import { Command } from "./command";
 import { find_similar_string, Weights } from "../find_similar_string";
-import { Err, Result } from "ts-results";
+import { CommandResponse } from "./response";
 
 export class CommandRouter {
     private readonly command_routes: Map<string, Command> = new Map();
@@ -43,9 +43,7 @@ export class CommandRouter {
         console.log(this.command_routes);
     }
 
-    async route_request(
-        request: CommandRequest
-    ): Promise<Result<string, string>> {
+    async route_request(request: CommandRequest): Promise<CommandResponse> {
         const command = this.command_routes.get(request.name);
 
         if (!command) {
@@ -56,36 +54,12 @@ export class CommandRouter {
                     ? `sorry, no such command. Did you mean \`${similar_commands[0]}\`?`
                     : "sorry, no such command.";
 
-            return Err(no_such_command_message);
+            return CommandResponse.Error(no_such_command_message);
         }
 
         const executor = new CommandExecutor(command);
 
-        try {
-            request.source.channel.startTyping();
-
-            const execution_result = await executor.execute(request);
-
-            request.source.channel.stopTyping();
-
-            return execution_result.mapErr(
-                (error) =>
-                    `error: ${error}.\nUsage: \`${
-                        request.name
-                    } ${executor.usage()}\``
-            );
-        } catch (e: unknown) {
-            request.source.channel.stopTyping();
-
-            const error = e as Error;
-
-            // temporary
-            return Err(
-                `error: ${error.message}.\nUsage: \`${
-                    request.name
-                } ${executor.usage()}\``
-            );
-        }
+        return await executor.execute(request);
     }
 
     private find_similar_commands(command_name: string): string[] {

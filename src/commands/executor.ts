@@ -4,6 +4,8 @@ import { split_args } from "./split_args";
 import { Err, Ok, Result } from "ts-results";
 import { assert } from "node:console";
 import { zip } from "../util";
+import { CommandResponse, CommandResponseError } from "./response";
+import { MessageEmbed } from "discord.js";
 
 export class CommandExecutor {
     constructor(private readonly command: Command) {}
@@ -12,7 +14,7 @@ export class CommandExecutor {
         return this.command.parameters.join(" ");
     }
 
-    async execute(request: CommandRequest): Promise<Result<string, string>> {
+    async execute(request: CommandRequest): Promise<CommandResponse> {
         // TODO: proper logging
         console.log(
             `[${request.source.author.tag}]`,
@@ -22,12 +24,15 @@ export class CommandExecutor {
 
         const perm_check = this.check_permissions(request);
         if (perm_check.err) {
-            return Err(perm_check.val);
+            return CommandResponse.Error(perm_check.val);
         }
 
         const parsed_args = this.parse_args(request.args);
         if (parsed_args.err) {
-            return Err(parsed_args.val);
+            return new ArgumentError(
+                parsed_args.val,
+                `${request.name} ${this.usage()}`
+            );
         }
 
         const execution_result = await this.command.execute(
@@ -87,5 +92,21 @@ export class CommandExecutor {
         );
 
         return Result.all(...maybe_converted_args);
+    }
+}
+
+class ArgumentError extends CommandResponseError {
+    constructor(
+        public readonly reason: string,
+        public readonly usage_hint: string
+    ) {
+        super();
+    }
+
+    to_embed(): MessageEmbed {
+        return super
+            .to_embed()
+            .addField("Error", this.reason)
+            .setFooter(this.usage_hint);
     }
 }

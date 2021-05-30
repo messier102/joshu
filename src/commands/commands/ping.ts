@@ -1,12 +1,12 @@
 import { CommandRequest } from "../request";
 import { Command } from "../command";
-import { Ok, Result } from "ts-results";
+import { CommandResponse } from "../response";
 
 export default Command({
     parameters: [],
     permissions: [],
 
-    async execute(_: CommandRequest): Promise<Result<string, string>> {
-        return Ok("Pong!");
+    async execute(_: CommandRequest): Promise<CommandResponse> {
+        return CommandResponse.Ok("Pong!");
     },
 });

@@ -29,8 +29,8 @@ export function* range(
  * modeled after Rust's `zip` and produces `min(left.length, right.length)`
  * pairs, guaranteeing non-nullable types.
  *
- * @param left First array to iterate over.
- * @param right Second array to iterate over.
+ * @param left - First array to iterate over.
+ * @param right - Second array to iterate over.
  *
  * @example
  * ```ts
@@ -60,4 +60,36 @@ export function* zip<T, U>(
 
         yield [left_next.value, right_next.value];
     }
+}
+
+/**
+ * Creates a string describing a quantity of some value, using plural form of
+ * the unit where appropriate.
+ *
+ * By default simply adds an "s" to `unit` to create its plural form. If the
+ * unit has an irregular plural form ("woman" - "women") or is a complex
+ * term ("degree Celsius" - "degrees Celsius"), you can provide a custom
+ * plural form via `plural_form`.
+ *
+ * @param amount - Amount of some value.
+ * @param unit - Unit of some value in singular form.
+ * @param plural_form - (optional) Custom plural form of the unit.
+ *
+ * @example
+ * ```ts
+ * pluralize(1, "ball") === "1 ball";
+ * pluralize(2, "ball") === "2 balls";
+ * pluralize(0, "ball") === "0 balls";
+ * pluralize(-20, "degree") === "-20 degrees"
+ * pluralize(2, "woman", "women") === "2 women";
+ * ```
+ */
+export function pluralize(
+    amount: number,
+    unit: string,
+    plural_form?: string
+): string {
+    return amount === 1
+        ? `${amount} ${unit}`
+        : `${amount} ${plural_form ?? unit + "s"}`;
 }
