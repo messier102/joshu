@@ -14,7 +14,7 @@ import SnowflakeConverter from "../type_converters/SnowflakeConverter";
 import UserTagConverter from "../type_converters/UserTagConverter";
 import { any } from "../type_converters/any";
 import { None, Option, Some } from "ts-results";
-import { CommandResponse } from "../response";
+import { CommandResponse, CommandResponseOk } from "../response";
 
 export default Command({
     aliases: [
@@ -126,11 +126,13 @@ function source_can_ban_target(
     );
 }
 
-class BanOk implements CommandResponse {
+class BanOk extends CommandResponseOk {
     constructor(
         public readonly user: User,
         public readonly ban_message_template: string
-    ) {}
+    ) {
+        super();
+    }
 
     to_embed(): MessageEmbed {
         const ban_message_rendered = this.ban_message_template.replace(
@@ -138,8 +140,8 @@ class BanOk implements CommandResponse {
             `**${this.user.username}**`
         );
 
-        return new MessageEmbed()
-            .setColor("GREEN")
+        return super
+            .to_embed()
             .setDescription(ban_message_rendered)
             .setFooter(`Banned ${this.user.tag}`);
     }

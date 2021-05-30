@@ -4,23 +4,35 @@ export interface CommandResponse {
     to_embed(): MessageEmbed;
 }
 
-class Ok implements CommandResponse {
-    constructor(public message: string) {}
-
+export abstract class CommandResponseOk implements CommandResponse {
     to_embed(): MessageEmbed {
-        return new MessageEmbed()
-            .setColor("GREEN")
-            .setDescription(this.message);
+        return new MessageEmbed().setColor("GREEN");
     }
 }
 
-class Error implements CommandResponse {
-    constructor(public message: string) {}
+export abstract class CommandResponseError implements CommandResponse {
+    to_embed(): MessageEmbed {
+        return new MessageEmbed().setColor("RED");
+    }
+}
+
+class Ok extends CommandResponseOk {
+    constructor(public message: string) {
+        super();
+    }
 
     to_embed(): MessageEmbed {
-        return new MessageEmbed()
-            .setColor("RED")
-            .addField("Error", this.message);
+        return super.to_embed().setDescription(this.message);
+    }
+}
+
+class Error extends CommandResponseError {
+    constructor(public message: string) {
+        super();
+    }
+
+    to_embed(): MessageEmbed {
+        return super.to_embed().addField("Error", this.message);
     }
 }
 

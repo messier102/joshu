@@ -4,7 +4,7 @@ import { split_args } from "./split_args";
 import { Err, Ok, Result } from "ts-results";
 import { assert } from "node:console";
 import { zip } from "../util";
-import { CommandResponse } from "./response";
+import { CommandResponse, CommandResponseError } from "./response";
 import { MessageEmbed } from "discord.js";
 
 export class CommandExecutor {
@@ -95,15 +95,17 @@ export class CommandExecutor {
     }
 }
 
-class ArgumentError implements CommandResponse {
+class ArgumentError extends CommandResponseError {
     constructor(
         public readonly reason: string,
         public readonly usage_hint: string
-    ) {}
+    ) {
+        super();
+    }
 
     to_embed(): MessageEmbed {
-        return new MessageEmbed()
-            .setColor("RED")
+        return super
+            .to_embed()
             .addField("Error", this.reason)
             .setFooter(this.usage_hint);
     }

@@ -8,7 +8,7 @@ import {
     reddit,
     text_preview,
 } from "../../services/reddit";
-import { CommandResponse } from "../response";
+import { CommandResponse, CommandResponseOk } from "../response";
 import { Post } from "snoots";
 import { MessageEmbed } from "discord.js";
 
@@ -36,14 +36,16 @@ export default Command({
     },
 });
 
-class RandomPostOk implements CommandResponse {
-    constructor(public readonly post: Post) {}
+class RandomPostOk extends CommandResponseOk {
+    constructor(public readonly post: Post) {
+        super();
+    }
 
     to_embed(): MessageEmbed {
         const post = this.post;
 
-        const embed = new MessageEmbed()
-            .setColor("GREEN")
+        const embed = super
+            .to_embed()
             .setAuthor(`Random post from r/${post.subreddit}`)
             .setTitle(`r/${post.subreddit}・${post.title}`)
             .setURL(absolute_url(post))

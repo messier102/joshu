@@ -4,7 +4,7 @@ import { EmbedFieldData, MessageEmbed, Permissions } from "discord.js";
 import StringConverter from "../type_converters/StringConverter";
 import config from "../../../data/config";
 import { absolute_url, post_stats, reddit } from "../../services/reddit";
-import { CommandResponse } from "../response";
+import { CommandResponse, CommandResponseOk } from "../response";
 import { Post } from "snoots";
 
 export default Command({
@@ -68,12 +68,14 @@ export default Command({
     },
 });
 
-class GateauxOpenOk implements CommandResponse {
-    constructor(public readonly new_post: Post) {}
+class GateauxOpenOk extends CommandResponseOk {
+    constructor(public readonly new_post: Post) {
+        super();
+    }
 
     to_embed(): MessageEmbed {
-        return new MessageEmbed()
-            .setColor("GREEN")
+        return super
+            .to_embed()
             .setDescription("Opened the gates:")
             .addFields(this.render_post_field(this.new_post))
             .setFooter(`Use "gateaux" to view active posts`);

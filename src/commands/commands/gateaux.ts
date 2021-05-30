@@ -1,7 +1,7 @@
 import { CommandRequest } from "../request";
 import { Command } from "../command";
 import { absolute_url, post_stats, reddit } from "../../services/reddit";
-import { CommandResponse } from "../response";
+import { CommandResponse, CommandResponseOk } from "../response";
 import { EmbedFieldData, MessageEmbed } from "discord.js";
 import type { Post } from "snoots";
 
@@ -28,12 +28,14 @@ export default Command({
     },
 });
 
-class GateauxOpenOk implements CommandResponse {
-    constructor(public readonly posts: Post[]) {}
+class GateauxOpenOk extends CommandResponseOk {
+    constructor(public readonly posts: Post[]) {
+        super();
+    }
 
     to_embed(): MessageEmbed {
-        return new MessageEmbed()
-            .setColor("GREEN")
+        return super
+            .to_embed()
             .setDescription("Currently active posts:")
             .addFields(this.posts.map(this.render_post_field))
             .setFooter(`Use "closegateaux" to close the gates`);
@@ -49,10 +51,10 @@ class GateauxOpenOk implements CommandResponse {
     }
 }
 
-class GateauxClosedOk implements CommandResponse {
+class GateauxClosedOk extends CommandResponseOk {
     to_embed(): MessageEmbed {
-        return new MessageEmbed()
-            .setColor("GREEN")
+        return super
+            .to_embed()
             .setDescription("All gates are currently closed.")
             .setFooter(`Use "opengateaux" to open the gates`);
     }
