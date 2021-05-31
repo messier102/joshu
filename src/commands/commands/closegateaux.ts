@@ -1,8 +1,9 @@
 import { CommandRequest } from "../request";
 import { Command } from "../command";
-import { Permissions } from "discord.js";
+import { MessageEmbed, Permissions } from "discord.js";
 import { reddit } from "../../services/reddit";
-import { CommandResponse } from "../response";
+import { CommandResponse, CommandResponseOk } from "../response";
+import { pluralize } from "../../util";
 
 export default Command({
     parameters: [],
@@ -17,9 +18,11 @@ export default Command({
             );
         }
 
+        let total_invite_uses = 0;
         const old_invites = await source.guild.fetchInvites();
         for (const [_, old_invite] of old_invites) {
             if (old_invite.inviter === source.client.user) {
+                total_invite_uses += old_invite.uses ?? 0;
                 await old_invite.delete();
             }
         }
@@ -32,7 +35,7 @@ export default Command({
                 await old_post.delete();
             }
 
-            return CommandResponse.Ok("Closed the gates. Sleep safe, citizen.");
+            return new GateauxClosedOk(total_invite_uses);
         } catch (reason) {
             console.log(reason);
             return CommandResponse.Error(
@@ -41,3 +44,21 @@ export default Command({
         }
     },
 });
+
+class GateauxClosedOk extends CommandResponseOk {
+    constructor(public readonly total_invite_uses: number) {
+        super();
+    }
+
+    to_embed(): MessageEmbed {
+        return super
+            .to_embed()
+            .setDescription("Closed the gates. Sleep safe, citizen.")
+            .setFooter(
+                `Invites used ${pluralize(
+                    this.total_invite_uses,
+                    "time"
+                )} today`
+            );
+    }
+}
