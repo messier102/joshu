@@ -147,7 +147,15 @@ class BanOk extends CommandResponseOk {
     }
 }
 
+const current_year = new Date().getFullYear();
+
 const COMMON_BAN_MESSAGES = [
+    "%banned_user%, get well soon!",
+    `"Mr Julian I don't feel so good," said %banned_user%. Then died.`,
+    dedent`
+        RIP %banned_user% ${current_year}\u2014${current_year}, we hardly knew ye
+        Momo: ?!
+    `,
     dedent`
         batta batta batta batta SWING!....POP!!!
         and the crowd goes wild, %banned_user% is outta here!
