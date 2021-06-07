@@ -21,20 +21,16 @@ export default Command({
         { source }: CommandRequest,
         post_title: string
     ): Promise<CommandResponse> {
-        if (!source.guild) {
-            return CommandResponse.Error(
-                "sorry, this can only be done in a server."
-            );
-        }
-
-        const old_invites = await source.guild.fetchInvites();
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const old_invites = await source.guild!.fetchInvites();
         for (const [_, old_invite] of old_invites) {
             if (old_invite.inviter === source.client.user) {
                 await old_invite.delete();
             }
         }
 
-        const new_invite = await source.guild.systemChannel?.createInvite({
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const new_invite = await source.guild!.systemChannel?.createInvite({
             unique: true,
         });
 

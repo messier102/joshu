@@ -20,11 +20,8 @@ export default Command({
         role_name: string,
         role_color: string
     ): Promise<CommandResponse> {
-        if (!source.guild) {
-            return CommandResponse.Error("this can only be done in a server.");
-        }
-
-        const target_member = await source.guild.members.fetch(target_user_id);
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const target_member = await source.guild!.members.fetch(target_user_id);
         if (!target_member) {
             return CommandResponse.Error(
                 "I can't find this user in the server."
@@ -39,7 +36,8 @@ export default Command({
                 mentionable: true,
             },
         };
-        const role = await source.guild.roles.create(role_options);
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const role = await source.guild!.roles.create(role_options);
 
         await target_member.roles.add(role.id);
 

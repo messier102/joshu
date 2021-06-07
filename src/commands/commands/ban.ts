@@ -57,7 +57,8 @@ export default Command({
         }
 
         const source_member = source.member;
-        const target_member = source.guild?.member(target_user);
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const target_member = source.guild!.member(target_user);
         if (
             source_member &&
             target_member &&
@@ -70,7 +71,8 @@ export default Command({
         }
 
         try {
-            await source.guild?.members.ban(target_user);
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            await source.guild!.members.ban(target_user);
         } catch (e) {
             return CommandResponse.Error(
                 "sorry, I can't ban that user.\n" +

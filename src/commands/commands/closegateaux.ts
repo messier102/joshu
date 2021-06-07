@@ -13,14 +13,9 @@ export default Command({
     server_only: true,
 
     async execute({ source }: CommandRequest): Promise<CommandResponse> {
-        if (!source.guild) {
-            return CommandResponse.Error(
-                "sorry, this can only be done in a server."
-            );
-        }
-
         let total_invite_uses = 0;
-        const old_invites = await source.guild.fetchInvites();
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const old_invites = await source.guild!.fetchInvites();
         for (const [_, old_invite] of old_invites) {
             if (old_invite.inviter === source.client.user) {
                 total_invite_uses += old_invite.uses ?? 0;
