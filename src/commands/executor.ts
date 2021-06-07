@@ -22,6 +22,12 @@ export class CommandExecutor {
             request.args
         );
 
+        if (this.command.server_only && !request.source.guild) {
+            return CommandResponse.Error(
+                "This command works only in a server."
+            );
+        }
+
         const perm_check = this.check_permissions(request);
         if (perm_check.err) {
             return CommandResponse.Error(perm_check.val);
