@@ -35,6 +35,7 @@ export default Command({
         ),
     ],
     permissions: [Permissions.FLAGS.BAN_MEMBERS],
+    server_only: true,
 
     async execute(
         { name, source }: CommandRequest,

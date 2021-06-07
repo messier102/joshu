@@ -10,6 +10,7 @@ export default Command({
     permissions: [Permissions.FLAGS.MANAGE_GUILD],
 
     accept_remainder_arg: true,
+    server_only: true,
 
     async execute({ source }: CommandRequest): Promise<CommandResponse> {
         if (!source.guild) {
