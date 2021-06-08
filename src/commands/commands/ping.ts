@@ -1,4 +1,4 @@
-import { CommandRequest } from "../request";
+import { ValidatedCommandRequest } from "../request";
 import { Command } from "../command";
 import { CommandResponse } from "../response";
 
@@ -6,7 +6,7 @@ export default Command({
     parameters: [],
     permissions: [],
 
-    async execute(_: CommandRequest): Promise<CommandResponse> {
+    async execute(_: ValidatedCommandRequest): Promise<CommandResponse> {
         return CommandResponse.Ok("Pong!");
     },
 });

@@ -1,4 +1,4 @@
-import { CommandRequest } from "../request";
+import { ValidatedCommandRequest } from "../request";
 import { CommandParameter, Command } from "../command";
 import SnowflakeConverter from "../type_converters/SnowflakeConverter";
 import StringConverter from "../type_converters/StringConverter";
@@ -14,7 +14,7 @@ export default Command({
     accept_remainder_arg: true,
 
     async execute(
-        { source }: CommandRequest,
+        { source }: ValidatedCommandRequest,
         target_channel_id: string,
         message: string
     ): Promise<CommandResponse> {

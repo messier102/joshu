@@ -1,4 +1,4 @@
-import { CommandRequest } from "../request";
+import { ValidatedCommandRequest } from "../request";
 import { CommandParameter, Command } from "../command";
 import { EmbedFieldData, MessageEmbed, Permissions } from "discord.js";
 import StringConverter from "../type_converters/StringConverter";
@@ -15,22 +15,18 @@ export default Command({
     ],
 
     accept_remainder_arg: true,
-    server_only: true,
-
     async execute(
-        { source }: CommandRequest,
+        { source }: ValidatedCommandRequest,
         post_title: string
     ): Promise<CommandResponse> {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const old_invites = await source.guild!.fetchInvites();
+        const old_invites = await source.guild.fetchInvites();
         for (const [_, old_invite] of old_invites) {
             if (old_invite.inviter === source.client.user) {
                 await old_invite.delete();
             }
         }
 
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const new_invite = await source.guild!.systemChannel?.createInvite({
+        const new_invite = await source.guild.systemChannel?.createInvite({
             unique: true,
         });
 

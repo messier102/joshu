@@ -1,4 +1,4 @@
-import { CommandRequest } from "./request";
+import { CommandRequest, ValidatedCommandRequest } from "./request";
 import { Command } from "./command";
 import { split_args } from "./split_args";
 import { Err, Ok, Result } from "ts-results";
@@ -22,9 +22,9 @@ export class CommandExecutor {
             request.args
         );
 
-        if (this.command.server_only && !request.source.guild) {
+        if (!request.source.guild) {
             return CommandResponse.Error(
-                "This command works only in a server."
+                "Sorry, I don't accept commands in DMs."
             );
         }
 
@@ -42,7 +42,7 @@ export class CommandExecutor {
         }
 
         const execution_result = await this.command.execute(
-            request,
+            request as ValidatedCommandRequest,
             ...parsed_args.val
         );
         return execution_result;

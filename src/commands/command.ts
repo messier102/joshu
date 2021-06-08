@@ -1,6 +1,6 @@
 import { PermissionResolvable } from "discord.js";
 import { CommandResponse } from "./response";
-import { CommandRequest } from "./request";
+import { ValidatedCommandRequest } from "./request";
 import { TypeConverter } from "./type_converters/TypeConverter";
 
 export class CommandParameter {
@@ -19,10 +19,9 @@ export type Command = {
     parameters: readonly CommandParameter[];
     permissions: readonly PermissionResolvable[];
     accept_remainder_arg?: boolean;
-    server_only?: boolean;
 
     execute(
-        request: CommandRequest,
+        request: ValidatedCommandRequest,
         ...args: unknown[]
     ): Promise<CommandResponse>;
 };

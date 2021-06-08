@@ -1,6 +1,11 @@
 import type Discord from "discord.js";
 import { Err, Ok, Result } from "ts-results";
 
+export type ServerMessage = Discord.Message & {
+    guild: NonNullable<Discord.Message["guild"]>;
+    member: NonNullable<Discord.Message["member"]>;
+};
+
 export class CommandRequest {
     constructor(
         public readonly name: string,
@@ -26,3 +31,7 @@ export class CommandRequest {
         return Ok(new CommandRequest(command_name, command_args, message));
     }
 }
+
+export type ValidatedCommandRequest = CommandRequest & {
+    source: ServerMessage;
+};

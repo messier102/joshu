@@ -1,4 +1,4 @@
-import { CommandRequest } from "../request";
+import { ValidatedCommandRequest } from "../request";
 import { CommandParameter, Command } from "../command";
 import StringConverter from "../type_converters/StringConverter";
 import {
@@ -19,7 +19,7 @@ export default Command({
     permissions: [],
 
     async execute(
-        _: CommandRequest,
+        _: ValidatedCommandRequest,
         subreddit: string
     ): Promise<CommandResponse> {
         try {
