@@ -3,10 +3,10 @@ import { CommandResponse } from "./response";
 import { ValidatedCommandRequest } from "./request";
 import { TypeConverter } from "./type_converters/TypeConverter";
 
-export class CommandParameter {
+export class CommandParameter<T> {
     constructor(
         public readonly name: string,
-        public readonly type_converter: TypeConverter
+        public readonly type_converter: TypeConverter<T>
     ) {}
 
     toString(): string {
@@ -16,7 +16,7 @@ export class CommandParameter {
 
 type CommandMetadata = {
     aliases?: readonly string[];
-    parameters: readonly CommandParameter[];
+    parameters: readonly CommandParameter<unknown>[];
     permissions: readonly PermissionResolvable[];
     accept_remainder_arg?: boolean;
 };

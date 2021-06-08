@@ -1,9 +1,16 @@
 import { Result } from "ts-results";
 
-export interface TypeConverter {
+export interface TypeConverter<T> {
     readonly type: string;
 
-    convert(value: string): Result<unknown, ConversionError>;
+    convert(value: string): Result<T, ConversionError>;
+}
+
+export function TypeConverter<T>({
+    type,
+    convert,
+}: TypeConverter<T>): TypeConverter<T> {
+    return { type, convert };
 }
 
 export class ConversionError extends Error {

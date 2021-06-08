@@ -1,7 +1,7 @@
 import { ConversionError, TypeConverter } from "./TypeConverter";
 import { Err, Ok, Result } from "ts-results";
 
-export default <TypeConverter>{
+export default TypeConverter({
     type: "user tag",
 
     convert(value: string): Result<string, ConversionError> {
@@ -14,4 +14,4 @@ export default <TypeConverter>{
 
         return Ok(match[0]);
     },
-};
+});
