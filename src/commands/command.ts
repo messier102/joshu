@@ -14,28 +14,27 @@ export class CommandParameter<T> {
     }
 }
 
-type CommandMetadata = {
+type CommandMetadata<T extends unknown[]> = {
     aliases?: readonly string[];
-    parameters: readonly CommandParameter<unknown>[];
+    parameters: { [P in keyof T]: CommandParameter<T[P]> };
     permissions: readonly PermissionResolvable[];
     accept_remainder_arg?: boolean;
 };
 
-type CommandHandler = (
+type CommandHandler<T extends unknown[]> = (
     request: ValidatedCommandRequest,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ...args: any
+    ...args: T
 ) => Promise<CommandResponse>;
 
-export type Command_v2 = {
-    meta: CommandMetadata;
-    handler: CommandHandler;
+export type Command_v2<T extends unknown[]> = {
+    meta: CommandMetadata<T>;
+    handler: CommandHandler<T>;
 };
 
-export function Command_v2(
-    meta: CommandMetadata,
-    handler: CommandHandler
-): Command_v2 {
+export function Command_v2<T extends unknown[]>(
+    meta: CommandMetadata<T>,
+    handler: CommandHandler<T>
+): Command_v2<T> {
     return { meta, handler };
 }
 

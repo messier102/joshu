@@ -8,7 +8,7 @@ import { CommandResponse, CommandResponseError } from "./response";
 import { MessageEmbed } from "discord.js";
 
 export class CommandExecutor {
-    constructor(private readonly command: Command_v2) {}
+    constructor(private readonly command: Command_v2<unknown[]>) {}
 
     usage(): string {
         return this.command.meta.parameters.join(" ");
