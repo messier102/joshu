@@ -1,5 +1,5 @@
 import { ValidatedCommandRequest } from "../request";
-import { CommandParameter, Command } from "../command";
+import { CommandParameter, Command_v2 } from "../command";
 import {
     Client,
     GuildMember,
@@ -16,30 +16,32 @@ import { any } from "../type_converters/any";
 import { None, Option, Some } from "ts-results";
 import { CommandResponse, CommandResponseOk } from "../response";
 
-export default Command({
-    aliases: [
-        "axe",
-        "expire",
-        "terminate",
-        "delete",
-        "uninvite",
-        "321",
-        "immolate",
-        "shadowbolt",
-    ],
+export default Command_v2(
+    {
+        aliases: [
+            "axe",
+            "expire",
+            "terminate",
+            "delete",
+            "uninvite",
+            "321",
+            "immolate",
+            "shadowbolt",
+        ],
 
-    parameters: [
-        new CommandParameter(
-            "target user",
-            any(MentionConverter, SnowflakeConverter, UserTagConverter)
-        ),
-    ],
-    permissions: [Permissions.FLAGS.BAN_MEMBERS],
+        parameters: [
+            new CommandParameter(
+                "target user",
+                any(MentionConverter, SnowflakeConverter, UserTagConverter)
+            ),
+        ],
+        permissions: [Permissions.FLAGS.BAN_MEMBERS],
+    },
 
-    async execute(
+    async (
         { name, source }: ValidatedCommandRequest,
         target_user_id_or_tag: string
-    ): Promise<CommandResponse> {
+    ) => {
         const maybe_target_user = await resolve_user(
             source.client,
             target_user_id_or_tag
@@ -82,8 +84,8 @@ export default Command({
             : (sample(COMMON_BAN_MESSAGES) as string);
 
         return new BanOk(target_user, message_template);
-    },
-});
+    }
+);
 
 async function resolve_user(
     client: Client,

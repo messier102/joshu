@@ -1,5 +1,5 @@
 import { ValidatedCommandRequest } from "../request";
-import { CommandParameter, Command } from "../command";
+import { CommandParameter, Command_v2 } from "../command";
 import StringConverter from "../type_converters/StringConverter";
 import {
     absolute_url,
@@ -12,16 +12,15 @@ import { CommandResponse, CommandResponseOk } from "../response";
 import { Post } from "snoots";
 import { MessageEmbed } from "discord.js";
 
-export default Command({
-    aliases: ["rr"],
+export default Command_v2(
+    {
+        aliases: ["rr"],
 
-    parameters: [new CommandParameter("subreddit", StringConverter)],
-    permissions: [],
+        parameters: [new CommandParameter("subreddit", StringConverter)],
+        permissions: [],
+    },
 
-    async execute(
-        _: ValidatedCommandRequest,
-        subreddit: string
-    ): Promise<CommandResponse> {
+    async (_: ValidatedCommandRequest, subreddit: string) => {
         try {
             const random_post = await reddit.subreddits.getRandomPost(
                 subreddit
@@ -33,8 +32,8 @@ export default Command({
                 "Sorry, couldn't fetch that subreddit."
             );
         }
-    },
-});
+    }
+);
 
 class RandomPostOk extends CommandResponseOk {
     constructor(public readonly post: Post) {

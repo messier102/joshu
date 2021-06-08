@@ -14,20 +14,45 @@ export class CommandParameter {
     }
 }
 
-export type Command = {
+type CommandMetadata = {
     aliases?: readonly string[];
     parameters: readonly CommandParameter[];
     permissions: readonly PermissionResolvable[];
     accept_remainder_arg?: boolean;
-
-    execute(
-        request: ValidatedCommandRequest,
-        ...args: unknown[]
-    ): Promise<CommandResponse>;
 };
 
-// casting arbitrary object to `Command` bypasses some type checks (particularly
-// return type of `execute`), so we use this constructor function instead
-export function Command(command: Command): Command {
-    return command;
+type CommandHandler = (
+    request: ValidatedCommandRequest,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ...args: any
+) => Promise<CommandResponse>;
+
+export type Command_v2 = {
+    meta: CommandMetadata;
+    handler: CommandHandler;
+};
+
+export function Command_v2(
+    meta: CommandMetadata,
+    handler: CommandHandler
+): Command_v2 {
+    return { meta, handler };
 }
+
+// export type Command = {
+//     aliases?: readonly string[];
+//     parameters: readonly CommandParameter[];
+//     permissions: readonly PermissionResolvable[];
+//     accept_remainder_arg?: boolean;
+
+//     execute(
+//         request: ValidatedCommandRequest,
+//         ...args: unknown[]
+//     ): Promise<CommandResponse>;
+// };
+
+// // casting arbitrary object to `Command` bypasses some type checks (particularly
+// // return type of `execute`), so we use this constructor function instead
+// export function Command(command: Command): Command {
+//     return command;
+// }

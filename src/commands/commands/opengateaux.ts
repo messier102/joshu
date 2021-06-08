@@ -1,5 +1,5 @@
 import { ValidatedCommandRequest } from "../request";
-import { CommandParameter, Command } from "../command";
+import { CommandParameter, Command_v2 } from "../command";
 import { EmbedFieldData, MessageEmbed, Permissions } from "discord.js";
 import StringConverter from "../type_converters/StringConverter";
 import config from "../../../data/config";
@@ -7,18 +7,18 @@ import { absolute_url, post_stats, reddit } from "../../services/reddit";
 import { CommandResponse, CommandResponseOk } from "../response";
 import { Post } from "snoots";
 
-export default Command({
-    parameters: [new CommandParameter("post title", StringConverter)],
-    permissions: [
-        Permissions.FLAGS.CREATE_INSTANT_INVITE,
-        Permissions.FLAGS.MANAGE_GUILD,
-    ],
+export default Command_v2(
+    {
+        parameters: [new CommandParameter("post title", StringConverter)],
+        permissions: [
+            Permissions.FLAGS.CREATE_INSTANT_INVITE,
+            Permissions.FLAGS.MANAGE_GUILD,
+        ],
 
-    accept_remainder_arg: true,
-    async execute(
-        { source }: ValidatedCommandRequest,
-        post_title: string
-    ): Promise<CommandResponse> {
+        accept_remainder_arg: true,
+    },
+
+    async ({ source }: ValidatedCommandRequest, post_title: string) => {
         const old_invites = await source.guild.fetchInvites();
         for (const [_, old_invite] of old_invites) {
             if (old_invite.inviter === source.client.user) {
@@ -58,8 +58,8 @@ export default Command({
                 `Reddit error: \`${reason.toString()}\``
             );
         }
-    },
-});
+    }
+);
 
 class GateauxOpenOk extends CommandResponseOk {
     constructor(public readonly new_post: Post) {

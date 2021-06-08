@@ -1,5 +1,5 @@
 import { CommandRequest, ValidatedCommandRequest } from "./request";
-import { Command } from "./command";
+import { Command_v2 } from "./command";
 import { split_args } from "./split_args";
 import { Err, Ok, Result } from "ts-results";
 import { assert } from "node:console";
@@ -8,10 +8,10 @@ import { CommandResponse, CommandResponseError } from "./response";
 import { MessageEmbed } from "discord.js";
 
 export class CommandExecutor {
-    constructor(private readonly command: Command) {}
+    constructor(private readonly command: Command_v2) {}
 
     usage(): string {
-        return this.command.parameters.join(" ");
+        return this.command.meta.parameters.join(" ");
     }
 
     async execute(request: CommandRequest): Promise<CommandResponse> {
@@ -41,7 +41,7 @@ export class CommandExecutor {
             );
         }
 
-        const execution_result = await this.command.execute(
+        const execution_result = await this.command.handler(
             request as ValidatedCommandRequest,
             ...parsed_args.val
         );
@@ -49,22 +49,24 @@ export class CommandExecutor {
     }
 
     private check_permissions(request: CommandRequest): Result<void, string> {
-        if (this.command.permissions.length === 0) {
+        if (this.command.meta.permissions.length === 0) {
             // no permissions required
             return Ok.EMPTY;
         }
 
         const user_has_permission =
-            request.source.member?.hasPermission(this.command.permissions) ??
-            false;
+            request.source.member?.hasPermission(
+                this.command.meta.permissions
+            ) ?? false;
 
         if (!user_has_permission) {
             return Err("you don't have enough permissions to do that");
         }
 
         const bot_has_permission =
-            request.source.guild?.me?.hasPermission(this.command.permissions) ??
-            false;
+            request.source.guild?.me?.hasPermission(
+                this.command.meta.permissions
+            ) ?? false;
 
         if (!bot_has_permission) {
             return Err("I don't have enough permissions to do that");
@@ -78,15 +80,15 @@ export class CommandExecutor {
     private parse_args(input: string): Result<unknown[], string> {
         return split_args(
             input,
-            this.command.parameters.length,
-            this.command.accept_remainder_arg ?? false
+            this.command.meta.parameters.length,
+            this.command.meta.accept_remainder_arg ?? false
         ).andThen((arg_strings) => this.convert_args(arg_strings));
     }
 
     private convert_args(args: string[]): Result<unknown[], string> {
-        assert(args.length === this.command.parameters.length);
+        assert(args.length === this.command.meta.parameters.length);
 
-        const arg_param_pairs = [...zip(args, this.command.parameters)];
+        const arg_param_pairs = [...zip(args, this.command.meta.parameters)];
 
         const maybe_converted_args = arg_param_pairs.map(([arg, param]) =>
             param.type_converter
