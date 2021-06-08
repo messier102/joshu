@@ -1,7 +1,6 @@
 import path from "path";
 import fs from "fs/promises";
 import { CommandRequest } from "./request";
-import { CommandExecutor } from "./executor";
 import { Command } from "./command";
 import { find_similar_string, Weights } from "../find_similar_string";
 import { CommandResponse } from "./response";
@@ -60,9 +59,7 @@ export class CommandRouter {
             return CommandResponse.Error(no_such_command_message);
         }
 
-        const executor = new CommandExecutor(command);
-
-        return await executor.execute(request);
+        return await command.execute(request);
     }
 
     private find_similar_commands(command_name: string): string[] {
