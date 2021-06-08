@@ -1,10 +1,10 @@
-import { Command_v2 } from "../command";
+import { Command } from "../command";
 import { absolute_url, post_stats, reddit } from "../../services/reddit";
 import { CommandResponse, CommandResponseOk } from "../response";
 import { EmbedFieldData, MessageEmbed } from "discord.js";
 import type { Post } from "snoots";
 
-export default Command_v2(
+export default Command(
     {
         parameters: [],
         permissions: [],

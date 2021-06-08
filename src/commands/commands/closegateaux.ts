@@ -1,11 +1,11 @@
 import { ValidatedCommandRequest } from "../request";
-import { Command_v2 } from "../command";
+import { Command } from "../command";
 import { MessageEmbed, Permissions } from "discord.js";
 import { reddit } from "../../services/reddit";
 import { CommandResponse, CommandResponseOk } from "../response";
 import { pluralize } from "../../util";
 
-export default Command_v2(
+export default Command(
     {
         parameters: [],
         permissions: [Permissions.FLAGS.MANAGE_GUILD],

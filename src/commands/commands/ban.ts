@@ -1,5 +1,5 @@
 import { ValidatedCommandRequest } from "../request";
-import { CommandParameter, Command_v2 } from "../command";
+import { CommandParameter, Command } from "../command";
 import {
     Client,
     GuildMember,
@@ -16,7 +16,7 @@ import MentionConverter from "../type_converters/MentionConverter";
 import { None, Option, Some } from "ts-results";
 import { CommandResponse, CommandResponseOk } from "../response";
 
-export default Command_v2(
+export default Command(
     {
         aliases: [
             "axe",

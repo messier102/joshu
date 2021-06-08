@@ -1,11 +1,11 @@
 import { ValidatedCommandRequest } from "../request";
-import { CommandParameter, Command_v2 } from "../command";
+import { CommandParameter, Command } from "../command";
 import StringConverter from "../type_converters/StringConverter";
 import PositiveNumberConverter from "../type_converters/PositiveNumberConverter";
 import { convert_currency } from "../../services/coinmarketcap";
 import { CommandResponse } from "../response";
 
-export default Command_v2(
+export default Command(
     {
         aliases: ["convert", "conv"],
 

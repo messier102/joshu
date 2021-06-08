@@ -1,5 +1,5 @@
 import { ValidatedCommandRequest } from "../request";
-import { CommandParameter, Command_v2 } from "../command";
+import { CommandParameter, Command } from "../command";
 import { EmbedFieldData, MessageEmbed, Permissions } from "discord.js";
 import StringConverter from "../type_converters/StringConverter";
 import config from "../../../data/config";
@@ -7,7 +7,7 @@ import { absolute_url, post_stats, reddit } from "../../services/reddit";
 import { CommandResponse, CommandResponseOk } from "../response";
 import { Post } from "snoots";
 
-export default Command_v2(
+export default Command(
     {
         parameters: [new CommandParameter("post title", StringConverter)],
         permissions: [

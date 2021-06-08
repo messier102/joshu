@@ -26,32 +26,14 @@ type CommandHandler<T extends unknown[]> = (
     ...args: T
 ) => Promise<CommandResponse>;
 
-export type Command_v2<T extends unknown[]> = {
+export type Command<T extends unknown[]> = {
     meta: CommandMetadata<T>;
     handler: CommandHandler<T>;
 };
 
-export function Command_v2<T extends unknown[]>(
+export function Command<T extends unknown[]>(
     meta: CommandMetadata<T>,
     handler: CommandHandler<T>
-): Command_v2<T> {
+): Command<T> {
     return { meta, handler };
 }
-
-// export type Command = {
-//     aliases?: readonly string[];
-//     parameters: readonly CommandParameter[];
-//     permissions: readonly PermissionResolvable[];
-//     accept_remainder_arg?: boolean;
-
-//     execute(
-//         request: ValidatedCommandRequest,
-//         ...args: unknown[]
-//     ): Promise<CommandResponse>;
-// };
-
-// // casting arbitrary object to `Command` bypasses some type checks (particularly
-// // return type of `execute`), so we use this constructor function instead
-// export function Command(command: Command): Command {
-//     return command;
-// }

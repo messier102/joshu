@@ -2,14 +2,14 @@ import path from "path";
 import fs from "fs/promises";
 import { CommandRequest } from "./request";
 import { CommandExecutor } from "./executor";
-import { Command_v2 } from "./command";
+import { Command } from "./command";
 import { find_similar_string, Weights } from "../find_similar_string";
 import { CommandResponse } from "./response";
 
 export class CommandRouter {
     private readonly command_routes: Map<
         string,
-        Command_v2<unknown[]>
+        Command<unknown[]>
     > = new Map();
 
     constructor() {
@@ -23,7 +23,7 @@ export class CommandRouter {
         for (const filename of filenames) {
             const command_file = path.join(commands_dir, filename);
             const command_module = await import(command_file);
-            const command: Command_v2<unknown[]> = command_module.default;
+            const command: Command<unknown[]> = command_module.default;
 
             const command_name = filename.split(".")[0];
 

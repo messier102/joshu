@@ -1,7 +1,7 @@
-import { Command_v2 } from "../command";
+import { Command } from "../command";
 import { CommandResponse } from "../response";
 
-export default Command_v2(
+export default Command(
     {
         parameters: [],
         permissions: [],

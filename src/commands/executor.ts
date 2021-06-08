@@ -1,5 +1,5 @@
 import { CommandRequest, ValidatedCommandRequest } from "./request";
-import { Command_v2 } from "./command";
+import { Command } from "./command";
 import { split_args } from "./split_args";
 import { Err, Ok, Result } from "ts-results";
 import { assert } from "node:console";
@@ -8,7 +8,7 @@ import { CommandResponse, CommandResponseError } from "./response";
 import { MessageEmbed } from "discord.js";
 
 export class CommandExecutor {
-    constructor(private readonly command: Command_v2<unknown[]>) {}
+    constructor(private readonly command: Command<unknown[]>) {}
 
     usage(): string {
         return this.command.meta.parameters.join(" ");

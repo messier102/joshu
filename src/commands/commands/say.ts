@@ -1,10 +1,10 @@
 import { ValidatedCommandRequest } from "../request";
-import { CommandParameter, Command_v2 } from "../command";
+import { CommandParameter, Command } from "../command";
 import SnowflakeConverter from "../type_converters/SnowflakeConverter";
 import StringConverter from "../type_converters/StringConverter";
 import { CommandResponse } from "../response";
 
-export default Command_v2(
+export default Command(
     {
         parameters: [
             new CommandParameter("target channel id", SnowflakeConverter),

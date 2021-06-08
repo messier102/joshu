@@ -1,5 +1,5 @@
 import { ValidatedCommandRequest } from "../request";
-import { CommandParameter, Command_v2 } from "../command";
+import { CommandParameter, Command } from "../command";
 import StringConverter from "../type_converters/StringConverter";
 import {
     absolute_url,
@@ -12,7 +12,7 @@ import { CommandResponse, CommandResponseOk } from "../response";
 import { Post } from "snoots";
 import { MessageEmbed } from "discord.js";
 
-export default Command_v2(
+export default Command(
     {
         aliases: ["rr"],
 
