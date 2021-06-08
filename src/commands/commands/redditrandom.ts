@@ -12,7 +12,7 @@ import { CommandResponse, CommandResponseOk } from "../response";
 import { Post } from "snoots";
 import { MessageEmbed } from "discord.js";
 
-export default Command(
+export default new Command(
     {
         aliases: ["rr"],
 

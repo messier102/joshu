@@ -5,7 +5,7 @@ import { reddit } from "../../services/reddit";
 import { CommandResponse, CommandResponseOk } from "../response";
 import { pluralize } from "../../util";
 
-export default Command(
+export default new Command(
     {
         parameters: [],
         permissions: [Permissions.FLAGS.MANAGE_GUILD],

@@ -7,7 +7,7 @@ import { absolute_url, post_stats, reddit } from "../../services/reddit";
 import { CommandResponse, CommandResponseOk } from "../response";
 import { Post } from "snoots";
 
-export default Command(
+export default new Command(
     {
         parameters: [new CommandParameter("post title", StringConverter)],
         permissions: [

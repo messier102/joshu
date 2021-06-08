@@ -1,7 +1,7 @@
 import { Command } from "../command";
 import { CommandResponse } from "../response";
 
-export default Command(
+export default new Command(
     {
         parameters: [],
         permissions: [],

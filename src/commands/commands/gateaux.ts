@@ -4,7 +4,7 @@ import { CommandResponse, CommandResponseOk } from "../response";
 import { EmbedFieldData, MessageEmbed } from "discord.js";
 import type { Post } from "snoots";
 
-export default Command(
+export default new Command(
     {
         parameters: [],
         permissions: [],

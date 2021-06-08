@@ -5,7 +5,7 @@ import MentionConverter from "../type_converters/MentionConverter";
 import StringConverter from "../type_converters/StringConverter";
 import { CommandResponse } from "../response";
 
-export default Command(
+export default new Command(
     {
         parameters: [
             new CommandParameter("target user id", MentionConverter),

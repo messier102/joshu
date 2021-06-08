@@ -3,7 +3,7 @@ import { CommandParameter, Command } from "../command";
 import StringConverter from "../type_converters/StringConverter";
 import { CommandResponse } from "../response";
 
-export default Command(
+export default new Command(
     {
         parameters: [new CommandParameter("message", StringConverter)],
         permissions: [],

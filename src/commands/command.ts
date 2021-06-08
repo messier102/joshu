@@ -14,10 +14,14 @@ export class CommandParameter<T> {
     }
 }
 
+type CommandParameters<ParamTypes extends unknown[]> = {
+    [Key in keyof ParamTypes]: CommandParameter<ParamTypes[Key]>;
+};
+
 type CommandMetadata<T extends unknown[]> = {
-    aliases?: readonly string[];
-    parameters: { [P in keyof T]: CommandParameter<T[P]> };
-    permissions: readonly PermissionResolvable[];
+    aliases?: string[];
+    parameters: CommandParameters<T>;
+    permissions: PermissionResolvable[];
     accept_remainder_arg?: boolean;
 };
 
@@ -26,14 +30,9 @@ type CommandHandler<T extends unknown[]> = (
     ...args: T
 ) => Promise<CommandResponse>;
 
-export type Command<T extends unknown[]> = {
-    meta: CommandMetadata<T>;
-    handler: CommandHandler<T>;
-};
-
-export function Command<T extends unknown[]>(
-    meta: CommandMetadata<T>,
-    handler: CommandHandler<T>
-): Command<T> {
-    return { meta, handler };
+export class Command<T extends unknown[]> {
+    constructor(
+        public readonly meta: CommandMetadata<T>,
+        public readonly handler: CommandHandler<T>
+    ) {}
 }

@@ -16,7 +16,7 @@ import MentionConverter from "../type_converters/MentionConverter";
 import { None, Option, Some } from "ts-results";
 import { CommandResponse, CommandResponseOk } from "../response";
 
-export default Command(
+export default new Command(
     {
         aliases: [
             "axe",

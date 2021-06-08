@@ -5,7 +5,7 @@ import PositiveNumberConverter from "../type_converters/PositiveNumberConverter"
 import { convert_currency } from "../../services/coinmarketcap";
 import { CommandResponse } from "../response";
 
-export default Command(
+export default new Command(
     {
         aliases: ["convert", "conv"],
 
