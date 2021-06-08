@@ -1,4 +1,4 @@
-import { CommandRequest } from "../request";
+import { ValidatedCommandRequest } from "../request";
 import { Command } from "../command";
 import { absolute_url, post_stats, reddit } from "../../services/reddit";
 import { CommandResponse, CommandResponseOk } from "../response";
@@ -9,7 +9,7 @@ export default Command({
     parameters: [],
     permissions: [],
 
-    async execute(_: CommandRequest): Promise<CommandResponse> {
+    async execute(_: ValidatedCommandRequest): Promise<CommandResponse> {
         try {
             const bot_user = await reddit.users.fetchMe();
             const posts_listing = bot_user.getPosts();

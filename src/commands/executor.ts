@@ -1,4 +1,4 @@
-import { CommandRequest } from "./request";
+import { CommandRequest, ValidatedCommandRequest } from "./request";
 import { Command } from "./command";
 import { split_args } from "./split_args";
 import { Err, Ok, Result } from "ts-results";
@@ -42,7 +42,7 @@ export class CommandExecutor {
         }
 
         const execution_result = await this.command.execute(
-            request,
+            request as ValidatedCommandRequest,
             ...parsed_args.val
         );
         return execution_result;

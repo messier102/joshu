@@ -1,4 +1,4 @@
-import { CommandRequest } from "../request";
+import { ValidatedCommandRequest } from "../request";
 import { CommandParameter, Command } from "../command";
 import {
     Client,
@@ -37,7 +37,7 @@ export default Command({
     permissions: [Permissions.FLAGS.BAN_MEMBERS],
 
     async execute(
-        { name, source }: CommandRequest,
+        { name, source }: ValidatedCommandRequest,
         target_user_id_or_tag: string
     ): Promise<CommandResponse> {
         const maybe_target_user = await resolve_user(
@@ -56,8 +56,7 @@ export default Command({
         }
 
         const source_member = source.member;
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const target_member = source.guild!.member(target_user);
+        const target_member = source.guild.member(target_user);
         if (
             source_member &&
             target_member &&
@@ -70,8 +69,7 @@ export default Command({
         }
 
         try {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            await source.guild!.members.ban(target_user);
+            await source.guild.members.ban(target_user);
         } catch (e) {
             return CommandResponse.Error(
                 "sorry, I can't ban that user.\n" +

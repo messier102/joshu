@@ -1,4 +1,4 @@
-import { CommandRequest } from "../request";
+import { ValidatedCommandRequest } from "../request";
 import { Command } from "../command";
 import { MessageEmbed, Permissions } from "discord.js";
 import { reddit } from "../../services/reddit";
@@ -11,10 +11,11 @@ export default Command({
 
     accept_remainder_arg: true,
 
-    async execute({ source }: CommandRequest): Promise<CommandResponse> {
+    async execute({
+        source,
+    }: ValidatedCommandRequest): Promise<CommandResponse> {
         let total_invite_uses = 0;
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const old_invites = await source.guild!.fetchInvites();
+        const old_invites = await source.guild.fetchInvites();
         for (const [_, old_invite] of old_invites) {
             if (old_invite.inviter === source.client.user) {
                 total_invite_uses += old_invite.uses ?? 0;

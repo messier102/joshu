@@ -1,4 +1,4 @@
-import { CommandRequest } from "../request";
+import { ValidatedCommandRequest } from "../request";
 import { CommandParameter, Command } from "../command";
 import StringConverter from "../type_converters/StringConverter";
 import PositiveNumberConverter from "../type_converters/PositiveNumberConverter";
@@ -16,7 +16,7 @@ export default Command({
     permissions: [],
 
     async execute(
-        _: CommandRequest,
+        _: ValidatedCommandRequest,
         base_currency: string,
         target_currency: string,
         amount: number
