@@ -22,9 +22,9 @@ export class CommandExecutor {
             request.args
         );
 
-        if (this.command.server_only && !request.source.guild) {
+        if (!request.source.guild) {
             return CommandResponse.Error(
-                "This command works only in a server."
+                "Sorry, I don't accept commands in DMs."
             );
         }
 

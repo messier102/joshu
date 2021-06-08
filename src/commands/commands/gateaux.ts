@@ -9,8 +9,6 @@ export default Command({
     parameters: [],
     permissions: [],
 
-    server_only: true,
-
     async execute(_: CommandRequest): Promise<CommandResponse> {
         try {
             const bot_user = await reddit.users.fetchMe();

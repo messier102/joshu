@@ -12,7 +12,6 @@ export default Command({
         new CommandParameter("role color", StringConverter),
     ],
     permissions: [Permissions.FLAGS.MANAGE_ROLES],
-    server_only: true,
 
     async execute(
         { source }: CommandRequest,

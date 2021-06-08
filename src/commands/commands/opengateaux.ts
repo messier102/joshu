@@ -15,8 +15,6 @@ export default Command({
     ],
 
     accept_remainder_arg: true,
-    server_only: true,
-
     async execute(
         { source }: CommandRequest,
         post_title: string

@@ -19,7 +19,6 @@ export type Command = {
     parameters: readonly CommandParameter[];
     permissions: readonly PermissionResolvable[];
     accept_remainder_arg?: boolean;
-    server_only?: boolean;
 
     execute(
         request: CommandRequest,
