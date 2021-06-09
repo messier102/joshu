@@ -10,9 +10,9 @@ import {
 import dedent from "ts-dedent";
 import sample from "lodash/sample";
 import MentionConverter from "../type_converters/MentionConverter";
-// import SnowflakeConverter from "../type_converters/SnowflakeConverter";
-// import UserTagConverter from "../type_converters/UserTagConverter";
-// import { any } from "../type_converters/any";
+import SnowflakeConverter from "../type_converters/SnowflakeConverter";
+import UserTagConverter from "../type_converters/UserTagConverter";
+import { either } from "../type_converters/either";
 import { None, Option, Some } from "ts-results";
 import { CommandResponse, CommandResponseOk } from "../response";
 
@@ -32,8 +32,7 @@ export default new Command(
         parameters: [
             new CommandParameter(
                 "target user",
-                MentionConverter
-                // any(MentionConverter, SnowflakeConverter, UserTagConverter)
+                either(MentionConverter, SnowflakeConverter, UserTagConverter)
             ),
         ],
         permissions: [Permissions.FLAGS.BAN_MEMBERS],
