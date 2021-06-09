@@ -5,22 +5,24 @@ import PositiveNumberConverter from "../type_converters/PositiveNumberConverter"
 import { convert_currency } from "../../services/coinmarketcap";
 import { CommandResponse } from "../response";
 
-export default Command({
-    aliases: ["convert", "conv"],
+export default new Command(
+    {
+        aliases: ["convert", "conv"],
 
-    parameters: [
-        new CommandParameter("base currency", StringConverter),
-        new CommandParameter("target currency", StringConverter),
-        new CommandParameter("amount", PositiveNumberConverter),
-    ],
-    permissions: [],
+        parameters: [
+            new CommandParameter("base currency", StringConverter),
+            new CommandParameter("target currency", StringConverter),
+            new CommandParameter("amount", PositiveNumberConverter),
+        ],
+        permissions: [],
+    },
 
-    async execute(
+    async (
         _: ValidatedCommandRequest,
         base_currency: string,
         target_currency: string,
         amount: number
-    ): Promise<CommandResponse> {
+    ) => {
         base_currency = base_currency.toUpperCase();
         target_currency = target_currency.toUpperCase();
 
@@ -50,8 +52,8 @@ export default Command({
             const error_message = conversion_result.val;
             return CommandResponse.Error(`API error: ${error_message}.`);
         }
-    },
-});
+    }
+);
 
 /**
  * Formats a floating point number into a human-readable decimal representation

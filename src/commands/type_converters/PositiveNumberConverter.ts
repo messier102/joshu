@@ -1,7 +1,7 @@
 import { ConversionError, TypeConverter } from "./TypeConverter";
 import { Err, Ok, Result } from "ts-results";
 
-export default <TypeConverter>{
+export default TypeConverter({
     type: "positive number",
 
     convert(value: string): Result<number, ConversionError> {
@@ -14,4 +14,4 @@ export default <TypeConverter>{
 
         return Ok(Number.parseFloat(match[0]));
     },
-};
+});

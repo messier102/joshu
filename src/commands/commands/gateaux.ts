@@ -1,15 +1,16 @@
-import { ValidatedCommandRequest } from "../request";
 import { Command } from "../command";
 import { absolute_url, post_stats, reddit } from "../../services/reddit";
 import { CommandResponse, CommandResponseOk } from "../response";
 import { EmbedFieldData, MessageEmbed } from "discord.js";
 import type { Post } from "snoots";
 
-export default Command({
-    parameters: [],
-    permissions: [],
+export default new Command(
+    {
+        parameters: [],
+        permissions: [],
+    },
 
-    async execute(_: ValidatedCommandRequest): Promise<CommandResponse> {
+    async () => {
         try {
             const bot_user = await reddit.users.fetchMe();
             const posts_listing = bot_user.getPosts();
@@ -25,8 +26,8 @@ export default Command({
         } catch (reason) {
             return CommandResponse.Error(`Reddit error: \`${reason}\``);
         }
-    },
-});
+    }
+);
 
 class GateauxOpenOk extends CommandResponseOk {
     constructor(public readonly posts: Post[]) {

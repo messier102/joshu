@@ -5,15 +5,15 @@ import { reddit } from "../../services/reddit";
 import { CommandResponse, CommandResponseOk } from "../response";
 import { pluralize } from "../../util";
 
-export default Command({
-    parameters: [],
-    permissions: [Permissions.FLAGS.MANAGE_GUILD],
+export default new Command(
+    {
+        parameters: [],
+        permissions: [Permissions.FLAGS.MANAGE_GUILD],
 
-    accept_remainder_arg: true,
+        accept_remainder_arg: true,
+    },
 
-    async execute({
-        source,
-    }: ValidatedCommandRequest): Promise<CommandResponse> {
+    async ({ source }: ValidatedCommandRequest) => {
         let total_invite_uses = 0;
         const old_invites = await source.guild.fetchInvites();
         for (const [_, old_invite] of old_invites) {
@@ -38,8 +38,8 @@ export default Command({
                 `Reddit error: \`${reason.toString()}\``
             );
         }
-    },
-});
+    }
+);
 
 class GateauxClosedOk extends CommandResponseOk {
     constructor(public readonly total_invite_uses: number) {

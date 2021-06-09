@@ -1,13 +1,15 @@
 import path from "path";
 import fs from "fs/promises";
 import { CommandRequest } from "./request";
-import { CommandExecutor } from "./executor";
 import { Command } from "./command";
 import { find_similar_string, Weights } from "../find_similar_string";
 import { CommandResponse } from "./response";
 
 export class CommandRouter {
-    private readonly command_routes: Map<string, Command> = new Map();
+    private readonly command_routes: Map<
+        string,
+        Command<unknown[]>
+    > = new Map();
 
     constructor() {
         this.load_routes();
@@ -20,14 +22,14 @@ export class CommandRouter {
         for (const filename of filenames) {
             const command_file = path.join(commands_dir, filename);
             const command_module = await import(command_file);
-            const command: Command = command_module.default;
+            const command: Command<unknown[]> = command_module.default;
 
             const command_name = filename.split(".")[0];
 
             this.command_routes.set(command_name, command);
 
-            if (command.aliases) {
-                for (const alias of command.aliases) {
+            if (command.meta.aliases) {
+                for (const alias of command.meta.aliases) {
                     if (this.command_routes.has(alias)) {
                         console.log(
                             `Command alias collision: ${alias} already registered`
@@ -57,9 +59,7 @@ export class CommandRouter {
             return CommandResponse.Error(no_such_command_message);
         }
 
-        const executor = new CommandExecutor(command);
-
-        return await executor.execute(request);
+        return await command.execute(request);
     }
 
     private find_similar_commands(command_name: string): string[] {

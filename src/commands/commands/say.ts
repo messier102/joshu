@@ -4,20 +4,22 @@ import SnowflakeConverter from "../type_converters/SnowflakeConverter";
 import StringConverter from "../type_converters/StringConverter";
 import { CommandResponse } from "../response";
 
-export default Command({
-    parameters: [
-        new CommandParameter("target channel id", SnowflakeConverter),
-        new CommandParameter("message", StringConverter),
-    ],
-    permissions: [],
+export default new Command(
+    {
+        parameters: [
+            new CommandParameter("target channel id", SnowflakeConverter),
+            new CommandParameter("message", StringConverter),
+        ],
+        permissions: [],
 
-    accept_remainder_arg: true,
+        accept_remainder_arg: true,
+    },
 
-    async execute(
+    async (
         { source }: ValidatedCommandRequest,
         target_channel_id: string,
         message: string
-    ): Promise<CommandResponse> {
+    ) => {
         const target_channel = await source.client.channels.fetch(
             target_channel_id
         );
@@ -29,5 +31,5 @@ export default Command({
 
         target_channel.send(message);
         return CommandResponse.Ok("Message sent.");
-    },
-});
+    }
+);
