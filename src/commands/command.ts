@@ -23,6 +23,8 @@ type CommandParameters<ParamTypes extends unknown[]> = {
 };
 
 type CommandMetadata<T extends unknown[]> = {
+    name: string;
+    description: string;
     aliases?: string[];
     parameters: CommandParameters<T>;
     permissions: PermissionResolvable[];
@@ -34,11 +36,34 @@ type CommandHandler<T extends unknown[]> = (
     ...args: T
 ) => Promise<CommandResponse>;
 
+class CommandResponseHelp implements CommandResponse {
+    constructor(public readonly meta: CommandMetadata<unknown[]>) {}
+
+    to_embed(): MessageEmbed {
+        return new MessageEmbed()
+            .setColor("BLUE")
+            .setTitle(this.meta.name)
+            .setDescription(
+                this.meta.description ?? "TODO: command description"
+            )
+            .addFields(
+                this.meta.parameters.map((param) => ({
+                    name: `${param.name} (${param.type_converter.type})`,
+                    value: "TODO: param description",
+                }))
+            );
+    }
+}
+
 export class Command<T extends unknown[]> {
     constructor(
         public readonly meta: CommandMetadata<T>,
         public readonly handler: CommandHandler<T>
     ) {}
+
+    help(): CommandResponse {
+        return new CommandResponseHelp(this.meta);
+    }
 
     async execute(request: CommandRequest): Promise<CommandResponse> {
         // TODO: proper logging

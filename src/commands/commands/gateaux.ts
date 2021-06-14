@@ -6,6 +6,10 @@ import type { Post } from "snoots";
 
 export default new Command(
     {
+        name: "gateaux",
+        description:
+            "Displays the information about currently active Reddit advertising posts created by `opengateaux`.",
+
         parameters: [],
         permissions: [],
     },

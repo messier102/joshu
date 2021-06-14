@@ -6,9 +6,15 @@ import config from "../../../data/config";
 import { absolute_url, post_stats, reddit } from "../../services/reddit";
 import { CommandResponse, CommandResponseOk } from "../response";
 import { Post } from "snoots";
+import dedent from "ts-dedent";
 
 export default new Command(
     {
+        name: "opengateaux",
+        description: dedent`
+            Creates a new invite link and posts it to r/discordservers with the given title.
+        `,
+
         parameters: [new CommandParameter("post title", StringConverter)],
         permissions: [
             Permissions.FLAGS.CREATE_INSTANT_INVITE,

@@ -4,9 +4,15 @@ import StringConverter from "../type_converters/StringConverter";
 import PositiveNumberConverter from "../type_converters/PositiveNumberConverter";
 import { convert_currency } from "../../services/coinmarketcap";
 import { CommandResponse } from "../response";
+import dedent from "ts-dedent";
 
 export default new Command(
     {
+        name: "exchange",
+        description: dedent`
+            Converts a given amount from one currency to another using the latest market data.
+            Supports currencies of most countries, as well as cryptocurrencies.
+        `,
         aliases: ["convert", "conv"],
 
         parameters: [

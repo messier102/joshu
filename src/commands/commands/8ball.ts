@@ -7,6 +7,9 @@ import { sample } from "lodash";
 
 export default new Command(
     {
+        name: "8ball",
+        description: "Gives randomized yes/no answers to users' questions.",
+
         parameters: [new CommandParameter("question", StringConverter)],
         permissions: [],
 

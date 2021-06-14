@@ -6,6 +6,9 @@ import { CommandResponse } from "../response";
 
 export default new Command(
     {
+        name: "say",
+        description: "Posts the given message in the given channel.",
+
         parameters: [
             new CommandParameter("target channel id", SnowflakeConverter),
             new CommandParameter("message", StringConverter),

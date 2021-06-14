@@ -5,6 +5,9 @@ import { CommandResponse } from "../response";
 
 export default new Command(
     {
+        name: "echo",
+        description: "Prints back the provided message.",
+
         parameters: [new CommandParameter("message", StringConverter)],
         permissions: [],
 

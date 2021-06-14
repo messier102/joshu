@@ -7,6 +7,10 @@ import { CommandResponse } from "../response";
 
 export default new Command(
     {
+        name: "giverole",
+        description:
+            "Creates a new role with the given name and color and assigns it to the given user.",
+
         parameters: [
             new CommandParameter("target user id", MentionConverter),
             new CommandParameter("role name", StringConverter),

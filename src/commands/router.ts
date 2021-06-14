@@ -4,6 +4,7 @@ import { CommandRequest } from "./request";
 import { Command } from "./command";
 import { find_similar_string, Weights } from "../find_similar_string";
 import { CommandResponse } from "./response";
+import { MessageEmbed } from "discord.js";
 
 export class CommandRouter {
     private readonly command_routes: Map<
@@ -46,20 +47,47 @@ export class CommandRouter {
     }
 
     async route_request(request: CommandRequest): Promise<CommandResponse> {
-        const command = this.command_routes.get(request.name);
+        if (request.name === "help") {
+            if (request.args) {
+                const command = this.command_routes.get(request.args);
 
-        if (!command) {
-            const similar_commands = this.find_similar_commands(request.name);
+                if (!command) {
+                    const similar_commands = this.find_similar_commands(
+                        request.args
+                    );
 
-            const no_such_command_message =
-                similar_commands.length > 0
-                    ? `sorry, no such command. Did you mean \`${similar_commands[0]}\`?`
-                    : "sorry, no such command.";
+                    const no_such_command_message =
+                        similar_commands.length > 0
+                            ? `sorry, no such command. Did you mean \`${similar_commands[0]}\`?`
+                            : "sorry, no such command.";
 
-            return CommandResponse.Error(no_such_command_message);
+                    return CommandResponse.Error(no_such_command_message);
+                }
+
+                return command.help();
+            } else {
+                const command_names = [...this.command_routes.keys()];
+
+                return new CommandResponseHelpList(command_names);
+            }
+        } else {
+            const command = this.command_routes.get(request.name);
+
+            if (!command) {
+                const similar_commands = this.find_similar_commands(
+                    request.name
+                );
+
+                const no_such_command_message =
+                    similar_commands.length > 0
+                        ? `sorry, no such command. Did you mean \`${similar_commands[0]}\`?`
+                        : "sorry, no such command.";
+
+                return CommandResponse.Error(no_such_command_message);
+            }
+
+            return await command.execute(request);
         }
-
-        return await command.execute(request);
     }
 
     private find_similar_commands(command_name: string): string[] {
@@ -77,5 +105,17 @@ export class CommandRouter {
             max_distance,
             command_name
         );
+    }
+}
+
+class CommandResponseHelpList implements CommandResponse {
+    constructor(public readonly command_names: string[]) {}
+
+    to_embed(): MessageEmbed {
+        return new MessageEmbed()
+            .setColor("BLUE")
+            .setTitle("Available commands")
+            .setDescription(this.command_names.join("\n"))
+            .setFooter(`Use "help <command>" for more information.`);
     }
 }

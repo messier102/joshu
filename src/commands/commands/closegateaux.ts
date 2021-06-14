@@ -7,6 +7,10 @@ import { pluralize } from "../../util";
 
 export default new Command(
     {
+        name: "closegateaux",
+        description:
+            "Deletes advertising posts created by `opengateaux`, as well as associated invites.",
+
         parameters: [],
         permissions: [Permissions.FLAGS.MANAGE_GUILD],
 

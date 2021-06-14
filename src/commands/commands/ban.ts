@@ -18,6 +18,8 @@ import { CommandResponse, CommandResponseOk } from "../response";
 
 export default new Command(
     {
+        name: "ban",
+        description: "Permanently bans a user from the server.",
         aliases: [
             "axe",
             "expire",
