@@ -41,7 +41,7 @@ class CommandResponseHelp implements CommandResponse {
     constructor(public readonly meta: CommandMetadata<unknown[]>) {}
 
     to_embed(): MessageEmbed {
-        return new MessageEmbed()
+        const embed = new MessageEmbed()
             .setColor("BLUE")
             .setTitle(this.meta.name)
             .setDescription(this.meta.description)
@@ -51,6 +51,12 @@ class CommandResponseHelp implements CommandResponse {
                     value: param.description,
                 }))
             );
+
+        if (this.meta.aliases) {
+            embed.addField("Aliases", this.meta.aliases.sort().join(", "));
+        }
+
+        return embed;
     }
 }
 
