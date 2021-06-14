@@ -114,6 +114,7 @@ class CommandResponseHelpList implements CommandResponse {
     to_embed(): MessageEmbed {
         return new MessageEmbed()
             .setColor("BLUE")
+            .setThumbnail("https://b.catgirlsare.sexy/LKkQS5_G.png")
             .setTitle("Available commands")
             .setDescription(this.command_names.join("\n"))
             .setFooter(`Use "help <command>" for more information.`);

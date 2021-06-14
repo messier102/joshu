@@ -43,14 +43,20 @@ class CommandResponseHelp implements CommandResponse {
     to_embed(): MessageEmbed {
         const embed = new MessageEmbed()
             .setColor("BLUE")
+            .setThumbnail("https://b.catgirlsare.sexy/LKkQS5_G.png")
             .setTitle(this.meta.name)
-            .setDescription(this.meta.description)
-            .addFields(
-                this.meta.parameters.map((param) => ({
-                    name: `${param.name} (${param.type_converter.type})`,
-                    value: param.description,
-                }))
-            );
+            .setDescription(this.meta.description);
+
+        if (this.meta.parameters.length > 0) {
+            const format_param = (param: CommandParameter<unknown>) =>
+                `**${param.name}** \u2014 (${param.type_converter.type}) ${param.description}`;
+
+            const formatted_params = this.meta.parameters
+                .map(format_param)
+                .join("\n");
+
+            embed.addField("Parameters", formatted_params);
+        }
 
         if (this.meta.aliases) {
             embed.addField("Aliases", this.meta.aliases.sort().join(", "));
