@@ -10,8 +10,16 @@ export default new Command(
         description: "Posts the given message in the given channel.",
 
         parameters: [
-            new CommandParameter("target channel id", SnowflakeConverter),
-            new CommandParameter("message", StringConverter),
+            new CommandParameter(
+                "target channel id",
+                SnowflakeConverter,
+                "The channel to post the message to."
+            ),
+            new CommandParameter(
+                "message",
+                StringConverter,
+                "The message to post."
+            ),
         ],
         permissions: [],
 

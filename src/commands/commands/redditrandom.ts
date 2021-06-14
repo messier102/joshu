@@ -18,7 +18,13 @@ export default new Command(
         description: "Displays a random recent post from a given subreddit.",
         aliases: ["rr"],
 
-        parameters: [new CommandParameter("subreddit", StringConverter)],
+        parameters: [
+            new CommandParameter(
+                "subreddit",
+                StringConverter,
+                "The subreddit to get a post from."
+            ),
+        ],
         permissions: [],
     },
 

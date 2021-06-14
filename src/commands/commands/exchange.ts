@@ -16,9 +16,21 @@ export default new Command(
         aliases: ["convert", "conv"],
 
         parameters: [
-            new CommandParameter("base currency", StringConverter),
-            new CommandParameter("target currency", StringConverter),
-            new CommandParameter("amount", PositiveNumberConverter),
+            new CommandParameter(
+                "base currency",
+                StringConverter,
+                "The currency to convert from."
+            ),
+            new CommandParameter(
+                "target currency",
+                StringConverter,
+                "The currency to convert to."
+            ),
+            new CommandParameter(
+                "amount",
+                PositiveNumberConverter,
+                "The amount of the base currency to convert."
+            ),
         ],
         permissions: [],
     },

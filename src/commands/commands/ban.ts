@@ -34,7 +34,8 @@ export default new Command(
         parameters: [
             new CommandParameter(
                 "target user",
-                either(MentionConverter, SnowflakeConverter, UserTagConverter)
+                either(MentionConverter, SnowflakeConverter, UserTagConverter),
+                "The user to ban."
             ),
         ],
         permissions: [Permissions.FLAGS.BAN_MEMBERS],

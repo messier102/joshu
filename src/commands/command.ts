@@ -10,7 +10,8 @@ import { zip } from "../util";
 export class CommandParameter<T> {
     constructor(
         public readonly name: string,
-        public readonly type_converter: TypeConverter<T>
+        public readonly type_converter: TypeConverter<T>,
+        public readonly description: string
     ) {}
 
     toString(): string {
@@ -43,13 +44,11 @@ class CommandResponseHelp implements CommandResponse {
         return new MessageEmbed()
             .setColor("BLUE")
             .setTitle(this.meta.name)
-            .setDescription(
-                this.meta.description ?? "TODO: command description"
-            )
+            .setDescription(this.meta.description)
             .addFields(
                 this.meta.parameters.map((param) => ({
                     name: `${param.name} (${param.type_converter.type})`,
-                    value: "TODO: param description",
+                    value: param.description,
                 }))
             );
     }

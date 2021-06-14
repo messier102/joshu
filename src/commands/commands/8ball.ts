@@ -10,7 +10,13 @@ export default new Command(
         name: "8ball",
         description: "Gives randomized yes/no answers to users' questions.",
 
-        parameters: [new CommandParameter("question", StringConverter)],
+        parameters: [
+            new CommandParameter(
+                "question",
+                StringConverter,
+                "User's question."
+            ),
+        ],
         permissions: [],
 
         accept_remainder_arg: true,

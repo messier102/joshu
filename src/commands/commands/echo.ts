@@ -8,7 +8,13 @@ export default new Command(
         name: "echo",
         description: "Prints back the provided message.",
 
-        parameters: [new CommandParameter("message", StringConverter)],
+        parameters: [
+            new CommandParameter(
+                "message",
+                StringConverter,
+                "The message to print back."
+            ),
+        ],
         permissions: [],
 
         accept_remainder_arg: true,

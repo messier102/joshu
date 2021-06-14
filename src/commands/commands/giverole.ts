@@ -12,9 +12,21 @@ export default new Command(
             "Creates a new role with the given name and color and assigns it to the given user.",
 
         parameters: [
-            new CommandParameter("target user id", MentionConverter),
-            new CommandParameter("role name", StringConverter),
-            new CommandParameter("role color", StringConverter),
+            new CommandParameter(
+                "target user id",
+                MentionConverter,
+                "The user to give a role to."
+            ),
+            new CommandParameter(
+                "role name",
+                StringConverter,
+                "The name of the new role."
+            ),
+            new CommandParameter(
+                "role color",
+                StringConverter,
+                "The color of the new role."
+            ),
         ],
         permissions: [Permissions.FLAGS.MANAGE_ROLES],
     },

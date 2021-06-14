@@ -15,7 +15,13 @@ export default new Command(
             Creates a new invite link and posts it to r/discordservers with the given title.
         `,
 
-        parameters: [new CommandParameter("post title", StringConverter)],
+        parameters: [
+            new CommandParameter(
+                "post title",
+                StringConverter,
+                "The title of the Reddit post."
+            ),
+        ],
         permissions: [
             Permissions.FLAGS.CREATE_INSTANT_INVITE,
             Permissions.FLAGS.MANAGE_GUILD,
