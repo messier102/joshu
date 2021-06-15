@@ -91,7 +91,7 @@ export class CommandRouter {
     }
 
     private find_similar_commands(command_name: string): string[] {
-        const command_names = [...this.command_routes.keys()];
+        const command_names = [...this.command_routes.keys(), "help"];
         const weights: Weights = {
             substitution: 3,
             insertion: 0,
