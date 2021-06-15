@@ -64,7 +64,7 @@ export class CommandRouter {
                     return CommandResponse.Error(no_such_command_message);
                 }
 
-                return command.help();
+                return command.help(request.args);
             } else {
                 const command_names = [...this.command_routes.keys()];
 

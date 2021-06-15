@@ -45,7 +45,10 @@ type CommandHandler<T extends unknown[]> = (
 ) => Promise<CommandResponse>;
 
 class CommandResponseCommandHelp extends CommandResponseHelp {
-    constructor(public readonly meta: CommandMetadata<unknown[]>) {
+    constructor(
+        public readonly command_alias: string,
+        public readonly meta: CommandMetadata<unknown[]>
+    ) {
         super();
     }
 
@@ -57,7 +60,12 @@ class CommandResponseCommandHelp extends CommandResponseHelp {
 
         const embed = super
             .to_embed()
-            .setTitle(this.meta.name)
+            .setTitle(
+                this.meta.name +
+                    (this.command_alias !== this.meta.name
+                        ? `・alias *${this.command_alias}*`
+                        : "")
+            )
             .setDescription(this.meta.description)
             .addField("Usage", `\`${command_usage}\``);
 
@@ -99,8 +107,8 @@ export class Command<T extends unknown[]> {
         public readonly handler: CommandHandler<T>
     ) {}
 
-    help(): CommandResponse {
-        return new CommandResponseCommandHelp(this.meta);
+    help(command_alias: string): CommandResponse {
+        return new CommandResponseCommandHelp(command_alias, this.meta);
     }
 
     async execute(request: CommandRequest): Promise<CommandResponse> {
