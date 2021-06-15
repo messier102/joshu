@@ -57,8 +57,9 @@ class CommandResponseCommandHelp extends CommandResponseHelp {
 
         const embed = super
             .to_embed()
-            .setTitle(command_usage)
-            .setDescription(this.meta.description);
+            .setTitle(this.meta.name)
+            .setDescription(this.meta.description)
+            .addField("Usage", `\`${command_usage}\``);
 
         if (this.meta.parameters.length > 0) {
             const format_param = (param: CommandParameter<unknown>) =>
