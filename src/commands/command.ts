@@ -1,5 +1,9 @@
 import { MessageEmbed, PermissionResolvable } from "discord.js";
-import { CommandResponse, CommandResponseError } from "./response";
+import {
+    CommandResponse,
+    CommandResponseError,
+    CommandResponseHelp,
+} from "./response";
 import { CommandRequest, ValidatedCommandRequest } from "./request";
 import { TypeConverter } from "./type_converters/TypeConverter";
 import { Err, Ok, Result } from "ts-results";
@@ -37,13 +41,14 @@ type CommandHandler<T extends unknown[]> = (
     ...args: T
 ) => Promise<CommandResponse>;
 
-class CommandResponseHelp implements CommandResponse {
-    constructor(public readonly meta: CommandMetadata<unknown[]>) {}
+class CommandResponseCommandHelp extends CommandResponseHelp {
+    constructor(public readonly meta: CommandMetadata<unknown[]>) {
+        super();
+    }
 
     to_embed(): MessageEmbed {
-        const embed = new MessageEmbed()
-            .setColor("BLUE")
-            .setThumbnail("https://b.catgirlsare.sexy/LKkQS5_G.png")
+        const embed = super
+            .to_embed()
             .setTitle(this.meta.name)
             .setDescription(this.meta.description);
 
@@ -73,7 +78,7 @@ export class Command<T extends unknown[]> {
     ) {}
 
     help(): CommandResponse {
-        return new CommandResponseHelp(this.meta);
+        return new CommandResponseCommandHelp(this.meta);
     }
 
     async execute(request: CommandRequest): Promise<CommandResponse> {

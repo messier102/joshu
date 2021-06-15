@@ -3,7 +3,7 @@ import fs from "fs/promises";
 import { CommandRequest } from "./request";
 import { Command } from "./command";
 import { find_similar_string, Weights } from "../find_similar_string";
-import { CommandResponse } from "./response";
+import { CommandResponse, CommandResponseHelp } from "./response";
 import { MessageEmbed } from "discord.js";
 
 export class CommandRouter {
@@ -68,7 +68,7 @@ export class CommandRouter {
             } else {
                 const command_names = [...this.command_routes.keys()];
 
-                return new CommandResponseHelpList(command_names);
+                return new CommandResponseCommandList(command_names);
             }
         } else {
             const command = this.command_routes.get(request.name);
@@ -108,13 +108,14 @@ export class CommandRouter {
     }
 }
 
-class CommandResponseHelpList implements CommandResponse {
-    constructor(public readonly command_names: string[]) {}
+class CommandResponseCommandList extends CommandResponseHelp {
+    constructor(public readonly command_names: string[]) {
+        super();
+    }
 
     to_embed(): MessageEmbed {
-        return new MessageEmbed()
-            .setColor("BLUE")
-            .setThumbnail("https://b.catgirlsare.sexy/LKkQS5_G.png")
+        return super
+            .to_embed()
             .setTitle("Available commands")
             .setDescription(this.command_names.join("\n"))
             .setFooter(`Use "help <command>" for more information.`);
