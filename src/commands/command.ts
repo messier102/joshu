@@ -47,9 +47,14 @@ class CommandResponseCommandHelp extends CommandResponseHelp {
     }
 
     to_embed(): MessageEmbed {
+        const command_usage = [
+            this.meta.name,
+            ...this.meta.parameters.map((p) => p.toString()),
+        ].join(" ");
+
         const embed = super
             .to_embed()
-            .setTitle(this.meta.name)
+            .setTitle(command_usage)
             .setDescription(this.meta.description);
 
         if (this.meta.parameters.length > 0) {
