@@ -19,17 +19,20 @@ export default new Command(
             new CommandParameter(
                 "base currency",
                 StringConverter,
-                "The currency to convert from."
+                "The currency to convert from.",
+                ["USD", "GBP", "BTC"]
             ),
             new CommandParameter(
                 "target currency",
                 StringConverter,
-                "The currency to convert to."
+                "The currency to convert to.",
+                ["EUR", "RUB", "DOGE"]
             ),
             new CommandParameter(
                 "amount",
                 PositiveNumberConverter,
-                "The amount of the base currency to convert."
+                "The amount of the base currency to convert.",
+                ["1", "20", "13.05"]
             ),
         ],
         permissions: [],

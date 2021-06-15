@@ -12,7 +12,8 @@ export default new Command(
             new CommandParameter(
                 "message",
                 StringConverter,
-                "The message to print back."
+                "The message to print back.",
+                ["Hello world", "Ahh what a beautiful day"]
             ),
         ],
         permissions: [],

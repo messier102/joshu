@@ -14,7 +14,12 @@ export default new Command(
             new CommandParameter(
                 "question",
                 StringConverter,
-                "User's question."
+                "User's question.",
+                [
+                    "Is today going to be a good day?",
+                    "Should I sleep?",
+                    "Is dip into feet?",
+                ]
             ),
         ],
         permissions: [],

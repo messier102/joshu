@@ -22,7 +22,8 @@ export default new Command(
             new CommandParameter(
                 "subreddit",
                 StringConverter,
-                "The subreddit to get a post from."
+                "The subreddit to get a post from.",
+                ["r4r", "makenewfriendshere", "eyebleach"]
             ),
         ],
         permissions: [],

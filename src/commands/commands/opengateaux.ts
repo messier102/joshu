@@ -19,7 +19,12 @@ export default new Command(
             new CommandParameter(
                 "post title",
                 StringConverter,
-                "The title of the Reddit post."
+                "The title of the Reddit post.",
+                [
+                    "[21+] Cats 🐈 Coffee ☕ Bread 🍞",
+                    "[21+] cute people welcome",
+                    "[21+] yep cock",
+                ]
             ),
         ],
         permissions: [

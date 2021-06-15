@@ -15,17 +15,20 @@ export default new Command(
             new CommandParameter(
                 "target user id",
                 MentionConverter,
-                "The user to give a role to."
+                "The user to give a role to.",
+                ["@yuna", "@Momo", "@dip", "@assblaster69"]
             ),
             new CommandParameter(
                 "role name",
                 StringConverter,
-                "The name of the new role."
+                "The name of the new role.",
+                [`"certified friend of dip"`, "gorilla", "cutie"]
             ),
             new CommandParameter(
                 "role color",
                 StringConverter,
-                "The color of the new role."
+                "The color of the new role.",
+                ["RED", "#f3dda1", "3e3455"]
             ),
         ],
         permissions: [Permissions.FLAGS.MANAGE_ROLES],

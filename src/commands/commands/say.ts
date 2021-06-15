@@ -13,12 +13,14 @@ export default new Command(
             new CommandParameter(
                 "target channel id",
                 SnowflakeConverter,
-                "The channel to post the message to."
+                "The channel to post the message to.",
+                ["836905661819256862"]
             ),
             new CommandParameter(
                 "message",
                 StringConverter,
-                "The message to post."
+                "The message to post.",
+                ["Ahh what a beautiful day", "yep cock"]
             ),
         ],
         permissions: [],

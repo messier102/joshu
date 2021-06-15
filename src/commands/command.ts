@@ -10,12 +10,15 @@ import { Err, Ok, Result } from "ts-results";
 import { split_args } from "./split_args";
 import { assert } from "node:console";
 import { zip } from "../util";
+import { sample } from "lodash";
+import config from "../../data/config";
 
 export class CommandParameter<T> {
     constructor(
         public readonly name: string,
         public readonly type_converter: TypeConverter<T>,
-        public readonly description: string
+        public readonly description: string,
+        public readonly sample_values: string[]
     ) {}
 
     toString(): string {
@@ -70,6 +73,19 @@ class CommandResponseCommandHelp extends CommandResponseHelp {
 
         if (this.meta.aliases) {
             embed.addField("Aliases", this.meta.aliases.sort().join(", "));
+        }
+
+        if (this.meta.parameters.every((p) => p.sample_values)) {
+            const example_alias = sample([
+                this.meta.name,
+                ...(this.meta.aliases ?? []),
+            ]);
+            const example_usage = [
+                example_alias,
+                ...this.meta.parameters.map((p) => sample(p.sample_values)),
+            ].join(" ");
+
+            embed.setFooter(config.prefix + example_usage);
         }
 
         return embed;
