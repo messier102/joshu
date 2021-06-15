@@ -85,12 +85,8 @@ class CommandResponseCommandHelp extends CommandResponseHelp {
         }
 
         if (this.meta.parameters.every((p) => p.sample_values)) {
-            const example_alias = sample([
-                this.meta.name,
-                ...(this.meta.aliases ?? []),
-            ]);
             const example_usage = [
-                example_alias,
+                this.command_alias,
                 ...this.meta.parameters.map((p) => sample(p.sample_values)),
             ].join(" ");
 
