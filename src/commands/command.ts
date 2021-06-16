@@ -194,6 +194,8 @@ export class Command<T extends unknown[]> {
     }
 }
 
+export type AnyCommand = Command<unknown[]>;
+
 class ArgumentError extends CommandResponseError {
     constructor(
         public readonly reason: string,

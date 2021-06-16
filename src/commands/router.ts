@@ -1,12 +1,10 @@
 import path from "path";
 import fs from "fs/promises";
 import { CommandRequest } from "./request";
-import { Command } from "./command";
+import { AnyCommand } from "./command";
 import { find_similar_string, Weights } from "../find_similar_string";
 import { CommandResponse, CommandResponseHelp } from "./response";
 import { MessageEmbed } from "discord.js";
-
-type AnyCommand = Command<unknown[]>;
 
 export class CommandRouter {
     private readonly commands: Map<string, AnyCommand> = new Map();
