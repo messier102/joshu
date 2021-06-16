@@ -20,7 +20,7 @@ export abstract class CommandResponseHelp implements CommandResponse {
     to_embed(): MessageEmbed {
         return new MessageEmbed()
             .setColor("BLUE")
-            .setThumbnail("https://b.catgirlsare.sexy/LKkQS5_G.png");
+            .setThumbnail("https://b.catgirlsare.sexy/9fzZ6gjI.png");
     }
 }
 
