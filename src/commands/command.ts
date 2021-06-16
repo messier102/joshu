@@ -22,7 +22,7 @@ export class CommandParameter<T> {
     ) {}
 
     toString(): string {
-        return `<${this.name.split(" ").join("_")}>`;
+        return `<${this.name.split(" ").join("-")}>`;
     }
 }
 
@@ -71,7 +71,9 @@ class CommandResponseCommandHelp extends CommandResponseHelp {
 
         if (this.meta.parameters.length > 0) {
             const format_param = (param: CommandParameter<unknown>) =>
-                `**${param.name}** \u2014 (${param.type_converter.type}) ${param.description}`;
+                `**${param.name.split(" ").join("-")}** \u2014 (${
+                    param.type_converter.type
+                }) ${param.description}`;
 
             const formatted_params = this.meta.parameters
                 .map(format_param)
