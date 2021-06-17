@@ -5,7 +5,7 @@ import {
     CommandResponseHelp,
 } from "./response";
 import { CommandRequest, ValidatedCommandRequest } from "./request";
-import { Parser } from "./parsers/TypeConverter";
+import { Parser } from "./parsers/parser";
 import { Err, Ok, Result } from "ts-results";
 import { split_args } from "./split_args";
 import { assert } from "node:console";
@@ -15,20 +15,20 @@ import config from "../../data/config";
 
 type ParameterMetadata<T> = {
     readonly name: string;
-    readonly type: Parser<T>;
+    readonly parser: Parser<T>;
     readonly description: string;
     readonly examples: string[];
 };
 
 export class Parameter<T> {
-    name: string;
-    type: Parser<T>;
-    description: string;
-    examples: string[];
+    readonly name: string;
+    readonly parser: Parser<T>;
+    readonly description: string;
+    readonly examples: string[];
 
-    constructor({ name, type, description, examples }: ParameterMetadata<T>) {
+    constructor({ name, parser, description, examples }: ParameterMetadata<T>) {
         this.name = name;
-        this.type = type;
+        this.parser = parser;
         this.description = description;
         this.examples = examples;
     }
@@ -84,7 +84,7 @@ class CommandResponseCommandHelp extends CommandResponseHelp {
         if (this.meta.parameters.length > 0) {
             const format_param = (param: Parameter<unknown>) =>
                 `**${param.name.split(" ").join("-")}** \u2014 (${
-                    param.type.type
+                    param.parser.type
                 }) ${param.description}`;
 
             const formatted_params = this.meta.parameters
@@ -194,8 +194,8 @@ export class Command<T extends unknown[]> {
         const arg_param_pairs = [...zip(args, this.meta.parameters)];
 
         const maybe_converted_args = arg_param_pairs.map(([arg, param]) =>
-            param.type
-                .convert(arg)
+            param.parser
+                .parse(arg)
                 .mapErr(
                     (error) =>
                         `\`${error.actual_value}\` in parameter \`${param}\` is not a \`${error.expected_type}\``

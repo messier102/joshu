@@ -3,14 +3,14 @@ import { Result } from "ts-results";
 export interface Parser<T> {
     readonly type: string;
 
-    convert(value: string): Result<T, ConversionError>;
+    parse(value: string): Result<T, ParsingError>;
 }
 
-export function Parser<T>({ type, convert }: Parser<T>): Parser<T> {
-    return { type, convert };
+export function Parser<T>({ type, parse }: Parser<T>): Parser<T> {
+    return { type, parse };
 }
 
-export class ConversionError extends Error {
+export class ParsingError extends Error {
     constructor(
         public readonly expected_type: string,
         public readonly actual_value: string

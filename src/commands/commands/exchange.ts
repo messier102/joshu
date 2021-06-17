@@ -1,7 +1,7 @@
 import { ValidatedCommandRequest } from "../request";
 import { Parameter, Command } from "../command";
-import StringConverter from "../parsers/StringConverter";
-import PositiveNumberConverter from "../parsers/PositiveNumberConverter";
+import { pString } from "../parsers/String";
+import { pPositiveNumber } from "../parsers/PositiveNumber";
 import { convert_currency } from "../../services/coinmarketcap";
 import { CommandResponse } from "../response";
 import dedent from "ts-dedent";
@@ -19,19 +19,19 @@ export default new Command(
         parameters: [
             new Parameter({
                 name: "base currency",
-                type: StringConverter,
+                parser: pString,
                 description: "The currency to convert from.",
                 examples: ["USD", "GBP", "BTC"],
             }),
             new Parameter({
                 name: "target currency",
-                type: StringConverter,
+                parser: pString,
                 description: "The currency to convert to.",
                 examples: ["EUR", "RUB", "DOGE"],
             }),
             new Parameter({
                 name: "amount",
-                type: PositiveNumberConverter,
+                parser: pPositiveNumber,
                 description: "The amount of the base currency to convert.",
                 examples: ["1", "20", "13.05"],
             }),

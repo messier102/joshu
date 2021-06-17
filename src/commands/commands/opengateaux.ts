@@ -1,7 +1,7 @@
 import { ValidatedCommandRequest } from "../request";
 import { Parameter, Command } from "../command";
 import { EmbedFieldData, MessageEmbed, Permissions } from "discord.js";
-import StringConverter from "../parsers/StringConverter";
+import { pString } from "../parsers/String";
 import config from "../../../data/config";
 import { absolute_url, post_stats, reddit } from "../../services/reddit";
 import { CommandResponse, CommandResponseOk } from "../response";
@@ -20,7 +20,7 @@ export default new Command(
         parameters: [
             new Parameter({
                 name: "post title",
-                type: StringConverter,
+                parser: pString,
                 description: "The title of the Reddit post.",
                 examples: [
                     "[21+] Cats 🐈 Coffee ☕ Bread 🍞",

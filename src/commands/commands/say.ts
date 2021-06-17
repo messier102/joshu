@@ -1,7 +1,7 @@
 import { ValidatedCommandRequest } from "../request";
 import { Parameter, Command } from "../command";
-import SnowflakeConverter from "../parsers/SnowflakeConverter";
-import StringConverter from "../parsers/StringConverter";
+import { pSnowflake } from "../parsers/Snowflake";
+import { pString } from "../parsers/String";
 import { CommandResponse } from "../response";
 
 export default new Command(
@@ -12,13 +12,13 @@ export default new Command(
         parameters: [
             new Parameter({
                 name: "target channel id",
-                type: SnowflakeConverter,
+                parser: pSnowflake,
                 description: "The channel to post the message to.",
                 examples: ["836905661819256862"],
             }),
             new Parameter({
                 name: "message",
-                type: StringConverter,
+                parser: pString,
                 description: "The message to post.",
                 examples: ["Ahh what a beautiful day", "yep cock"],
             }),

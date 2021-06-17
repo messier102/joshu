@@ -9,9 +9,9 @@ import {
 } from "discord.js";
 import dedent from "ts-dedent";
 import sample from "lodash/sample";
-import MentionConverter from "../parsers/MentionConverter";
-import SnowflakeConverter from "../parsers/SnowflakeConverter";
-import UserTagConverter from "../parsers/UserTagConverter";
+import { pMention } from "../parsers/Mention";
+import { pSnowflake } from "../parsers/Snowflake";
+import { pUserTag } from "../parsers/UserTag";
 import { either } from "../parsers/either";
 import { None, Option, Some } from "ts-results";
 import { CommandResponse, CommandResponseOk } from "../response";
@@ -38,11 +38,7 @@ export default new Command(
         parameters: [
             new Parameter({
                 name: "target user",
-                type: either(
-                    MentionConverter,
-                    SnowflakeConverter,
-                    UserTagConverter
-                ),
+                parser: either(pMention, pSnowflake, pUserTag),
                 description: "The user to ban.",
                 examples: ["@Momo", "Momo#7675", "310061663162204160"],
             }),

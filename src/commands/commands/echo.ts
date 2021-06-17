@@ -1,6 +1,6 @@
 import { ValidatedCommandRequest } from "../request";
 import { Parameter, Command } from "../command";
-import StringConverter from "../parsers/StringConverter";
+import { pString } from "../parsers/String";
 import { CommandResponse } from "../response";
 
 export default new Command(
@@ -11,7 +11,7 @@ export default new Command(
         parameters: [
             new Parameter({
                 name: "message",
-                type: StringConverter,
+                parser: pString,
                 description: "The message to print back.",
                 examples: ["Hello world", "Ahh what a beautiful day"],
             }),

@@ -2,7 +2,7 @@ import { MessageEmbed } from "discord.js";
 import { Command, Parameter } from "../command";
 import { ValidatedCommandRequest } from "../request";
 import { CommandResponseOk } from "../response";
-import StringConverter from "../parsers/StringConverter";
+import { pString } from "../parsers/String";
 import { sample } from "lodash";
 
 export default new Command(
@@ -13,7 +13,7 @@ export default new Command(
         parameters: [
             new Parameter({
                 name: "question",
-                type: StringConverter,
+                parser: pString,
                 description: "User's question.",
                 examples: [
                     "Is today going to be a good day?",

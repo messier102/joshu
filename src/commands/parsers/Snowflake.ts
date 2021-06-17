@@ -1,14 +1,14 @@
-import { ConversionError, Parser } from "./TypeConverter";
+import { ParsingError, Parser } from "./parser";
 import { Err, Ok, Result } from "ts-results";
 
-export default Parser({
+export const pSnowflake = Parser({
     type: "snowflake",
 
-    convert(value: string): Result<string, ConversionError> {
+    parse(value: string): Result<string, ParsingError> {
         const snowflake_regex = /^\d{17,}$/;
 
         if (!snowflake_regex.test(value)) {
-            return Err(new ConversionError(this.type, value));
+            return Err(new ParsingError(this.type, value));
         }
 
         return Ok(value);

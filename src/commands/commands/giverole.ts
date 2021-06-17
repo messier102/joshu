@@ -1,8 +1,8 @@
 import { ValidatedCommandRequest } from "../request";
 import { Permissions } from "discord.js";
 import { Parameter, Command } from "../command";
-import MentionConverter from "../parsers/MentionConverter";
-import StringConverter from "../parsers/StringConverter";
+import { pMention } from "../parsers/Mention";
+import { pString } from "../parsers/String";
 import { CommandResponse } from "../response";
 import dedent from "ts-dedent";
 
@@ -18,19 +18,19 @@ export default new Command(
         parameters: [
             new Parameter({
                 name: "target user",
-                type: MentionConverter,
+                parser: pMention,
                 description: "The user to give a role to.",
                 examples: ["@yuna", "@Momo", "@dip", "@assblaster69"],
             }),
             new Parameter({
                 name: "role name",
-                type: StringConverter,
+                parser: pString,
                 description: "The name of the new role.",
                 examples: [`"certified friend of dip"`, "gorilla", "cutie"],
             }),
             new Parameter({
                 name: "role color",
-                type: StringConverter,
+                parser: pString,
                 description:
                     "The color of the new role, either a hex code or a default Discord color name in all caps (RED, BLUE, ORANGE, etc).",
                 examples: ["RED", "#f3dda1", "3e3455"],

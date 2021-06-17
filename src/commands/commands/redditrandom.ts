@@ -1,6 +1,6 @@
 import { ValidatedCommandRequest } from "../request";
 import { Parameter, Command } from "../command";
-import StringConverter from "../parsers/StringConverter";
+import { pString } from "../parsers/String";
 import {
     absolute_url,
     is_image_post,
@@ -21,7 +21,7 @@ export default new Command(
         parameters: [
             new Parameter({
                 name: "subreddit",
-                type: StringConverter,
+                parser: pString,
                 description: `The subreddit to get a post from, without the "r/" part.`,
                 examples: ["r4r", "makenewfriendshere", "eyebleach"],
             }),

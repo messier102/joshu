@@ -1,5 +1,5 @@
 import { Result } from "ts-results";
-import { ConversionError, Parser } from "./TypeConverter";
+import { ParsingError, Parser } from "./parser";
 
 // TypeConverter<number> -> number
 type TargetType<T> = T extends Parser<infer U> ? U : never;
@@ -29,13 +29,11 @@ export function either<T extends Parser<any>[]>(
 
     const convert = (value: string) => {
         const conversion_result = Result.any(
-            ...converters.map((c) => c.convert(value))
+            ...converters.map((c) => c.parse(value))
         );
 
-        return conversion_result.mapErr(
-            (_) => new ConversionError(type, value)
-        );
+        return conversion_result.mapErr((_) => new ParsingError(type, value));
     };
 
-    return { type, convert };
+    return { type, parse: convert };
 }
