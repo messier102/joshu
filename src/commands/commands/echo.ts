@@ -1,7 +1,8 @@
 import { ValidatedCommandRequest } from "../request";
-import { Parameter, Command } from "../command";
+import { Command } from "../command";
 import { pString } from "../parsers/String";
 import { CommandResponse } from "../response";
+import { Parameter } from "../parameter";
 
 export default new Command(
     {

@@ -1,10 +1,11 @@
 import { ValidatedCommandRequest } from "../request";
-import { Parameter, Command } from "../command";
+import { Command } from "../command";
 import { pString } from "../parsers/String";
 import { pPositiveNumber } from "../parsers/PositiveNumber";
 import { convert_currency } from "../../services/coinmarketcap";
 import { CommandResponse } from "../response";
 import dedent from "ts-dedent";
+import { Parameter } from "../parameter";
 
 export default new Command(
     {

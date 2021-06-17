@@ -1,5 +1,5 @@
 import { ValidatedCommandRequest } from "../request";
-import { Parameter, Command } from "../command";
+import { Command } from "../command";
 import { EmbedFieldData, MessageEmbed, Permissions } from "discord.js";
 import { pString } from "../parsers/String";
 import config from "../../../data/config";
@@ -7,6 +7,7 @@ import { absolute_url, post_stats, reddit } from "../../services/reddit";
 import { CommandResponse, CommandResponseOk } from "../response";
 import { Post } from "snoots";
 import dedent from "ts-dedent";
+import { Parameter } from "../parameter";
 
 export default new Command(
     {

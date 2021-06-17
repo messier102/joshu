@@ -1,5 +1,5 @@
 import { ValidatedCommandRequest } from "../request";
-import { Parameter, Command } from "../command";
+import { Command } from "../command";
 import {
     Client,
     GuildMember,
@@ -15,6 +15,7 @@ import { pUserTag } from "../parsers/UserTag";
 import { either } from "../parsers/either";
 import { None, Option, Some } from "ts-results";
 import { CommandResponse, CommandResponseOk } from "../response";
+import { Parameter } from "../parameter";
 
 export default new Command(
     {

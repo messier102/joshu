@@ -1,5 +1,5 @@
 import { ValidatedCommandRequest } from "../request";
-import { Parameter, Command } from "../command";
+import { Command } from "../command";
 import { pString } from "../parsers/String";
 import {
     absolute_url,
@@ -11,6 +11,7 @@ import {
 import { CommandResponse, CommandResponseOk } from "../response";
 import { Post } from "snoots";
 import { MessageEmbed } from "discord.js";
+import { Parameter } from "../parameter";
 
 export default new Command(
     {

@@ -5,42 +5,13 @@ import {
     CommandResponseHelp,
 } from "./response";
 import { CommandRequest, ValidatedCommandRequest } from "./request";
-import { Parser } from "./parsers/parser";
 import { Err, Ok, Result } from "ts-results";
 import { split_args } from "./split_args";
 import { assert } from "node:console";
 import { zip } from "../util";
 import { sample } from "lodash";
 import config from "../../data/config";
-
-type ParameterMetadata<T> = {
-    readonly name: string;
-    readonly parser: Parser<T>;
-    readonly description: string;
-    readonly examples: string[];
-};
-
-export class Parameter<T> {
-    readonly name: string;
-    readonly parser: Parser<T>;
-    readonly description: string;
-    readonly examples: string[];
-
-    constructor({ name, parser, description, examples }: ParameterMetadata<T>) {
-        this.name = name;
-        this.parser = parser;
-        this.description = description;
-        this.examples = examples;
-    }
-
-    toString(): string {
-        return `<${this.name.split(" ").join("-")}>`;
-    }
-}
-
-type Parameters<ParamTypes extends unknown[]> = {
-    [key in keyof ParamTypes]: Parameter<ParamTypes[key]>;
-};
+import { Parameter, Parameters } from "./parameter";
 
 type CommandMetadata<T extends unknown[]> = {
     name: string;
