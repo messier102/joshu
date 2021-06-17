@@ -1,6 +1,6 @@
 import { ValidatedCommandRequest } from "../request";
 import { Parameter, Command } from "../command";
-import StringConverter from "../type_converters/StringConverter";
+import StringConverter from "../parsers/StringConverter";
 import {
     absolute_url,
     is_image_post,

@@ -5,7 +5,7 @@ import {
     CommandResponseHelp,
 } from "./response";
 import { CommandRequest, ValidatedCommandRequest } from "./request";
-import { TypeConverter } from "./type_converters/TypeConverter";
+import { Parser } from "./parsers/TypeConverter";
 import { Err, Ok, Result } from "ts-results";
 import { split_args } from "./split_args";
 import { assert } from "node:console";
@@ -15,14 +15,14 @@ import config from "../../data/config";
 
 type ParameterMetadata<T> = {
     readonly name: string;
-    readonly type: TypeConverter<T>;
+    readonly type: Parser<T>;
     readonly description: string;
     readonly examples: string[];
 };
 
 export class Parameter<T> {
     name: string;
-    type: TypeConverter<T>;
+    type: Parser<T>;
     description: string;
     examples: string[];
 

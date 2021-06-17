@@ -1,18 +1,16 @@
 import { Result } from "ts-results";
-import { ConversionError, TypeConverter } from "./TypeConverter";
+import { ConversionError, Parser } from "./TypeConverter";
 
 // TypeConverter<number> -> number
-type TargetType<T> = T extends TypeConverter<infer U> ? U : never;
+type TargetType<T> = T extends Parser<infer U> ? U : never;
 
 // [TypeConverter<string>, TypeConverter<number>] -> [string, number]
-type TargetTypeTuple<T extends TypeConverter<unknown>[]> = {
+type TargetTypeTuple<T extends Parser<unknown>[]> = {
     [key in keyof T]: TargetType<T[key]>;
 };
 
 // [TypeConverter<string>, TypeConverter<number>] -> string | number
-type TargetTypeUnion<
-    T extends TypeConverter<unknown>[]
-> = TargetTypeTuple<T>[number];
+type TargetTypeUnion<T extends Parser<unknown>[]> = TargetTypeTuple<T>[number];
 
 /**
  * Combines multiple `TypeConverter`s into a single converter that applies them
@@ -24,9 +22,9 @@ type TargetTypeUnion<
 
 // I'm not sure how to make this compile without `any`
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function either<T extends TypeConverter<any>[]>(
+export function either<T extends Parser<any>[]>(
     ...converters: T
-): TypeConverter<TargetTypeUnion<T>> {
+): Parser<TargetTypeUnion<T>> {
     const type = converters.map((c) => c.type).join(" | ");
 
     const convert = (value: string) => {

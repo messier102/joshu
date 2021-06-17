@@ -1,15 +1,12 @@
 import { Result } from "ts-results";
 
-export interface TypeConverter<T> {
+export interface Parser<T> {
     readonly type: string;
 
     convert(value: string): Result<T, ConversionError>;
 }
 
-export function TypeConverter<T>({
-    type,
-    convert,
-}: TypeConverter<T>): TypeConverter<T> {
+export function Parser<T>({ type, convert }: Parser<T>): Parser<T> {
     return { type, convert };
 }
 

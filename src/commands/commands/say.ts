@@ -1,7 +1,7 @@
 import { ValidatedCommandRequest } from "../request";
 import { Parameter, Command } from "../command";
-import SnowflakeConverter from "../type_converters/SnowflakeConverter";
-import StringConverter from "../type_converters/StringConverter";
+import SnowflakeConverter from "../parsers/SnowflakeConverter";
+import StringConverter from "../parsers/StringConverter";
 import { CommandResponse } from "../response";
 
 export default new Command(

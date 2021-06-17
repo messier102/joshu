@@ -1,8 +1,8 @@
 import { ValidatedCommandRequest } from "../request";
 import { Permissions } from "discord.js";
 import { Parameter, Command } from "../command";
-import MentionConverter from "../type_converters/MentionConverter";
-import StringConverter from "../type_converters/StringConverter";
+import MentionConverter from "../parsers/MentionConverter";
+import StringConverter from "../parsers/StringConverter";
 import { CommandResponse } from "../response";
 import dedent from "ts-dedent";
 

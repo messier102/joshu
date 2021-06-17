@@ -1,7 +1,7 @@
 import { ValidatedCommandRequest } from "../request";
 import { Parameter, Command } from "../command";
-import StringConverter from "../type_converters/StringConverter";
-import PositiveNumberConverter from "../type_converters/PositiveNumberConverter";
+import StringConverter from "../parsers/StringConverter";
+import PositiveNumberConverter from "../parsers/PositiveNumberConverter";
 import { convert_currency } from "../../services/coinmarketcap";
 import { CommandResponse } from "../response";
 import dedent from "ts-dedent";

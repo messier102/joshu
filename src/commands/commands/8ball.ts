@@ -2,7 +2,7 @@ import { MessageEmbed } from "discord.js";
 import { Command, Parameter } from "../command";
 import { ValidatedCommandRequest } from "../request";
 import { CommandResponseOk } from "../response";
-import StringConverter from "../type_converters/StringConverter";
+import StringConverter from "../parsers/StringConverter";
 import { sample } from "lodash";
 
 export default new Command(

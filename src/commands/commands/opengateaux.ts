@@ -1,7 +1,7 @@
 import { ValidatedCommandRequest } from "../request";
 import { Parameter, Command } from "../command";
 import { EmbedFieldData, MessageEmbed, Permissions } from "discord.js";
-import StringConverter from "../type_converters/StringConverter";
+import StringConverter from "../parsers/StringConverter";
 import config from "../../../data/config";
 import { absolute_url, post_stats, reddit } from "../../services/reddit";
 import { CommandResponse, CommandResponseOk } from "../response";

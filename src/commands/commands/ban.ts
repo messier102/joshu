@@ -9,10 +9,10 @@ import {
 } from "discord.js";
 import dedent from "ts-dedent";
 import sample from "lodash/sample";
-import MentionConverter from "../type_converters/MentionConverter";
-import SnowflakeConverter from "../type_converters/SnowflakeConverter";
-import UserTagConverter from "../type_converters/UserTagConverter";
-import { either } from "../type_converters/either";
+import MentionConverter from "../parsers/MentionConverter";
+import SnowflakeConverter from "../parsers/SnowflakeConverter";
+import UserTagConverter from "../parsers/UserTagConverter";
+import { either } from "../parsers/either";
 import { None, Option, Some } from "ts-results";
 import { CommandResponse, CommandResponseOk } from "../response";
 
