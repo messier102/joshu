@@ -11,6 +11,7 @@ export default new Command(
         name: "exchange",
         description: dedent`
             Converts a given amount from one currency to another using the latest market data.
+            
             Supports currencies of most countries, as well as cryptocurrencies.
         `,
         aliases: ["convert", "conv"],

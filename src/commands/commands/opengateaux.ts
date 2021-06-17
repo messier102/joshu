@@ -13,6 +13,8 @@ export default new Command(
         name: "opengateaux",
         description: dedent`
             Creates a new invite link and posts it to r/discordservers with the given title.
+
+            You must have "Manage server" and "Create invite" permissions to use it.
         `,
 
         parameters: [

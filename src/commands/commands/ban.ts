@@ -19,7 +19,11 @@ import { CommandResponse, CommandResponseOk } from "../response";
 export default new Command(
     {
         name: "ban",
-        description: "Permanently bans a user from the server.",
+        description: dedent`
+            Permanently bans a user from the server.
+
+            You must have ban permissions to use it. You can only ban people below you in the role hierarchy.
+        `,
         aliases: [
             "axe",
             "expire",
