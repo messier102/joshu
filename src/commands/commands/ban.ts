@@ -1,5 +1,5 @@
 import { ValidatedCommandRequest } from "../request";
-import { CommandParameter, Command } from "../command";
+import { Parameter, Command } from "../command";
 import {
     Client,
     GuildMember,
@@ -36,7 +36,7 @@ export default new Command(
         ],
 
         parameters: [
-            new CommandParameter({
+            new Parameter({
                 name: "target user",
                 type: either(
                     MentionConverter,

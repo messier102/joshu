@@ -1,5 +1,5 @@
 import { ValidatedCommandRequest } from "../request";
-import { CommandParameter, Command } from "../command";
+import { Parameter, Command } from "../command";
 import StringConverter from "../type_converters/StringConverter";
 import {
     absolute_url,
@@ -19,7 +19,7 @@ export default new Command(
         aliases: ["rr"],
 
         parameters: [
-            new CommandParameter({
+            new Parameter({
                 name: "subreddit",
                 type: StringConverter,
                 description: `The subreddit to get a post from, without the "r/" part.`,

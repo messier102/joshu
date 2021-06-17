@@ -1,5 +1,5 @@
 import { ValidatedCommandRequest } from "../request";
-import { CommandParameter, Command } from "../command";
+import { Parameter, Command } from "../command";
 import StringConverter from "../type_converters/StringConverter";
 import { CommandResponse } from "../response";
 
@@ -9,7 +9,7 @@ export default new Command(
         description: "Prints back the provided message.",
 
         parameters: [
-            new CommandParameter({
+            new Parameter({
                 name: "message",
                 type: StringConverter,
                 description: "The message to print back.",

@@ -1,5 +1,5 @@
 import { MessageEmbed } from "discord.js";
-import { Command, CommandParameter } from "../command";
+import { Command, Parameter } from "../command";
 import { ValidatedCommandRequest } from "../request";
 import { CommandResponseOk } from "../response";
 import StringConverter from "../type_converters/StringConverter";
@@ -11,7 +11,7 @@ export default new Command(
         description: "Gives randomized yes/no answers to users' questions.",
 
         parameters: [
-            new CommandParameter({
+            new Parameter({
                 name: "question",
                 type: StringConverter,
                 description: "User's question.",

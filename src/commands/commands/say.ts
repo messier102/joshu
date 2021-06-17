@@ -1,5 +1,5 @@
 import { ValidatedCommandRequest } from "../request";
-import { CommandParameter, Command } from "../command";
+import { Parameter, Command } from "../command";
 import SnowflakeConverter from "../type_converters/SnowflakeConverter";
 import StringConverter from "../type_converters/StringConverter";
 import { CommandResponse } from "../response";
@@ -10,13 +10,13 @@ export default new Command(
         description: "Posts the given message in the given channel.",
 
         parameters: [
-            new CommandParameter({
+            new Parameter({
                 name: "target channel id",
                 type: SnowflakeConverter,
                 description: "The channel to post the message to.",
                 examples: ["836905661819256862"],
             }),
-            new CommandParameter({
+            new Parameter({
                 name: "message",
                 type: StringConverter,
                 description: "The message to post.",

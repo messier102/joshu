@@ -20,7 +20,7 @@ type ParameterMetadata<T> = {
     readonly examples: string[];
 };
 
-export class CommandParameter<T> {
+export class Parameter<T> {
     name: string;
     type: TypeConverter<T>;
     description: string;
@@ -38,15 +38,15 @@ export class CommandParameter<T> {
     }
 }
 
-type CommandParameters<ParamTypes extends unknown[]> = {
-    [Key in keyof ParamTypes]: CommandParameter<ParamTypes[Key]>;
+type Parameters<ParamTypes extends unknown[]> = {
+    [key in keyof ParamTypes]: Parameter<ParamTypes[key]>;
 };
 
 type CommandMetadata<T extends unknown[]> = {
     name: string;
     description: string;
     aliases?: string[];
-    parameters: CommandParameters<T>;
+    parameters: Parameters<T>;
     permissions: PermissionResolvable[];
     accept_remainder_arg?: boolean;
 };
@@ -82,7 +82,7 @@ class CommandResponseCommandHelp extends CommandResponseHelp {
             .addField("Usage", `\`${command_usage}\``);
 
         if (this.meta.parameters.length > 0) {
-            const format_param = (param: CommandParameter<unknown>) =>
+            const format_param = (param: Parameter<unknown>) =>
                 `**${param.name.split(" ").join("-")}** \u2014 (${
                     param.type.type
                 }) ${param.description}`;

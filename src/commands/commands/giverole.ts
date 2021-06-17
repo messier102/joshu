@@ -1,6 +1,6 @@
 import { ValidatedCommandRequest } from "../request";
 import { Permissions } from "discord.js";
-import { CommandParameter, Command } from "../command";
+import { Parameter, Command } from "../command";
 import MentionConverter from "../type_converters/MentionConverter";
 import StringConverter from "../type_converters/StringConverter";
 import { CommandResponse } from "../response";
@@ -16,19 +16,19 @@ export default new Command(
         `,
 
         parameters: [
-            new CommandParameter({
+            new Parameter({
                 name: "target user",
                 type: MentionConverter,
                 description: "The user to give a role to.",
                 examples: ["@yuna", "@Momo", "@dip", "@assblaster69"],
             }),
-            new CommandParameter({
+            new Parameter({
                 name: "role name",
                 type: StringConverter,
                 description: "The name of the new role.",
                 examples: [`"certified friend of dip"`, "gorilla", "cutie"],
             }),
-            new CommandParameter({
+            new Parameter({
                 name: "role color",
                 type: StringConverter,
                 description:

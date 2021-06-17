@@ -1,5 +1,5 @@
 import { ValidatedCommandRequest } from "../request";
-import { CommandParameter, Command } from "../command";
+import { Parameter, Command } from "../command";
 import { EmbedFieldData, MessageEmbed, Permissions } from "discord.js";
 import StringConverter from "../type_converters/StringConverter";
 import config from "../../../data/config";
@@ -18,7 +18,7 @@ export default new Command(
         `,
 
         parameters: [
-            new CommandParameter({
+            new Parameter({
                 name: "post title",
                 type: StringConverter,
                 description: "The title of the Reddit post.",

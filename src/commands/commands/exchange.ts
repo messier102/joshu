@@ -1,5 +1,5 @@
 import { ValidatedCommandRequest } from "../request";
-import { CommandParameter, Command } from "../command";
+import { Parameter, Command } from "../command";
 import StringConverter from "../type_converters/StringConverter";
 import PositiveNumberConverter from "../type_converters/PositiveNumberConverter";
 import { convert_currency } from "../../services/coinmarketcap";
@@ -17,19 +17,19 @@ export default new Command(
         aliases: ["convert", "conv"],
 
         parameters: [
-            new CommandParameter({
+            new Parameter({
                 name: "base currency",
                 type: StringConverter,
                 description: "The currency to convert from.",
                 examples: ["USD", "GBP", "BTC"],
             }),
-            new CommandParameter({
+            new Parameter({
                 name: "target currency",
                 type: StringConverter,
                 description: "The currency to convert to.",
                 examples: ["EUR", "RUB", "DOGE"],
             }),
-            new CommandParameter({
+            new Parameter({
                 name: "amount",
                 type: PositiveNumberConverter,
                 description: "The amount of the base currency to convert.",
