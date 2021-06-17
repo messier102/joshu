@@ -23,61 +23,6 @@ type CommandHandler<T extends unknown[]> = (
     ...args: T
 ) => Promise<Response>;
 
-class CommandResponseCommandHelp extends ResponseHelp {
-    constructor(
-        public readonly command_alias: string,
-        public readonly meta: CommandMetadata<unknown[]>
-    ) {
-        super();
-    }
-
-    to_embed(): MessageEmbed {
-        const command_usage = [
-            this.meta.name,
-            ...this.meta.parameters.map((p) => p.toString()),
-        ].join(" ");
-
-        const embed = super
-            .to_embed()
-            .setTitle(
-                this.meta.name +
-                    (this.command_alias !== this.meta.name
-                        ? `・alias *${this.command_alias}*`
-                        : "")
-            )
-            .setDescription(this.meta.description)
-            .addField("Usage", `\`${command_usage}\``);
-
-        if (this.meta.parameters.length > 0) {
-            const format_param = (param: Parameter<unknown>) =>
-                `**${param.name.split(" ").join("-")}** \u2014 (${
-                    param.parser.type
-                }) ${param.description}`;
-
-            const formatted_params = this.meta.parameters
-                .map(format_param)
-                .join("\n");
-
-            embed.addField("Parameters", formatted_params);
-        }
-
-        if (this.meta.aliases) {
-            embed.addField("Aliases", this.meta.aliases.sort().join(", "));
-        }
-
-        if (this.meta.parameters.every((p) => p.examples)) {
-            const example_usage = [
-                this.command_alias,
-                ...this.meta.parameters.map((p) => sample(p.examples)),
-            ].join(" ");
-
-            embed.setFooter(config.prefix + example_usage);
-        }
-
-        return embed;
-    }
-}
-
 export class Command<T extends unknown[]> {
     constructor(
         public readonly meta: CommandMetadata<T>,
@@ -186,5 +131,60 @@ class ArgumentError extends ResponseError {
             .to_embed()
             .addField("Error", this.reason)
             .setFooter(this.usage_hint);
+    }
+}
+
+class CommandResponseCommandHelp extends ResponseHelp {
+    constructor(
+        public readonly command_alias: string,
+        public readonly meta: CommandMetadata<unknown[]>
+    ) {
+        super();
+    }
+
+    to_embed(): MessageEmbed {
+        const command_usage = [
+            this.meta.name,
+            ...this.meta.parameters.map((p) => p.toString()),
+        ].join(" ");
+
+        const embed = super
+            .to_embed()
+            .setTitle(
+                this.meta.name +
+                    (this.command_alias !== this.meta.name
+                        ? `・alias *${this.command_alias}*`
+                        : "")
+            )
+            .setDescription(this.meta.description)
+            .addField("Usage", `\`${command_usage}\``);
+
+        if (this.meta.parameters.length > 0) {
+            const format_param = (param: Parameter<unknown>) =>
+                `**${param.name.split(" ").join("-")}** \u2014 (${
+                    param.parser.type
+                }) ${param.description}`;
+
+            const formatted_params = this.meta.parameters
+                .map(format_param)
+                .join("\n");
+
+            embed.addField("Parameters", formatted_params);
+        }
+
+        if (this.meta.aliases) {
+            embed.addField("Aliases", this.meta.aliases.sort().join(", "));
+        }
+
+        if (this.meta.parameters.every((p) => p.examples)) {
+            const example_usage = [
+                this.command_alias,
+                ...this.meta.parameters.map((p) => sample(p.examples)),
+            ].join(" ");
+
+            embed.setFooter(config.prefix + example_usage);
+        }
+
+        return embed;
     }
 }
