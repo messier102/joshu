@@ -1,5 +1,3 @@
-import path from "path";
-import fs from "fs/promises";
 import { CommandRequest } from "./request";
 import { AnyCommand } from "./command";
 import { find_similar_string, Weights } from "./find_similar_string";
@@ -10,19 +8,8 @@ export class CommandRouter {
     private readonly commands: Map<string, AnyCommand> = new Map();
     private readonly routes: Map<string, string> = new Map();
 
-    constructor() {
-        this.load_routes();
-    }
-
-    private async load_routes(): Promise<void> {
-        const commands_dir = path.join(__dirname, "..", "commands");
-        const filenames = await fs.readdir(commands_dir);
-
-        for (const filename of filenames) {
-            const command_file = path.join(commands_dir, filename);
-            const command_module = await import(command_file);
-            const command: AnyCommand = command_module.default;
-
+    constructor(commands: AnyCommand[]) {
+        for (const command of commands) {
             this.commands.set(command.meta.name, command);
             this.routes.set(command.meta.name, command.meta.name);
 
@@ -37,10 +24,10 @@ export class CommandRouter {
                     this.routes.set(alias, command.meta.name);
                 }
             }
-        }
 
-        console.log("Loaded commands:");
-        console.log(this.routes);
+            console.log("Loaded commands:");
+            console.log(this.routes);
+        }
     }
 
     async route_request(request: CommandRequest): Promise<CommandResponse> {
