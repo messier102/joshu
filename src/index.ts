@@ -2,7 +2,7 @@ import { Request } from "./core/request";
 import { Router } from "./core/router";
 import Discord from "discord.js";
 import config from "../data/config";
-import { CommandResponse } from "./core/response";
+import { Response } from "./core/response";
 import path from "node:path";
 import { load_commands } from "./core/loader";
 
@@ -30,7 +30,7 @@ import { load_commands } from "./core/loader";
 
             message.channel.send(response.to_embed());
         } else {
-            message.channel.send(CommandResponse.Error(request.val).to_embed());
+            message.channel.send(Response.Error(request.val).to_embed());
         }
     });
 

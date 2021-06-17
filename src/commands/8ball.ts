@@ -1,7 +1,7 @@
 import { MessageEmbed } from "discord.js";
 import { Command } from "../core/command";
 import { ValidatedRequest } from "../core/request";
-import { CommandResponseOk } from "../core/response";
+import { ResponseOk } from "../core/response";
 import { pString } from "../core/parsers/String";
 import { sample } from "lodash";
 import { Parameter } from "../core/parameter";
@@ -39,7 +39,7 @@ export default new Command(
     }
 );
 
-class EightBallResponse extends CommandResponseOk {
+class EightBallResponse extends ResponseOk {
     constructor(
         public readonly question: string,
         public readonly asker: string,

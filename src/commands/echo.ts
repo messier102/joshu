@@ -1,7 +1,7 @@
 import { ValidatedRequest } from "../core/request";
 import { Command } from "../core/command";
 import { pString } from "../core/parsers/String";
-import { CommandResponse } from "../core/response";
+import { Response } from "../core/response";
 import { Parameter } from "../core/parameter";
 
 export default new Command(
@@ -23,6 +23,6 @@ export default new Command(
     },
 
     async (_: ValidatedRequest, message: string) => {
-        return CommandResponse.Ok(message);
+        return Response.Ok(message);
     }
 );

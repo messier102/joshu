@@ -14,7 +14,7 @@ import { pSnowflake } from "../core/parsers/Snowflake";
 import { pUserTag } from "../core/parsers/UserTag";
 import { either } from "../core/parsers/either";
 import { None, Option, Some } from "ts-results";
-import { CommandResponse, CommandResponseOk } from "../core/response";
+import { Response, ResponseOk } from "../core/response";
 import { Parameter } from "../core/parameter";
 
 export default new Command(
@@ -57,13 +57,13 @@ export default new Command(
         );
 
         if (!maybe_target_user.some) {
-            return CommandResponse.Error("sorry, I don't know that user.");
+            return Response.Error("sorry, I don't know that user.");
         }
 
         const target_user = maybe_target_user.val;
 
         if (source.author === target_user) {
-            return CommandResponse.Error("you can't ban yourself, dummy.");
+            return Response.Error("you can't ban yourself, dummy.");
         }
 
         const source_member = source.member;
@@ -73,7 +73,7 @@ export default new Command(
             target_member &&
             !source_can_ban_target(source_member, target_member)
         ) {
-            return CommandResponse.Error(
+            return Response.Error(
                 "sorry, you can't ban that user.\n" +
                     "(They have a role higher than or equal to yours.)"
             );
@@ -82,7 +82,7 @@ export default new Command(
         try {
             await source.guild.members.ban(target_user);
         } catch (e) {
-            return CommandResponse.Error(
+            return Response.Error(
                 "sorry, I can't ban that user.\n" +
                     "(This usually means that they have a role higher than mine.)"
             );
@@ -137,7 +137,7 @@ function source_can_ban_target(
     );
 }
 
-class BanOk extends CommandResponseOk {
+class BanOk extends ResponseOk {
     constructor(
         public readonly user: User,
         public readonly ban_message_template: string

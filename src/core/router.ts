@@ -1,7 +1,7 @@
 import { Request } from "./request";
 import { AnyCommand } from "./command";
 import { find_similar_string, Weights } from "./find_similar_string";
-import { CommandResponse, CommandResponseHelp } from "./response";
+import { Response, ResponseHelp } from "./response";
 import { MessageEmbed } from "discord.js";
 
 export class Router {
@@ -30,7 +30,7 @@ export class Router {
         }
     }
 
-    async route(request: Request): Promise<CommandResponse> {
+    async route(request: Request): Promise<Response> {
         if (request.name === "help") {
             if (request.args) {
                 const command_name = this.routes.get(request.args);
@@ -45,7 +45,7 @@ export class Router {
                             ? `sorry, no such command. Did you mean \`${similar_commands[0]}\`?`
                             : "sorry, no such command.";
 
-                    return CommandResponse.Error(no_such_command_message);
+                    return Response.Error(no_such_command_message);
                 }
 
                 return this.commands.get(command_name)!.help(request.args);
@@ -67,7 +67,7 @@ export class Router {
                         ? `sorry, no such command. Did you mean \`${similar_commands[0]}\`?`
                         : "sorry, no such command.";
 
-                return CommandResponse.Error(no_such_command_message);
+                return Response.Error(no_such_command_message);
             }
 
             return await this.commands.get(command_name)!.execute(request);
@@ -92,7 +92,7 @@ export class Router {
     }
 }
 
-class CommandResponseCommandList extends CommandResponseHelp {
+class CommandResponseCommandList extends ResponseHelp {
     constructor(public readonly commands: AnyCommand[]) {
         super();
     }

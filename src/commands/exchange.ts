@@ -3,7 +3,7 @@ import { Command } from "../core/command";
 import { pString } from "../core/parsers/String";
 import { pPositiveNumber } from "../core/parsers/PositiveNumber";
 import { convert_currency } from "../core/services/coinmarketcap";
-import { CommandResponse } from "../core/response";
+import { Response } from "../core/response";
 import dedent from "ts-dedent";
 import { Parameter } from "../core/parameter";
 
@@ -60,7 +60,7 @@ export default new Command(
             const amount_converted = conversion[target_currency].price;
 
             if (!amount_converted) {
-                return CommandResponse.Error(
+                return Response.Error(
                     "conversion request was successful, but the API did not return a price.\n" +
                         "(This usually means that the currency had existed in the past, but not anymore.)"
                 );
@@ -70,10 +70,10 @@ export default new Command(
                 `${format_decimal(amount)} **${base_currency}** = ` +
                 `${format_decimal(amount_converted)} **${target_currency}**`;
 
-            return CommandResponse.Ok(message);
+            return Response.Ok(message);
         } else {
             const error_message = conversion_result.val;
-            return CommandResponse.Error(`API error: ${error_message}.`);
+            return Response.Error(`API error: ${error_message}.`);
         }
     }
 );

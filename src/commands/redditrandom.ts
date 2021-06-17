@@ -8,7 +8,7 @@ import {
     reddit,
     text_preview,
 } from "../core/services/reddit";
-import { CommandResponse, CommandResponseOk } from "../core/response";
+import { Response, ResponseOk } from "../core/response";
 import { Post } from "snoots";
 import { MessageEmbed } from "discord.js";
 import { Parameter } from "../core/parameter";
@@ -38,14 +38,12 @@ export default new Command(
 
             return new RandomPostOk(random_post);
         } catch (e) {
-            return CommandResponse.Error(
-                "Sorry, couldn't fetch that subreddit."
-            );
+            return Response.Error("Sorry, couldn't fetch that subreddit.");
         }
     }
 );
 
-class RandomPostOk extends CommandResponseOk {
+class RandomPostOk extends ResponseOk {
     constructor(public readonly post: Post) {
         super();
     }

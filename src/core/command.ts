@@ -1,9 +1,5 @@
 import { MessageEmbed, PermissionResolvable } from "discord.js";
-import {
-    CommandResponse,
-    CommandResponseError,
-    CommandResponseHelp,
-} from "./response";
+import { Response, ResponseError, ResponseHelp } from "./response";
 import { Request, ValidatedRequest } from "./request";
 import { Err, Ok, Result } from "ts-results";
 import { split_args } from "./split_args";
@@ -25,9 +21,9 @@ type CommandMetadata<T extends unknown[]> = {
 type CommandHandler<T extends unknown[]> = (
     request: ValidatedRequest,
     ...args: T
-) => Promise<CommandResponse>;
+) => Promise<Response>;
 
-class CommandResponseCommandHelp extends CommandResponseHelp {
+class CommandResponseCommandHelp extends ResponseHelp {
     constructor(
         public readonly command_alias: string,
         public readonly meta: CommandMetadata<unknown[]>
@@ -88,11 +84,11 @@ export class Command<T extends unknown[]> {
         public readonly handler: CommandHandler<T>
     ) {}
 
-    help(command_alias: string): CommandResponse {
+    help(command_alias: string): Response {
         return new CommandResponseCommandHelp(command_alias, this.meta);
     }
 
-    async execute(request: Request): Promise<CommandResponse> {
+    async execute(request: Request): Promise<Response> {
         // TODO: proper logging
         console.log(
             `[${request.source.author.tag}]`,
@@ -101,14 +97,12 @@ export class Command<T extends unknown[]> {
         );
 
         if (!request.source.guild) {
-            return CommandResponse.Error(
-                "Sorry, I don't accept commands in DMs."
-            );
+            return Response.Error("Sorry, I don't accept commands in DMs.");
         }
 
         const perm_check = this.check_permissions(request);
         if (perm_check.err) {
-            return CommandResponse.Error(perm_check.val);
+            return Response.Error(perm_check.val);
         }
 
         const parsed_args = this.parse_args(request.args);
@@ -179,7 +173,7 @@ export class Command<T extends unknown[]> {
 
 export type AnyCommand = Command<unknown[]>;
 
-class ArgumentError extends CommandResponseError {
+class ArgumentError extends ResponseError {
     constructor(
         public readonly reason: string,
         public readonly usage_hint: string

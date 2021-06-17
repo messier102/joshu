@@ -2,7 +2,7 @@ import { ValidatedRequest } from "../core/request";
 import { Command } from "../core/command";
 import { MessageEmbed, Permissions } from "discord.js";
 import { reddit } from "../core/services/reddit";
-import { CommandResponse, CommandResponseOk } from "../core/response";
+import { Response, ResponseOk } from "../core/response";
 import { pluralize } from "../core/util";
 import dedent from "ts-dedent";
 
@@ -42,14 +42,12 @@ export default new Command(
             return new GateauxClosedOk(total_invite_uses);
         } catch (reason) {
             console.log(reason);
-            return CommandResponse.Error(
-                `Reddit error: \`${reason.toString()}\``
-            );
+            return Response.Error(`Reddit error: \`${reason.toString()}\``);
         }
     }
 );
 
-class GateauxClosedOk extends CommandResponseOk {
+class GateauxClosedOk extends ResponseOk {
     constructor(public readonly total_invite_uses: number) {
         super();
     }

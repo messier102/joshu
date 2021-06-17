@@ -1,22 +1,22 @@
 import { MessageEmbed } from "discord.js";
 
-export interface CommandResponse {
+export interface Response {
     to_embed(): MessageEmbed;
 }
 
-export abstract class CommandResponseOk implements CommandResponse {
+export abstract class ResponseOk implements Response {
     to_embed(): MessageEmbed {
         return new MessageEmbed().setColor("GREEN");
     }
 }
 
-export abstract class CommandResponseError implements CommandResponse {
+export abstract class ResponseError implements Response {
     to_embed(): MessageEmbed {
         return new MessageEmbed().setColor("RED");
     }
 }
 
-export abstract class CommandResponseHelp implements CommandResponse {
+export abstract class ResponseHelp implements Response {
     to_embed(): MessageEmbed {
         return new MessageEmbed()
             .setColor("BLUE")
@@ -24,7 +24,7 @@ export abstract class CommandResponseHelp implements CommandResponse {
     }
 }
 
-class Ok extends CommandResponseOk {
+class Ok extends ResponseOk {
     constructor(public message: string) {
         super();
     }
@@ -34,7 +34,7 @@ class Ok extends CommandResponseOk {
     }
 }
 
-class Error extends CommandResponseError {
+class Error extends ResponseError {
     constructor(public message: string) {
         super();
     }
@@ -44,12 +44,12 @@ class Error extends CommandResponseError {
     }
 }
 
-export const CommandResponse = {
-    Ok(message: string): CommandResponse {
+export const Response = {
+    Ok(message: string): Response {
         return new Ok(message);
     },
 
-    Error(message: string): CommandResponse {
+    Error(message: string): Response {
         return new Error(message);
     },
 };

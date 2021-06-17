@@ -2,7 +2,7 @@ import { ValidatedRequest } from "../core/request";
 import { Command } from "../core/command";
 import { pSnowflake } from "../core/parsers/Snowflake";
 import { pString } from "../core/parsers/String";
-import { CommandResponse } from "../core/response";
+import { Response } from "../core/response";
 import { Parameter } from "../core/parameter";
 
 export default new Command(
@@ -38,12 +38,10 @@ export default new Command(
             target_channel_id
         );
         if (!target_channel || !target_channel.isText()) {
-            return CommandResponse.Error(
-                "this doesn't seem to be a valid channel"
-            );
+            return Response.Error("this doesn't seem to be a valid channel");
         }
 
         target_channel.send(message);
-        return CommandResponse.Ok("Message sent.");
+        return Response.Ok("Message sent.");
     }
 );
