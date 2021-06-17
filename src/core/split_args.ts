@@ -1,5 +1,5 @@
 import { Err, Ok, Result } from "ts-results";
-import { range } from "../util";
+import { range } from "./util";
 
 /**
  * Splits a string of space-separated arguments into an array of strings, honoring quotes.

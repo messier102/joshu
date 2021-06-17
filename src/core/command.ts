@@ -8,7 +8,7 @@ import { CommandRequest, ValidatedCommandRequest } from "./request";
 import { Err, Ok, Result } from "ts-results";
 import { split_args } from "./split_args";
 import { assert } from "node:console";
-import { zip } from "../util";
+import { zip } from "./util";
 import { sample } from "lodash";
 import config from "../../data/config";
 import { Parameter, Parameters } from "./parameter";
