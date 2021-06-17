@@ -7,7 +7,21 @@ import { sample } from "lodash";
 
 export default new Command(
     {
-        parameters: [new CommandParameter("question", StringConverter)],
+        name: "8ball",
+        description: "Gives randomized yes/no answers to users' questions.",
+
+        parameters: [
+            new CommandParameter(
+                "question",
+                StringConverter,
+                "User's question.",
+                [
+                    "Is today going to be a good day?",
+                    "Should I sleep?",
+                    "Is dip into feet?",
+                ]
+            ),
+        ],
         permissions: [],
 
         accept_remainder_arg: true,

@@ -1,20 +1,28 @@
 import { MessageEmbed, PermissionResolvable } from "discord.js";
-import { CommandResponse, CommandResponseError } from "./response";
+import {
+    CommandResponse,
+    CommandResponseError,
+    CommandResponseHelp,
+} from "./response";
 import { CommandRequest, ValidatedCommandRequest } from "./request";
 import { TypeConverter } from "./type_converters/TypeConverter";
 import { Err, Ok, Result } from "ts-results";
 import { split_args } from "./split_args";
 import { assert } from "node:console";
 import { zip } from "../util";
+import { sample } from "lodash";
+import config from "../../data/config";
 
 export class CommandParameter<T> {
     constructor(
         public readonly name: string,
-        public readonly type_converter: TypeConverter<T>
+        public readonly type_converter: TypeConverter<T>,
+        public readonly description: string,
+        public readonly sample_values: string[]
     ) {}
 
     toString(): string {
-        return `<${this.name.split(" ").join("_")}>`;
+        return `<${this.name.split(" ").join("-")}>`;
     }
 }
 
@@ -23,6 +31,8 @@ type CommandParameters<ParamTypes extends unknown[]> = {
 };
 
 type CommandMetadata<T extends unknown[]> = {
+    name: string;
+    description: string;
     aliases?: string[];
     parameters: CommandParameters<T>;
     permissions: PermissionResolvable[];
@@ -34,11 +44,70 @@ type CommandHandler<T extends unknown[]> = (
     ...args: T
 ) => Promise<CommandResponse>;
 
+class CommandResponseCommandHelp extends CommandResponseHelp {
+    constructor(
+        public readonly command_alias: string,
+        public readonly meta: CommandMetadata<unknown[]>
+    ) {
+        super();
+    }
+
+    to_embed(): MessageEmbed {
+        const command_usage = [
+            this.meta.name,
+            ...this.meta.parameters.map((p) => p.toString()),
+        ].join(" ");
+
+        const embed = super
+            .to_embed()
+            .setTitle(
+                this.meta.name +
+                    (this.command_alias !== this.meta.name
+                        ? `・alias *${this.command_alias}*`
+                        : "")
+            )
+            .setDescription(this.meta.description)
+            .addField("Usage", `\`${command_usage}\``);
+
+        if (this.meta.parameters.length > 0) {
+            const format_param = (param: CommandParameter<unknown>) =>
+                `**${param.name.split(" ").join("-")}** \u2014 (${
+                    param.type_converter.type
+                }) ${param.description}`;
+
+            const formatted_params = this.meta.parameters
+                .map(format_param)
+                .join("\n");
+
+            embed.addField("Parameters", formatted_params);
+        }
+
+        if (this.meta.aliases) {
+            embed.addField("Aliases", this.meta.aliases.sort().join(", "));
+        }
+
+        if (this.meta.parameters.every((p) => p.sample_values)) {
+            const example_usage = [
+                this.command_alias,
+                ...this.meta.parameters.map((p) => sample(p.sample_values)),
+            ].join(" ");
+
+            embed.setFooter(config.prefix + example_usage);
+        }
+
+        return embed;
+    }
+}
+
 export class Command<T extends unknown[]> {
     constructor(
         public readonly meta: CommandMetadata<T>,
         public readonly handler: CommandHandler<T>
     ) {}
+
+    help(command_alias: string): CommandResponse {
+        return new CommandResponseCommandHelp(command_alias, this.meta);
+    }
 
     async execute(request: CommandRequest): Promise<CommandResponse> {
         // TODO: proper logging
@@ -124,6 +193,8 @@ export class Command<T extends unknown[]> {
         return Result.all(...maybe_converted_args) as Result<T, string>;
     }
 }
+
+export type AnyCommand = Command<unknown[]>;
 
 class ArgumentError extends CommandResponseError {
     constructor(

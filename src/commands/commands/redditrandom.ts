@@ -14,9 +14,18 @@ import { MessageEmbed } from "discord.js";
 
 export default new Command(
     {
+        name: "redditrandom",
+        description: "Displays a random recent post from a given subreddit.",
         aliases: ["rr"],
 
-        parameters: [new CommandParameter("subreddit", StringConverter)],
+        parameters: [
+            new CommandParameter(
+                "subreddit",
+                StringConverter,
+                `The subreddit to get a post from, without the "r/" part.`,
+                ["r4r", "makenewfriendshere", "eyebleach"]
+            ),
+        ],
         permissions: [],
     },
 

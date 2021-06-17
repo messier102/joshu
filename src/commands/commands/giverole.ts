@@ -4,13 +4,36 @@ import { CommandParameter, Command } from "../command";
 import MentionConverter from "../type_converters/MentionConverter";
 import StringConverter from "../type_converters/StringConverter";
 import { CommandResponse } from "../response";
+import dedent from "ts-dedent";
 
 export default new Command(
     {
+        name: "giverole",
+        description: dedent`
+            Creates a new role with the given name and color and assigns it to the given user.
+            
+            You must have "Manage roles" permission to use it.
+        `,
+
         parameters: [
-            new CommandParameter("target user id", MentionConverter),
-            new CommandParameter("role name", StringConverter),
-            new CommandParameter("role color", StringConverter),
+            new CommandParameter(
+                "target user",
+                MentionConverter,
+                "The user to give a role to.",
+                ["@yuna", "@Momo", "@dip", "@assblaster69"]
+            ),
+            new CommandParameter(
+                "role name",
+                StringConverter,
+                "The name of the new role.",
+                [`"certified friend of dip"`, "gorilla", "cutie"]
+            ),
+            new CommandParameter(
+                "role color",
+                StringConverter,
+                "The color of the new role, either a hex code or a default Discord color name in all caps (RED, BLUE, ORANGE, etc).",
+                ["RED", "#f3dda1", "3e3455"]
+            ),
         ],
         permissions: [Permissions.FLAGS.MANAGE_ROLES],
     },

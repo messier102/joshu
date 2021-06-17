@@ -18,6 +18,12 @@ import { CommandResponse, CommandResponseOk } from "../response";
 
 export default new Command(
     {
+        name: "ban",
+        description: dedent`
+            Permanently bans a user from the server.
+
+            You must have ban permissions to use it. You can only ban people below you in the role hierarchy.
+        `,
         aliases: [
             "axe",
             "expire",
@@ -32,7 +38,9 @@ export default new Command(
         parameters: [
             new CommandParameter(
                 "target user",
-                either(MentionConverter, SnowflakeConverter, UserTagConverter)
+                either(MentionConverter, SnowflakeConverter, UserTagConverter),
+                "The user to ban.",
+                ["@Momo", "Momo#7675", "310061663162204160"]
             ),
         ],
         permissions: [Permissions.FLAGS.BAN_MEMBERS],

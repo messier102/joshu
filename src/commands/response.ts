@@ -16,6 +16,14 @@ export abstract class CommandResponseError implements CommandResponse {
     }
 }
 
+export abstract class CommandResponseHelp implements CommandResponse {
+    to_embed(): MessageEmbed {
+        return new MessageEmbed()
+            .setColor("BLUE")
+            .setThumbnail("https://b.catgirlsare.sexy/9fzZ6gjI.png");
+    }
+}
+
 class Ok extends CommandResponseOk {
     constructor(public message: string) {
         super();

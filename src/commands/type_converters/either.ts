@@ -27,7 +27,7 @@ type TargetTypeUnion<
 export function either<T extends TypeConverter<any>[]>(
     ...converters: T
 ): TypeConverter<TargetTypeUnion<T>> {
-    const type = converters.map((c) => c.type).join("|");
+    const type = converters.map((c) => c.type).join(" | ");
 
     const convert = (value: string) => {
         const conversion_result = Result.any(

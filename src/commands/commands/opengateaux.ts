@@ -6,10 +6,29 @@ import config from "../../../data/config";
 import { absolute_url, post_stats, reddit } from "../../services/reddit";
 import { CommandResponse, CommandResponseOk } from "../response";
 import { Post } from "snoots";
+import dedent from "ts-dedent";
 
 export default new Command(
     {
-        parameters: [new CommandParameter("post title", StringConverter)],
+        name: "opengateaux",
+        description: dedent`
+            Creates a new invite link and posts it to r/discordservers with the given title.
+
+            You must have "Manage server" and "Create invite" permissions to use it.
+        `,
+
+        parameters: [
+            new CommandParameter(
+                "post title",
+                StringConverter,
+                "The title of the Reddit post.",
+                [
+                    "[21+] Cats 🐈 Coffee ☕ Bread 🍞",
+                    "[21+] cute people welcome",
+                    "[21+] yep cock",
+                ]
+            ),
+        ],
         permissions: [
             Permissions.FLAGS.CREATE_INSTANT_INVITE,
             Permissions.FLAGS.MANAGE_GUILD,

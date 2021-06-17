@@ -5,7 +5,17 @@ import { CommandResponse } from "../response";
 
 export default new Command(
     {
-        parameters: [new CommandParameter("message", StringConverter)],
+        name: "echo",
+        description: "Prints back the provided message.",
+
+        parameters: [
+            new CommandParameter(
+                "message",
+                StringConverter,
+                "The message to print back.",
+                ["Hello world", "Ahh what a beautiful day"]
+            ),
+        ],
         permissions: [],
 
         accept_remainder_arg: true,
