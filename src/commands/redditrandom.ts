@@ -7,7 +7,7 @@ import {
     post_stats,
     reddit,
     text_preview,
-} from "../services/reddit";
+} from "../core/services/reddit";
 import { CommandResponse, CommandResponseOk } from "../core/response";
 import { Post } from "snoots";
 import { MessageEmbed } from "discord.js";

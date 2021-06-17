@@ -1,7 +1,7 @@
 import { ValidatedCommandRequest } from "../core/request";
 import { Command } from "../core/command";
 import { MessageEmbed, Permissions } from "discord.js";
-import { reddit } from "../services/reddit";
+import { reddit } from "../core/services/reddit";
 import { CommandResponse, CommandResponseOk } from "../core/response";
 import { pluralize } from "../core/util";
 import dedent from "ts-dedent";

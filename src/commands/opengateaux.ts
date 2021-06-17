@@ -3,7 +3,7 @@ import { Command } from "../core/command";
 import { EmbedFieldData, MessageEmbed, Permissions } from "discord.js";
 import { pString } from "../core/parsers/String";
 import config from "../../data/config";
-import { absolute_url, post_stats, reddit } from "../services/reddit";
+import { absolute_url, post_stats, reddit } from "../core/services/reddit";
 import { CommandResponse, CommandResponseOk } from "../core/response";
 import { Post } from "snoots";
 import dedent from "ts-dedent";

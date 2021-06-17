@@ -2,7 +2,7 @@ import { ValidatedCommandRequest } from "../core/request";
 import { Command } from "../core/command";
 import { pString } from "../core/parsers/String";
 import { pPositiveNumber } from "../core/parsers/PositiveNumber";
-import { convert_currency } from "../services/coinmarketcap";
+import { convert_currency } from "../core/services/coinmarketcap";
 import { CommandResponse } from "../core/response";
 import dedent from "ts-dedent";
 import { Parameter } from "../core/parameter";

@@ -1,5 +1,5 @@
 import { Command } from "../core/command";
-import { absolute_url, post_stats, reddit } from "../services/reddit";
+import { absolute_url, post_stats, reddit } from "../core/services/reddit";
 import { CommandResponse, CommandResponseOk } from "../core/response";
 import { EmbedFieldData, MessageEmbed } from "discord.js";
 import type { Post } from "snoots";

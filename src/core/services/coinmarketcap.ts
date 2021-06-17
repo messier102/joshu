@@ -1,5 +1,5 @@
 import { Err, Ok, Result } from "ts-results";
-import config from "../../data/config";
+import config from "../../../data/config";
 import axios from "axios";
 
 type Conversions = {

@@ -1,6 +1,6 @@
 import RedditClient, { Post } from "snoots";
-import config from "../../data/config";
-import { pluralize } from "../core/util";
+import config from "../../../data/config";
+import { pluralize } from "../util";
 
 export const reddit = new RedditClient(config.reddit.client);
 
