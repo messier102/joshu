@@ -1,5 +1,5 @@
-import { Command } from "../command";
-import { CommandResponse } from "../response";
+import { Command } from "../core/command";
+import { CommandResponse } from "../core/response";
 
 export default new Command(
     {

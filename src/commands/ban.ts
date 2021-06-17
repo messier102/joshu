@@ -1,5 +1,5 @@
-import { ValidatedCommandRequest } from "../request";
-import { Command } from "../command";
+import { ValidatedCommandRequest } from "../core/request";
+import { Command } from "../core/command";
 import {
     Client,
     GuildMember,
@@ -9,13 +9,13 @@ import {
 } from "discord.js";
 import dedent from "ts-dedent";
 import sample from "lodash/sample";
-import { pMention } from "../parsers/Mention";
-import { pSnowflake } from "../parsers/Snowflake";
-import { pUserTag } from "../parsers/UserTag";
-import { either } from "../parsers/either";
+import { pMention } from "../core/parsers/Mention";
+import { pSnowflake } from "../core/parsers/Snowflake";
+import { pUserTag } from "../core/parsers/UserTag";
+import { either } from "../core/parsers/either";
 import { None, Option, Some } from "ts-results";
-import { CommandResponse, CommandResponseOk } from "../response";
-import { Parameter } from "../parameter";
+import { CommandResponse, CommandResponseOk } from "../core/response";
+import { Parameter } from "../core/parameter";
 
 export default new Command(
     {

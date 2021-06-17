@@ -1,17 +1,17 @@
-import { ValidatedCommandRequest } from "../request";
-import { Command } from "../command";
-import { pString } from "../parsers/String";
+import { ValidatedCommandRequest } from "../core/request";
+import { Command } from "../core/command";
+import { pString } from "../core/parsers/String";
 import {
     absolute_url,
     is_image_post,
     post_stats,
     reddit,
     text_preview,
-} from "../../services/reddit";
-import { CommandResponse, CommandResponseOk } from "../response";
+} from "../services/reddit";
+import { CommandResponse, CommandResponseOk } from "../core/response";
 import { Post } from "snoots";
 import { MessageEmbed } from "discord.js";
-import { Parameter } from "../parameter";
+import { Parameter } from "../core/parameter";
 
 export default new Command(
     {

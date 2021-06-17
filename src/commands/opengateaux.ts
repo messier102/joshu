@@ -1,13 +1,13 @@
-import { ValidatedCommandRequest } from "../request";
-import { Command } from "../command";
+import { ValidatedCommandRequest } from "../core/request";
+import { Command } from "../core/command";
 import { EmbedFieldData, MessageEmbed, Permissions } from "discord.js";
-import { pString } from "../parsers/String";
-import config from "../../../data/config";
-import { absolute_url, post_stats, reddit } from "../../services/reddit";
-import { CommandResponse, CommandResponseOk } from "../response";
+import { pString } from "../core/parsers/String";
+import config from "../../data/config";
+import { absolute_url, post_stats, reddit } from "../services/reddit";
+import { CommandResponse, CommandResponseOk } from "../core/response";
 import { Post } from "snoots";
 import dedent from "ts-dedent";
-import { Parameter } from "../parameter";
+import { Parameter } from "../core/parameter";
 
 export default new Command(
     {

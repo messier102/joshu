@@ -2,7 +2,7 @@ import path from "path";
 import fs from "fs/promises";
 import { CommandRequest } from "./request";
 import { AnyCommand } from "./command";
-import { find_similar_string, Weights } from "../find_similar_string";
+import { find_similar_string, Weights } from "./find_similar_string";
 import { CommandResponse, CommandResponseHelp } from "./response";
 import { MessageEmbed } from "discord.js";
 

@@ -1,11 +1,11 @@
-import { ValidatedCommandRequest } from "../request";
+import { ValidatedCommandRequest } from "../core/request";
 import { Permissions } from "discord.js";
-import { Command } from "../command";
-import { pMention } from "../parsers/Mention";
-import { pString } from "../parsers/String";
-import { CommandResponse } from "../response";
+import { Command } from "../core/command";
+import { pMention } from "../core/parsers/Mention";
+import { pString } from "../core/parsers/String";
+import { CommandResponse } from "../core/response";
 import dedent from "ts-dedent";
-import { Parameter } from "../parameter";
+import { Parameter } from "../core/parameter";
 
 export default new Command(
     {

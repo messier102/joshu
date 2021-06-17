@@ -1,10 +1,10 @@
 import { MessageEmbed } from "discord.js";
-import { Command } from "../command";
-import { ValidatedCommandRequest } from "../request";
-import { CommandResponseOk } from "../response";
-import { pString } from "../parsers/String";
+import { Command } from "../core/command";
+import { ValidatedCommandRequest } from "../core/request";
+import { CommandResponseOk } from "../core/response";
+import { pString } from "../core/parsers/String";
 import { sample } from "lodash";
-import { Parameter } from "../parameter";
+import { Parameter } from "../core/parameter";
 
 export default new Command(
     {

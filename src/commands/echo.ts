@@ -1,8 +1,8 @@
-import { ValidatedCommandRequest } from "../request";
-import { Command } from "../command";
-import { pString } from "../parsers/String";
-import { CommandResponse } from "../response";
-import { Parameter } from "../parameter";
+import { ValidatedCommandRequest } from "../core/request";
+import { Command } from "../core/command";
+import { pString } from "../core/parsers/String";
+import { CommandResponse } from "../core/response";
+import { Parameter } from "../core/parameter";
 
 export default new Command(
     {
