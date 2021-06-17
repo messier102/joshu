@@ -4,7 +4,7 @@ import {
     CommandResponseError,
     CommandResponseHelp,
 } from "./response";
-import { CommandRequest, ValidatedCommandRequest } from "./request";
+import { Request, ValidatedRequest } from "./request";
 import { Err, Ok, Result } from "ts-results";
 import { split_args } from "./split_args";
 import { assert } from "node:console";
@@ -23,7 +23,7 @@ type CommandMetadata<T extends unknown[]> = {
 };
 
 type CommandHandler<T extends unknown[]> = (
-    request: ValidatedCommandRequest,
+    request: ValidatedRequest,
     ...args: T
 ) => Promise<CommandResponse>;
 
@@ -92,7 +92,7 @@ export class Command<T extends unknown[]> {
         return new CommandResponseCommandHelp(command_alias, this.meta);
     }
 
-    async execute(request: CommandRequest): Promise<CommandResponse> {
+    async execute(request: Request): Promise<CommandResponse> {
         // TODO: proper logging
         console.log(
             `[${request.source.author.tag}]`,
@@ -120,13 +120,13 @@ export class Command<T extends unknown[]> {
         }
 
         const execution_result = await this.handler(
-            request as ValidatedCommandRequest,
+            request as ValidatedRequest,
             ...parsed_args.val
         );
         return execution_result;
     }
 
-    private check_permissions(request: CommandRequest): Result<void, string> {
+    private check_permissions(request: Request): Result<void, string> {
         if (this.meta.permissions.length === 0) {
             // no permissions required
             return Ok.EMPTY;

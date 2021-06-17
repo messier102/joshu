@@ -6,7 +6,7 @@ export type ServerMessage = Discord.Message & {
     member: NonNullable<Discord.Message["member"]>;
 };
 
-export class CommandRequest {
+export class Request {
     constructor(
         public readonly name: string,
         public readonly args: string,
@@ -16,7 +16,7 @@ export class CommandRequest {
     static from_raw_message(
         message: Discord.Message,
         prefix: string
-    ): Result<CommandRequest, string> {
+    ): Result<Request, string> {
         const message_stripped = message.content.slice(prefix.length).trim();
 
         const request_regex = /^(\S+) *(.*)$/;
@@ -28,10 +28,10 @@ export class CommandRequest {
 
         const [_, command_name, command_args] = match;
 
-        return Ok(new CommandRequest(command_name, command_args, message));
+        return Ok(new Request(command_name, command_args, message));
     }
 }
 
-export type ValidatedCommandRequest = CommandRequest & {
+export type ValidatedRequest = Request & {
     source: ServerMessage;
 };

@@ -1,4 +1,4 @@
-import { ValidatedCommandRequest } from "../core/request";
+import { ValidatedRequest } from "../core/request";
 import { Command } from "../core/command";
 import { pString } from "../core/parsers/String";
 import {
@@ -30,7 +30,7 @@ export default new Command(
         permissions: [],
     },
 
-    async (_: ValidatedCommandRequest, subreddit: string) => {
+    async (_: ValidatedRequest, subreddit: string) => {
         try {
             const random_post = await reddit.subreddits.getRandomPost(
                 subreddit

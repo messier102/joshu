@@ -1,4 +1,4 @@
-import { ValidatedCommandRequest } from "../core/request";
+import { ValidatedRequest } from "../core/request";
 import { Command } from "../core/command";
 import {
     Client,
@@ -48,7 +48,7 @@ export default new Command(
     },
 
     async (
-        { name, source }: ValidatedCommandRequest,
+        { name, source }: ValidatedRequest,
         target_user_id_or_tag: string
     ) => {
         const maybe_target_user = await resolve_user(

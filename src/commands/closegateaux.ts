@@ -1,4 +1,4 @@
-import { ValidatedCommandRequest } from "../core/request";
+import { ValidatedRequest } from "../core/request";
 import { Command } from "../core/command";
 import { MessageEmbed, Permissions } from "discord.js";
 import { reddit } from "../core/services/reddit";
@@ -21,7 +21,7 @@ export default new Command(
         accept_remainder_arg: true,
     },
 
-    async ({ source }: ValidatedCommandRequest) => {
+    async ({ source }: ValidatedRequest) => {
         let total_invite_uses = 0;
         const old_invites = await source.guild.fetchInvites();
         for (const [_, old_invite] of old_invites) {

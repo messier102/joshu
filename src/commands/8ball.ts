@@ -1,6 +1,6 @@
 import { MessageEmbed } from "discord.js";
 import { Command } from "../core/command";
-import { ValidatedCommandRequest } from "../core/request";
+import { ValidatedRequest } from "../core/request";
 import { CommandResponseOk } from "../core/response";
 import { pString } from "../core/parsers/String";
 import { sample } from "lodash";
@@ -28,7 +28,7 @@ export default new Command(
         accept_remainder_arg: true,
     },
 
-    async ({ source }: ValidatedCommandRequest, question: string) => {
+    async ({ source }: ValidatedRequest, question: string) => {
         const random_answer = sample(POSSIBLE_ANSWERS) as string;
 
         return new EightBallResponse(

@@ -1,4 +1,4 @@
-import { ValidatedCommandRequest } from "../core/request";
+import { ValidatedRequest } from "../core/request";
 import { Command } from "../core/command";
 import { pSnowflake } from "../core/parsers/Snowflake";
 import { pString } from "../core/parsers/String";
@@ -30,7 +30,7 @@ export default new Command(
     },
 
     async (
-        { source }: ValidatedCommandRequest,
+        { source }: ValidatedRequest,
         target_channel_id: string,
         message: string
     ) => {

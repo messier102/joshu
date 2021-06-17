@@ -1,4 +1,4 @@
-import { CommandRequest } from "./core/request";
+import { Request } from "./core/request";
 import { Router } from "./core/router";
 import Discord from "discord.js";
 import config from "../data/config";
@@ -21,7 +21,7 @@ import { load_commands } from "./core/loader";
         if (message.author.bot) return;
         if (!message.content.startsWith(config.prefix)) return;
 
-        const request = CommandRequest.from_raw_message(message, config.prefix);
+        const request = Request.from_raw_message(message, config.prefix);
 
         if (request.ok) {
             message.channel.startTyping();

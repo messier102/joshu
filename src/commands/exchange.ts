@@ -1,4 +1,4 @@
-import { ValidatedCommandRequest } from "../core/request";
+import { ValidatedRequest } from "../core/request";
 import { Command } from "../core/command";
 import { pString } from "../core/parsers/String";
 import { pPositiveNumber } from "../core/parsers/PositiveNumber";
@@ -41,7 +41,7 @@ export default new Command(
     },
 
     async (
-        _: ValidatedCommandRequest,
+        _: ValidatedRequest,
         base_currency: string,
         target_currency: string,
         amount: number

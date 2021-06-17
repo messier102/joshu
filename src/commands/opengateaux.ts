@@ -1,4 +1,4 @@
-import { ValidatedCommandRequest } from "../core/request";
+import { ValidatedRequest } from "../core/request";
 import { Command } from "../core/command";
 import { EmbedFieldData, MessageEmbed, Permissions } from "discord.js";
 import { pString } from "../core/parsers/String";
@@ -38,7 +38,7 @@ export default new Command(
         accept_remainder_arg: true,
     },
 
-    async ({ source }: ValidatedCommandRequest, post_title: string) => {
+    async ({ source }: ValidatedRequest, post_title: string) => {
         const old_invites = await source.guild.fetchInvites();
         for (const [_, old_invite] of old_invites) {
             if (old_invite.inviter === source.client.user) {

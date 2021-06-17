@@ -1,4 +1,4 @@
-import { ValidatedCommandRequest } from "../core/request";
+import { ValidatedRequest } from "../core/request";
 import { Permissions } from "discord.js";
 import { Command } from "../core/command";
 import { pMention } from "../core/parsers/Mention";
@@ -41,7 +41,7 @@ export default new Command(
     },
 
     async (
-        { source }: ValidatedCommandRequest,
+        { source }: ValidatedRequest,
         target_user_id: string,
         role_name: string,
         role_color: string

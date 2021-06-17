@@ -1,4 +1,4 @@
-import { ValidatedCommandRequest } from "../core/request";
+import { ValidatedRequest } from "../core/request";
 import { Command } from "../core/command";
 import { pString } from "../core/parsers/String";
 import { CommandResponse } from "../core/response";
@@ -22,7 +22,7 @@ export default new Command(
         accept_remainder_arg: true,
     },
 
-    async (_: ValidatedCommandRequest, message: string) => {
+    async (_: ValidatedRequest, message: string) => {
         return CommandResponse.Ok(message);
     }
 );

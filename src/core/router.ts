@@ -1,4 +1,4 @@
-import { CommandRequest } from "./request";
+import { Request } from "./request";
 import { AnyCommand } from "./command";
 import { find_similar_string, Weights } from "./find_similar_string";
 import { CommandResponse, CommandResponseHelp } from "./response";
@@ -30,7 +30,7 @@ export class Router {
         }
     }
 
-    async route(request: CommandRequest): Promise<CommandResponse> {
+    async route(request: Request): Promise<CommandResponse> {
         if (request.name === "help") {
             if (request.args) {
                 const command_name = this.routes.get(request.args);
