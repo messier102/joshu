@@ -15,7 +15,7 @@ export class CommandRouter {
     }
 
     private async load_routes(): Promise<void> {
-        const commands_dir = path.join(__dirname, "commands");
+        const commands_dir = path.join(__dirname, "..", "commands");
         const filenames = await fs.readdir(commands_dir);
 
         for (const filename of filenames) {

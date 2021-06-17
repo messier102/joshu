@@ -1,8 +1,8 @@
-import { CommandRequest } from "./commands/request";
-import { CommandRouter } from "./commands/router";
+import { CommandRequest } from "./core/request";
+import { CommandRouter } from "./core/router";
 import Discord from "discord.js";
 import config from "../data/config";
-import { CommandResponse } from "./commands/response";
+import { CommandResponse } from "./core/response";
 
 const client = new Discord.Client();
 const command_router = new CommandRouter();
