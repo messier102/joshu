@@ -1,76 +1,75 @@
 import { Request } from "./request";
 import { AnyCommand } from "./command";
 import { find_similar_string, Weights } from "./find_similar_string";
-import { Response, ResponseHelp } from "./response";
+import { Response, ResponseError, ResponseHelp } from "./response";
 import { MessageEmbed } from "discord.js";
+import { Err, Ok, Result } from "ts-results";
 
 export class Router {
-    private readonly commands: Map<string, AnyCommand> = new Map();
-    private readonly routes: Map<string, string> = new Map();
+    private readonly resolver: RouteResolver;
 
     constructor(commands: AnyCommand[]) {
-        for (const command of commands) {
-            this.commands.set(command.meta.name, command);
-            this.routes.set(command.meta.name, command.meta.name);
-
-            if (command.meta.aliases) {
-                for (const alias of command.meta.aliases) {
-                    if (this.routes.has(alias)) {
-                        console.log(
-                            `Command alias collision: ${alias} already registered`
-                        );
-                    }
-
-                    this.routes.set(alias, command.meta.name);
-                }
-            }
-
-            console.log("Loaded commands:");
-            console.log(this.routes);
-        }
+        this.resolver = new RouteResolver(commands);
     }
 
     async route(request: Request): Promise<Response> {
         if (request.name === "help") {
-            if (request.args) {
-                const command_name = this.routes.get(request.args);
-
-                if (!command_name) {
-                    const similar_commands = this.find_similar_commands(
-                        request.args
-                    );
-
-                    const no_such_command_message =
-                        similar_commands.length > 0
-                            ? `sorry, no such command. Did you mean \`${similar_commands[0]}\`?`
-                            : "sorry, no such command.";
-
-                    return Response.Error(no_such_command_message);
-                }
-
-                return this.commands.get(command_name)!.help(request.args);
-            } else {
-                return new CommandResponseCommandList([
-                    ...this.commands.values(),
-                ]);
-            }
+            return this.handle_help(request.args);
         } else {
-            const command_name = this.routes.get(request.name);
+            const maybe_command = this.resolver.resolve(request.name);
 
-            if (!command_name) {
-                const similar_commands = this.find_similar_commands(
-                    request.name
-                );
+            return maybe_command
+                .map((command) => command.execute(request))
+                .mapErr((suggestion) => new CommandResponseNotFound(suggestion))
+                .val;
+        }
+    }
 
-                const no_such_command_message =
-                    similar_commands.length > 0
-                        ? `sorry, no such command. Did you mean \`${similar_commands[0]}\`?`
-                        : "sorry, no such command.";
+    handle_help(command_name: string | undefined): Response {
+        if (command_name) {
+            const maybe_command = this.resolver.resolve(command_name);
 
-                return Response.Error(no_such_command_message);
+            return maybe_command
+                .map((command) => command.help(command_name))
+                .mapErr((suggestion) => new CommandResponseNotFound(suggestion))
+                .val;
+        } else {
+            return new CommandResponseCommandList([...this.resolver.commands]);
+        }
+    }
+}
+
+class RouteResolver {
+    private readonly routes: Map<string, AnyCommand> = new Map();
+
+    constructor(public readonly commands: AnyCommand[]) {
+        for (const command of commands) {
+            this.routes.set(command.meta.name, command);
+
+            if (command.meta.aliases) {
+                for (const alias of command.meta.aliases) {
+                    if (this.routes.has(alias)) {
+                        console.log(`Alias collision: ${alias} already exists`);
+                    }
+
+                    this.routes.set(alias, command);
+                }
             }
 
-            return await this.commands.get(command_name)!.execute(request);
+            console.log("Configured routes:");
+            console.log(this.routes);
+        }
+    }
+
+    resolve(command_name: string): Result<AnyCommand, string | undefined> {
+        const maybe_command = this.routes.get(command_name);
+
+        if (maybe_command) {
+            return Ok(maybe_command);
+        } else {
+            const similar_commands = this.find_similar_commands(command_name);
+
+            return Err(similar_commands[0]);
         }
     }
 
@@ -89,6 +88,23 @@ export class Router {
             max_distance,
             command_name
         );
+    }
+}
+
+class CommandResponseNotFound extends ResponseError {
+    constructor(public readonly command_suggestion: string | undefined) {
+        super();
+    }
+
+    to_embed(): MessageEmbed {
+        return super
+            .to_embed()
+            .setDescription(
+                "Sorry, no such command." +
+                    (this.command_suggestion
+                        ? ` Did you mean \`${this.command_suggestion}\`?`
+                        : "")
+            );
     }
 }
 
