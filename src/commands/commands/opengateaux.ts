@@ -18,16 +18,16 @@ export default new Command(
         `,
 
         parameters: [
-            new CommandParameter(
-                "post title",
-                StringConverter,
-                "The title of the Reddit post.",
-                [
+            new CommandParameter({
+                name: "post title",
+                type: StringConverter,
+                description: "The title of the Reddit post.",
+                examples: [
                     "[21+] Cats 🐈 Coffee ☕ Bread 🍞",
                     "[21+] cute people welcome",
                     "[21+] yep cock",
-                ]
-            ),
+                ],
+            }),
         ],
         permissions: [
             Permissions.FLAGS.CREATE_INSTANT_INVITE,

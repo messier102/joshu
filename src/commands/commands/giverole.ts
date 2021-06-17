@@ -16,24 +16,25 @@ export default new Command(
         `,
 
         parameters: [
-            new CommandParameter(
-                "target user",
-                MentionConverter,
-                "The user to give a role to.",
-                ["@yuna", "@Momo", "@dip", "@assblaster69"]
-            ),
-            new CommandParameter(
-                "role name",
-                StringConverter,
-                "The name of the new role.",
-                [`"certified friend of dip"`, "gorilla", "cutie"]
-            ),
-            new CommandParameter(
-                "role color",
-                StringConverter,
-                "The color of the new role, either a hex code or a default Discord color name in all caps (RED, BLUE, ORANGE, etc).",
-                ["RED", "#f3dda1", "3e3455"]
-            ),
+            new CommandParameter({
+                name: "target user",
+                type: MentionConverter,
+                description: "The user to give a role to.",
+                examples: ["@yuna", "@Momo", "@dip", "@assblaster69"],
+            }),
+            new CommandParameter({
+                name: "role name",
+                type: StringConverter,
+                description: "The name of the new role.",
+                examples: [`"certified friend of dip"`, "gorilla", "cutie"],
+            }),
+            new CommandParameter({
+                name: "role color",
+                type: StringConverter,
+                description:
+                    "The color of the new role, either a hex code or a default Discord color name in all caps (RED, BLUE, ORANGE, etc).",
+                examples: ["RED", "#f3dda1", "3e3455"],
+            }),
         ],
         permissions: [Permissions.FLAGS.MANAGE_ROLES],
     },

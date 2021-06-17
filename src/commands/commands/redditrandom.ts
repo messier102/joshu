@@ -19,12 +19,12 @@ export default new Command(
         aliases: ["rr"],
 
         parameters: [
-            new CommandParameter(
-                "subreddit",
-                StringConverter,
-                `The subreddit to get a post from, without the "r/" part.`,
-                ["r4r", "makenewfriendshere", "eyebleach"]
-            ),
+            new CommandParameter({
+                name: "subreddit",
+                type: StringConverter,
+                description: `The subreddit to get a post from, without the "r/" part.`,
+                examples: ["r4r", "makenewfriendshere", "eyebleach"],
+            }),
         ],
         permissions: [],
     },

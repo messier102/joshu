@@ -36,12 +36,16 @@ export default new Command(
         ],
 
         parameters: [
-            new CommandParameter(
-                "target user",
-                either(MentionConverter, SnowflakeConverter, UserTagConverter),
-                "The user to ban.",
-                ["@Momo", "Momo#7675", "310061663162204160"]
-            ),
+            new CommandParameter({
+                name: "target user",
+                type: either(
+                    MentionConverter,
+                    SnowflakeConverter,
+                    UserTagConverter
+                ),
+                description: "The user to ban.",
+                examples: ["@Momo", "Momo#7675", "310061663162204160"],
+            }),
         ],
         permissions: [Permissions.FLAGS.BAN_MEMBERS],
     },

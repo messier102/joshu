@@ -13,13 +13,25 @@ import { zip } from "../util";
 import { sample } from "lodash";
 import config from "../../data/config";
 
+type ParameterMetadata<T> = {
+    readonly name: string;
+    readonly type: TypeConverter<T>;
+    readonly description: string;
+    readonly examples: string[];
+};
+
 export class CommandParameter<T> {
-    constructor(
-        public readonly name: string,
-        public readonly type_converter: TypeConverter<T>,
-        public readonly description: string,
-        public readonly sample_values: string[]
-    ) {}
+    name: string;
+    type: TypeConverter<T>;
+    description: string;
+    examples: string[];
+
+    constructor({ name, type, description, examples }: ParameterMetadata<T>) {
+        this.name = name;
+        this.type = type;
+        this.description = description;
+        this.examples = examples;
+    }
 
     toString(): string {
         return `<${this.name.split(" ").join("-")}>`;
@@ -72,7 +84,7 @@ class CommandResponseCommandHelp extends CommandResponseHelp {
         if (this.meta.parameters.length > 0) {
             const format_param = (param: CommandParameter<unknown>) =>
                 `**${param.name.split(" ").join("-")}** \u2014 (${
-                    param.type_converter.type
+                    param.type.type
                 }) ${param.description}`;
 
             const formatted_params = this.meta.parameters
@@ -86,10 +98,10 @@ class CommandResponseCommandHelp extends CommandResponseHelp {
             embed.addField("Aliases", this.meta.aliases.sort().join(", "));
         }
 
-        if (this.meta.parameters.every((p) => p.sample_values)) {
+        if (this.meta.parameters.every((p) => p.examples)) {
             const example_usage = [
                 this.command_alias,
-                ...this.meta.parameters.map((p) => sample(p.sample_values)),
+                ...this.meta.parameters.map((p) => sample(p.examples)),
             ].join(" ");
 
             embed.setFooter(config.prefix + example_usage);
@@ -182,7 +194,7 @@ export class Command<T extends unknown[]> {
         const arg_param_pairs = [...zip(args, this.meta.parameters)];
 
         const maybe_converted_args = arg_param_pairs.map(([arg, param]) =>
-            param.type_converter
+            param.type
                 .convert(arg)
                 .mapErr(
                     (error) =>

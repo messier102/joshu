@@ -17,24 +17,24 @@ export default new Command(
         aliases: ["convert", "conv"],
 
         parameters: [
-            new CommandParameter(
-                "base currency",
-                StringConverter,
-                "The currency to convert from.",
-                ["USD", "GBP", "BTC"]
-            ),
-            new CommandParameter(
-                "target currency",
-                StringConverter,
-                "The currency to convert to.",
-                ["EUR", "RUB", "DOGE"]
-            ),
-            new CommandParameter(
-                "amount",
-                PositiveNumberConverter,
-                "The amount of the base currency to convert.",
-                ["1", "20", "13.05"]
-            ),
+            new CommandParameter({
+                name: "base currency",
+                type: StringConverter,
+                description: "The currency to convert from.",
+                examples: ["USD", "GBP", "BTC"],
+            }),
+            new CommandParameter({
+                name: "target currency",
+                type: StringConverter,
+                description: "The currency to convert to.",
+                examples: ["EUR", "RUB", "DOGE"],
+            }),
+            new CommandParameter({
+                name: "amount",
+                type: PositiveNumberConverter,
+                description: "The amount of the base currency to convert.",
+                examples: ["1", "20", "13.05"],
+            }),
         ],
         permissions: [],
     },

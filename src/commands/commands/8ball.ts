@@ -11,16 +11,16 @@ export default new Command(
         description: "Gives randomized yes/no answers to users' questions.",
 
         parameters: [
-            new CommandParameter(
-                "question",
-                StringConverter,
-                "User's question.",
-                [
+            new CommandParameter({
+                name: "question",
+                type: StringConverter,
+                description: "User's question.",
+                examples: [
                     "Is today going to be a good day?",
                     "Should I sleep?",
                     "Is dip into feet?",
-                ]
-            ),
+                ],
+            }),
         ],
         permissions: [],
 

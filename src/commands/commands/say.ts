@@ -10,18 +10,18 @@ export default new Command(
         description: "Posts the given message in the given channel.",
 
         parameters: [
-            new CommandParameter(
-                "target channel id",
-                SnowflakeConverter,
-                "The channel to post the message to.",
-                ["836905661819256862"]
-            ),
-            new CommandParameter(
-                "message",
-                StringConverter,
-                "The message to post.",
-                ["Ahh what a beautiful day", "yep cock"]
-            ),
+            new CommandParameter({
+                name: "target channel id",
+                type: SnowflakeConverter,
+                description: "The channel to post the message to.",
+                examples: ["836905661819256862"],
+            }),
+            new CommandParameter({
+                name: "message",
+                type: StringConverter,
+                description: "The message to post.",
+                examples: ["Ahh what a beautiful day", "yep cock"],
+            }),
         ],
         permissions: [],
 
