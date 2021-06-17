@@ -4,7 +4,7 @@ import { find_similar_string, Weights } from "./find_similar_string";
 import { CommandResponse, CommandResponseHelp } from "./response";
 import { MessageEmbed } from "discord.js";
 
-export class CommandRouter {
+export class Router {
     private readonly commands: Map<string, AnyCommand> = new Map();
     private readonly routes: Map<string, string> = new Map();
 
@@ -30,7 +30,7 @@ export class CommandRouter {
         }
     }
 
-    async route_request(request: CommandRequest): Promise<CommandResponse> {
+    async route(request: CommandRequest): Promise<CommandResponse> {
         if (request.name === "help") {
             if (request.args) {
                 const command_name = this.routes.get(request.args);

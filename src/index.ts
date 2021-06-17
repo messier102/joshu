@@ -1,5 +1,5 @@
 import { CommandRequest } from "./core/request";
-import { CommandRouter } from "./core/router";
+import { Router } from "./core/router";
 import Discord from "discord.js";
 import config from "../data/config";
 import { CommandResponse } from "./core/response";
@@ -9,7 +9,7 @@ import { load_commands } from "./core/loader";
 (async () => {
     const commands_dir = path.join(__dirname, "commands");
     const commands = await load_commands(commands_dir);
-    const command_router = new CommandRouter(commands);
+    const router = new Router(commands);
 
     const client = new Discord.Client();
 
@@ -25,7 +25,7 @@ import { load_commands } from "./core/loader";
 
         if (request.ok) {
             message.channel.startTyping();
-            const response = await command_router.route_request(request.val);
+            const response = await router.route(request.val);
             message.channel.stopTyping();
 
             message.channel.send(response.to_embed());
