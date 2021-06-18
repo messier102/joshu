@@ -5,7 +5,7 @@ import { Response } from "./response";
 import { load_commands } from "./loader";
 import { AnyCommand } from "./command";
 
-export class Joshu {
+export class Bot {
     private readonly client: Discord.Client;
     private readonly router: Router;
 
@@ -20,10 +20,10 @@ export class Joshu {
         this.client.on("message", this.handle_message.bind(this));
     }
 
-    static async with(prefix: string, commands_dir: string): Promise<Joshu> {
+    static async with(prefix: string, commands_dir: string): Promise<Bot> {
         const commands = await load_commands(commands_dir);
 
-        return new Joshu(prefix, commands);
+        return new Bot(prefix, commands);
     }
 
     async run(discord_token: string): Promise<void> {
