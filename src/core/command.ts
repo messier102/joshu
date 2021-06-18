@@ -30,7 +30,7 @@ export class Command<T extends unknown[]> {
     ) {}
 
     help(command_alias: string): Response {
-        return new CommandResponseCommandHelp(command_alias, this.meta);
+        return new CommandHelp(command_alias, this.meta);
     }
 
     async execute(request: Request): Promise<Response> {
@@ -134,7 +134,7 @@ class ArgumentError extends ResponseError {
     }
 }
 
-class CommandResponseCommandHelp extends ResponseHelp {
+class CommandHelp extends ResponseHelp {
     constructor(
         public readonly command_alias: string,
         public readonly meta: CommandMetadata<unknown[]>
@@ -143,48 +143,81 @@ class CommandResponseCommandHelp extends ResponseHelp {
     }
 
     to_embed(): MessageEmbed {
-        const command_usage = [
-            this.meta.name,
-            ...this.meta.parameters.map((p) => p.toString()),
-        ].join(" ");
+        const title = this.format_title(this.meta, this.command_alias);
+        const usage = this.format_usage(this.meta);
 
         const embed = super
             .to_embed()
-            .setTitle(
-                this.meta.name +
-                    (this.command_alias !== this.meta.name
-                        ? `・alias *${this.command_alias}*`
-                        : "")
-            )
+            .setTitle(title)
             .setDescription(this.meta.description)
-            .addField("Usage", `\`${command_usage}\``);
+            .addField("Usage", usage);
 
         if (this.meta.parameters.length > 0) {
-            const format_param = (param: Parameter<unknown>) =>
-                `**${param.name.split(" ").join("-")}** \u2014 (${
-                    param.parser.type
-                }) ${param.description}`;
-
-            const formatted_params = this.meta.parameters
-                .map(format_param)
-                .join("\n");
-
-            embed.addField("Parameters", formatted_params);
+            const parameters = this.format_parameters(this.meta.parameters);
+            embed.addField("Parameters", parameters);
         }
 
         if (this.meta.aliases) {
-            embed.addField("Aliases", this.meta.aliases.sort().join(", "));
+            const aliases = this.format_aliases(this.meta.aliases);
+            embed.addField("Aliases", aliases);
         }
 
         if (this.meta.parameters.every((p) => p.examples)) {
-            const example_usage = [
+            const example = this.format_example(
                 this.command_alias,
-                ...this.meta.parameters.map((p) => sample(p.examples)),
-            ].join(" ");
-
-            embed.setFooter(config.prefix + example_usage);
+                this.meta.parameters
+            );
+            embed.setFooter(example);
         }
 
         return embed;
+    }
+
+    private format_title(
+        { name }: CommandMetadata<unknown[]>,
+        command_alias: string
+    ) {
+        return command_alias === name
+            ? name
+            : `${name}・alias *${command_alias}*`;
+    }
+
+    private format_usage({
+        name,
+        parameters,
+    }: CommandMetadata<unknown[]>): string {
+        const usage = [name, ...parameters].join(" ");
+
+        return `\`${usage}\``;
+    }
+
+    private format_parameters(parameters: Parameters<unknown[]>): string {
+        return parameters.map(this.format_parameter).join("\n");
+    }
+
+    private format_parameter({
+        name,
+        parser: { type },
+        description,
+    }: Parameter<unknown>): string {
+        const name_normalized = name.split(" ").join("-");
+
+        return `**${name_normalized}** \u2014 (${type}) ${description}`;
+    }
+
+    private format_aliases(aliases: string[]): string {
+        return aliases.sort().join(", ");
+    }
+
+    private format_example(
+        command_alias: string,
+        parameters: Parameters<unknown[]>
+    ): string {
+        const example = [
+            command_alias,
+            ...parameters.map((p) => sample(p.examples)),
+        ].join(" ");
+
+        return config.prefix + example;
     }
 }
