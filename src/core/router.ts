@@ -7,7 +7,7 @@ import { CommandNameResolver } from "./resolver";
 export class Router {
     private readonly resolver: CommandNameResolver;
 
-    constructor(commands: AnyCommand[]) {
+    constructor(private readonly commands: AnyCommand[]) {
         this.resolver = new CommandNameResolver(commands);
     }
 
@@ -33,7 +33,7 @@ export class Router {
                 .mapErr((suggestion) => new CommandResponseNotFound(suggestion))
                 .val;
         } else {
-            return new CommandResponseCommandList([...this.resolver.commands]);
+            return new CommandResponseCommandList([...this.commands]);
         }
     }
 }
