@@ -2,13 +2,13 @@ import { Request } from "./request";
 import { AnyCommand } from "./command";
 import { Response, ResponseError, ResponseHelp } from "./response";
 import { MessageEmbed } from "discord.js";
-import { RouteResolver } from "./resolver";
+import { CommandNameResolver } from "./resolver";
 
 export class Router {
-    private readonly resolver: RouteResolver;
+    private readonly resolver: CommandNameResolver;
 
     constructor(commands: AnyCommand[]) {
-        this.resolver = new RouteResolver(commands);
+        this.resolver = new CommandNameResolver(commands);
     }
 
     async route(request: Request): Promise<Response> {

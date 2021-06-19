@@ -2,42 +2,50 @@ import { AnyCommand } from "./command";
 import { find_similar_string, Weights } from "./find_similar_string";
 import { Err, Ok, Result } from "ts-results";
 
-export class RouteResolver {
-    private readonly routes: Map<string, AnyCommand> = new Map();
+export class CommandNameResolver {
+    private readonly command_table: Map<string, AnyCommand> = new Map();
 
     constructor(public readonly commands: AnyCommand[]) {
         for (const command of commands) {
-            this.routes.set(command.meta.name, command);
+            this.register_command_name(command.meta.name, command);
 
-            if (command.meta.aliases) {
-                for (const alias of command.meta.aliases) {
-                    if (this.routes.has(alias)) {
-                        console.log(`Alias collision: ${alias} already exists`);
-                    }
-
-                    this.routes.set(alias, command);
-                }
-            }
+            command.meta.aliases?.forEach((alias) =>
+                this.register_command_name(alias, command)
+            );
 
             console.log("Configured routes:");
-            console.log(this.routes);
+            console.log(this.command_table);
         }
+    }
+
+    private register_command_name(command_name: string, command: AnyCommand) {
+        if (this.command_table.has(command_name)) {
+            console.warn(`Name collision: ${command_name} already exists`);
+        }
+
+        this.command_table.set(command_name, command);
     }
 
     resolve(command_name: string): Result<AnyCommand, string | undefined> {
-        const maybe_command = this.routes.get(command_name);
+        const command = this.command_table.get(command_name);
 
-        if (maybe_command) {
-            return Ok(maybe_command);
+        if (command) {
+            return Ok(command);
         } else {
-            const similar_commands = this.find_similar_commands(command_name);
+            const suggestion = this.find_most_similar_command(command_name);
 
-            return Err(similar_commands[0]);
+            return Err(suggestion);
         }
     }
 
+    private find_most_similar_command(
+        command_name: string
+    ): string | undefined {
+        return this.find_similar_commands(command_name)[0];
+    }
+
     private find_similar_commands(command_name: string): string[] {
-        const command_names = [...this.routes.keys(), "help"];
+        const command_names = [...this.command_table.keys(), "help"];
         const weights: Weights = {
             substitution: 3,
             insertion: 0,
