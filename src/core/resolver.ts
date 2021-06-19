@@ -4,6 +4,7 @@ import { Err, Ok, Result } from "ts-results";
 
 export class CommandNameResolver {
     private readonly command_table: Map<string, AnyCommand> = new Map();
+    private readonly command_search: WordSearch;
 
     constructor(public readonly commands: AnyCommand[]) {
         for (const command of commands) {
@@ -12,10 +13,15 @@ export class CommandNameResolver {
             command.meta.aliases?.forEach((alias) =>
                 this.register_command_name(alias, command)
             );
-
-            console.log("Configured routes:");
-            console.log(this.command_table);
         }
+
+        console.log("Configured routes:");
+        console.log(this.command_table);
+
+        this.command_search = new WordSearch([
+            ...this.command_table.keys(),
+            "help",
+        ]);
     }
 
     private register_command_name(command_name: string, command: AnyCommand) {
@@ -32,32 +38,38 @@ export class CommandNameResolver {
         if (command) {
             return Ok(command);
         } else {
-            const suggestion = this.find_most_similar_command(command_name);
+            const suggestion = this.command_search.find_most_similar(
+                command_name
+            );
 
             return Err(suggestion);
         }
     }
+}
 
-    private find_most_similar_command(
-        command_name: string
-    ): string | undefined {
-        return this.find_similar_commands(command_name)[0];
-    }
+class WordSearch {
+    private readonly weights: Weights;
+    private readonly max_distance: number;
 
-    private find_similar_commands(command_name: string): string[] {
-        const command_names = [...this.command_table.keys(), "help"];
-        const weights: Weights = {
+    constructor(private readonly words: string[]) {
+        this.weights = {
             substitution: 3,
             insertion: 0,
             deletion: 1,
         };
-        const max_distance = 6;
+        this.max_distance = 6;
+    }
 
+    find_most_similar(word: string): string | undefined {
+        return this.find_similar(word)[0];
+    }
+
+    private find_similar(word: string): string[] {
         return find_similar_string(
-            command_names,
-            weights,
-            max_distance,
-            command_name
+            this.words,
+            this.weights,
+            this.max_distance,
+            word
         );
     }
 }
