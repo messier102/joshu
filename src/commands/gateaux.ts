@@ -1,6 +1,6 @@
-import { Command } from "../command";
-import { absolute_url, post_stats, reddit } from "../../services/reddit";
-import { CommandResponse, CommandResponseOk } from "../response";
+import { Command } from "../core/command";
+import { absolute_url, post_stats, reddit } from "../core/services/reddit";
+import { Response, ResponseOk } from "../core/response";
 import { EmbedFieldData, MessageEmbed } from "discord.js";
 import type { Post } from "snoots";
 
@@ -28,12 +28,12 @@ export default new Command(
                 ? new GateauxOpenOk(posts)
                 : new GateauxClosedOk();
         } catch (reason) {
-            return CommandResponse.Error(`Reddit error: \`${reason}\``);
+            return Response.Error(`Reddit error: \`${reason}\``);
         }
     }
 );
 
-class GateauxOpenOk extends CommandResponseOk {
+class GateauxOpenOk extends ResponseOk {
     constructor(public readonly posts: Post[]) {
         super();
     }
@@ -56,7 +56,7 @@ class GateauxOpenOk extends CommandResponseOk {
     }
 }
 
-class GateauxClosedOk extends CommandResponseOk {
+class GateauxClosedOk extends ResponseOk {
     to_embed(): MessageEmbed {
         return super
             .to_embed()

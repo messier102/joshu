@@ -1,9 +1,9 @@
-import { ValidatedCommandRequest } from "../request";
-import { Command } from "../command";
+import { ValidatedRequest } from "../core/request";
+import { Command } from "../core/command";
 import { MessageEmbed, Permissions } from "discord.js";
-import { reddit } from "../../services/reddit";
-import { CommandResponse, CommandResponseOk } from "../response";
-import { pluralize } from "../../util";
+import { reddit } from "../core/services/reddit";
+import { Response, ResponseOk } from "../core/response";
+import { pluralize } from "../core/util";
 import dedent from "ts-dedent";
 
 export default new Command(
@@ -21,7 +21,7 @@ export default new Command(
         accept_remainder_arg: true,
     },
 
-    async ({ source }: ValidatedCommandRequest) => {
+    async ({ source }: ValidatedRequest) => {
         let total_invite_uses = 0;
         const old_invites = await source.guild.fetchInvites();
         for (const [_, old_invite] of old_invites) {
@@ -42,14 +42,12 @@ export default new Command(
             return new GateauxClosedOk(total_invite_uses);
         } catch (reason) {
             console.log(reason);
-            return CommandResponse.Error(
-                `Reddit error: \`${reason.toString()}\``
-            );
+            return Response.Error(`Reddit error: \`${reason.toString()}\``);
         }
     }
 );
 
-class GateauxClosedOk extends CommandResponseOk {
+class GateauxClosedOk extends ResponseOk {
     constructor(public readonly total_invite_uses: number) {
         super();
     }

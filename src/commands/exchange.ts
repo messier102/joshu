@@ -1,10 +1,11 @@
-import { ValidatedCommandRequest } from "../request";
-import { CommandParameter, Command } from "../command";
-import StringConverter from "../type_converters/StringConverter";
-import PositiveNumberConverter from "../type_converters/PositiveNumberConverter";
-import { convert_currency } from "../../services/coinmarketcap";
-import { CommandResponse } from "../response";
+import { ValidatedRequest } from "../core/request";
+import { Command } from "../core/command";
+import { pString } from "../core/parsers/String";
+import { pPositiveNumber } from "../core/parsers/PositiveNumber";
+import { convert_currency } from "../core/services/coinmarketcap";
+import { Response } from "../core/response";
 import dedent from "ts-dedent";
+import { Parameter } from "../core/parameter";
 
 export default new Command(
     {
@@ -17,30 +18,30 @@ export default new Command(
         aliases: ["convert", "conv"],
 
         parameters: [
-            new CommandParameter(
-                "base currency",
-                StringConverter,
-                "The currency to convert from.",
-                ["USD", "GBP", "BTC"]
-            ),
-            new CommandParameter(
-                "target currency",
-                StringConverter,
-                "The currency to convert to.",
-                ["EUR", "RUB", "DOGE"]
-            ),
-            new CommandParameter(
-                "amount",
-                PositiveNumberConverter,
-                "The amount of the base currency to convert.",
-                ["1", "20", "13.05"]
-            ),
+            new Parameter({
+                name: "base currency",
+                parser: pString,
+                description: "The currency to convert from.",
+                examples: ["USD", "GBP", "BTC"],
+            }),
+            new Parameter({
+                name: "target currency",
+                parser: pString,
+                description: "The currency to convert to.",
+                examples: ["EUR", "RUB", "DOGE"],
+            }),
+            new Parameter({
+                name: "amount",
+                parser: pPositiveNumber,
+                description: "The amount of the base currency to convert.",
+                examples: ["1", "20", "13.05"],
+            }),
         ],
         permissions: [],
     },
 
     async (
-        _: ValidatedCommandRequest,
+        _: ValidatedRequest,
         base_currency: string,
         target_currency: string,
         amount: number
@@ -59,7 +60,7 @@ export default new Command(
             const amount_converted = conversion[target_currency].price;
 
             if (!amount_converted) {
-                return CommandResponse.Error(
+                return Response.Error(
                     "conversion request was successful, but the API did not return a price.\n" +
                         "(This usually means that the currency had existed in the past, but not anymore.)"
                 );
@@ -69,10 +70,10 @@ export default new Command(
                 `${format_decimal(amount)} **${base_currency}** = ` +
                 `${format_decimal(amount_converted)} **${target_currency}**`;
 
-            return CommandResponse.Ok(message);
+            return Response.Ok(message);
         } else {
             const error_message = conversion_result.val;
-            return CommandResponse.Error(`API error: ${error_message}.`);
+            return Response.Error(`API error: ${error_message}.`);
         }
     }
 );

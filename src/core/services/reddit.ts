@@ -1,5 +1,5 @@
 import RedditClient, { Post } from "snoots";
-import config from "../../data/config";
+import config from "../../../data/config";
 import { pluralize } from "../util";
 
 export const reddit = new RedditClient(config.reddit.client);

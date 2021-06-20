@@ -1,9 +1,10 @@
 import { MessageEmbed } from "discord.js";
-import { Command, CommandParameter } from "../command";
-import { ValidatedCommandRequest } from "../request";
-import { CommandResponseOk } from "../response";
-import StringConverter from "../type_converters/StringConverter";
+import { Command } from "../core/command";
+import { ValidatedRequest } from "../core/request";
+import { ResponseOk } from "../core/response";
+import { pString } from "../core/parsers/String";
 import { sample } from "lodash";
+import { Parameter } from "../core/parameter";
 
 export default new Command(
     {
@@ -11,23 +12,23 @@ export default new Command(
         description: "Gives randomized yes/no answers to users' questions.",
 
         parameters: [
-            new CommandParameter(
-                "question",
-                StringConverter,
-                "User's question.",
-                [
+            new Parameter({
+                name: "question",
+                parser: pString,
+                description: "User's question.",
+                examples: [
                     "Is today going to be a good day?",
                     "Should I sleep?",
                     "Is dip into feet?",
-                ]
-            ),
+                ],
+            }),
         ],
         permissions: [],
 
         accept_remainder_arg: true,
     },
 
-    async ({ source }: ValidatedCommandRequest, question: string) => {
+    async ({ source }: ValidatedRequest, question: string) => {
         const random_answer = sample(POSSIBLE_ANSWERS) as string;
 
         return new EightBallResponse(
@@ -38,7 +39,7 @@ export default new Command(
     }
 );
 
-class EightBallResponse extends CommandResponseOk {
+class EightBallResponse extends ResponseOk {
     constructor(
         public readonly question: string,
         public readonly asker: string,

@@ -1,12 +1,13 @@
-import { ValidatedCommandRequest } from "../request";
-import { CommandParameter, Command } from "../command";
+import { ValidatedRequest } from "../core/request";
+import { Command } from "../core/command";
 import { EmbedFieldData, MessageEmbed, Permissions } from "discord.js";
-import StringConverter from "../type_converters/StringConverter";
-import config from "../../../data/config";
-import { absolute_url, post_stats, reddit } from "../../services/reddit";
-import { CommandResponse, CommandResponseOk } from "../response";
+import { pString } from "../core/parsers/String";
+import config from "../../data/config";
+import { absolute_url, post_stats, reddit } from "../core/services/reddit";
+import { Response, ResponseOk } from "../core/response";
 import { Post } from "snoots";
 import dedent from "ts-dedent";
+import { Parameter } from "../core/parameter";
 
 export default new Command(
     {
@@ -18,16 +19,16 @@ export default new Command(
         `,
 
         parameters: [
-            new CommandParameter(
-                "post title",
-                StringConverter,
-                "The title of the Reddit post.",
-                [
+            new Parameter({
+                name: "post title",
+                parser: pString,
+                description: "The title of the Reddit post.",
+                examples: [
                     "[21+] Cats 🐈 Coffee ☕ Bread 🍞",
                     "[21+] cute people welcome",
                     "[21+] yep cock",
-                ]
-            ),
+                ],
+            }),
         ],
         permissions: [
             Permissions.FLAGS.CREATE_INSTANT_INVITE,
@@ -37,7 +38,7 @@ export default new Command(
         accept_remainder_arg: true,
     },
 
-    async ({ source }: ValidatedCommandRequest, post_title: string) => {
+    async ({ source }: ValidatedRequest, post_title: string) => {
         const old_invites = await source.guild.fetchInvites();
         for (const [_, old_invite] of old_invites) {
             if (old_invite.inviter === source.client.user) {
@@ -50,7 +51,7 @@ export default new Command(
         });
 
         if (!new_invite) {
-            return CommandResponse.Error("unable to create invite");
+            return Response.Error("unable to create invite");
         }
 
         try {
@@ -73,14 +74,12 @@ export default new Command(
             return new GateauxOpenOk(new_post);
         } catch (reason) {
             console.log(reason);
-            return CommandResponse.Error(
-                `Reddit error: \`${reason.toString()}\``
-            );
+            return Response.Error(`Reddit error: \`${reason.toString()}\``);
         }
     }
 );
 
-class GateauxOpenOk extends CommandResponseOk {
+class GateauxOpenOk extends ResponseOk {
     constructor(public readonly new_post: Post) {
         super();
     }

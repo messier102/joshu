@@ -1,5 +1,5 @@
-import { Command } from "../command";
-import { CommandResponse } from "../response";
+import { Command } from "../core/command";
+import { Response } from "../core/response";
 
 export default new Command(
     {
@@ -11,5 +11,5 @@ export default new Command(
         permissions: [],
     },
 
-    async () => CommandResponse.Ok("Pong!")
+    async () => Response.Ok("Pong!")
 );

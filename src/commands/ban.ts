@@ -1,5 +1,5 @@
-import { ValidatedCommandRequest } from "../request";
-import { CommandParameter, Command } from "../command";
+import { ValidatedRequest } from "../core/request";
+import { Command } from "../core/command";
 import {
     Client,
     GuildMember,
@@ -9,12 +9,13 @@ import {
 } from "discord.js";
 import dedent from "ts-dedent";
 import sample from "lodash/sample";
-import MentionConverter from "../type_converters/MentionConverter";
-import SnowflakeConverter from "../type_converters/SnowflakeConverter";
-import UserTagConverter from "../type_converters/UserTagConverter";
-import { either } from "../type_converters/either";
+import { pMention } from "../core/parsers/Mention";
+import { pSnowflake } from "../core/parsers/Snowflake";
+import { pUserTag } from "../core/parsers/UserTag";
+import { either } from "../core/parsers/either";
 import { None, Option, Some } from "ts-results";
-import { CommandResponse, CommandResponseOk } from "../response";
+import { Response, ResponseOk } from "../core/response";
+import { Parameter } from "../core/parameter";
 
 export default new Command(
     {
@@ -36,18 +37,18 @@ export default new Command(
         ],
 
         parameters: [
-            new CommandParameter(
-                "target user",
-                either(MentionConverter, SnowflakeConverter, UserTagConverter),
-                "The user to ban.",
-                ["@Momo", "Momo#7675", "310061663162204160"]
-            ),
+            new Parameter({
+                name: "target user",
+                parser: either(pMention, pSnowflake, pUserTag),
+                description: "The user to ban.",
+                examples: ["@Momo", "Momo#7675", "310061663162204160"],
+            }),
         ],
         permissions: [Permissions.FLAGS.BAN_MEMBERS],
     },
 
     async (
-        { name, source }: ValidatedCommandRequest,
+        { name, source }: ValidatedRequest,
         target_user_id_or_tag: string
     ) => {
         const maybe_target_user = await resolve_user(
@@ -56,13 +57,13 @@ export default new Command(
         );
 
         if (!maybe_target_user.some) {
-            return CommandResponse.Error("sorry, I don't know that user.");
+            return Response.Error("sorry, I don't know that user.");
         }
 
         const target_user = maybe_target_user.val;
 
         if (source.author === target_user) {
-            return CommandResponse.Error("you can't ban yourself, dummy.");
+            return Response.Error("you can't ban yourself, dummy.");
         }
 
         const source_member = source.member;
@@ -72,7 +73,7 @@ export default new Command(
             target_member &&
             !source_can_ban_target(source_member, target_member)
         ) {
-            return CommandResponse.Error(
+            return Response.Error(
                 "sorry, you can't ban that user.\n" +
                     "(They have a role higher than or equal to yours.)"
             );
@@ -81,7 +82,7 @@ export default new Command(
         try {
             await source.guild.members.ban(target_user);
         } catch (e) {
-            return CommandResponse.Error(
+            return Response.Error(
                 "sorry, I can't ban that user.\n" +
                     "(This usually means that they have a role higher than mine.)"
             );
@@ -136,7 +137,7 @@ function source_can_ban_target(
     );
 }
 
-class BanOk extends CommandResponseOk {
+class BanOk extends ResponseOk {
     constructor(
         public readonly user: User,
         public readonly ban_message_template: string

@@ -1,16 +1,17 @@
-import { ValidatedCommandRequest } from "../request";
-import { CommandParameter, Command } from "../command";
-import StringConverter from "../type_converters/StringConverter";
+import { ValidatedRequest } from "../core/request";
+import { Command } from "../core/command";
+import { pString } from "../core/parsers/String";
 import {
     absolute_url,
     is_image_post,
     post_stats,
     reddit,
     text_preview,
-} from "../../services/reddit";
-import { CommandResponse, CommandResponseOk } from "../response";
+} from "../core/services/reddit";
+import { Response, ResponseOk } from "../core/response";
 import { Post } from "snoots";
 import { MessageEmbed } from "discord.js";
+import { Parameter } from "../core/parameter";
 
 export default new Command(
     {
@@ -19,17 +20,17 @@ export default new Command(
         aliases: ["rr"],
 
         parameters: [
-            new CommandParameter(
-                "subreddit",
-                StringConverter,
-                `The subreddit to get a post from, without the "r/" part.`,
-                ["r4r", "makenewfriendshere", "eyebleach"]
-            ),
+            new Parameter({
+                name: "subreddit",
+                parser: pString,
+                description: `The subreddit to get a post from, without the "r/" part.`,
+                examples: ["r4r", "makenewfriendshere", "eyebleach"],
+            }),
         ],
         permissions: [],
     },
 
-    async (_: ValidatedCommandRequest, subreddit: string) => {
+    async (_: ValidatedRequest, subreddit: string) => {
         try {
             const random_post = await reddit.subreddits.getRandomPost(
                 subreddit
@@ -37,14 +38,12 @@ export default new Command(
 
             return new RandomPostOk(random_post);
         } catch (e) {
-            return CommandResponse.Error(
-                "Sorry, couldn't fetch that subreddit."
-            );
+            return Response.Error("Sorry, couldn't fetch that subreddit.");
         }
     }
 );
 
-class RandomPostOk extends CommandResponseOk {
+class RandomPostOk extends ResponseOk {
     constructor(public readonly post: Post) {
         super();
     }

@@ -1,15 +1,15 @@
-import { ConversionError, TypeConverter } from "./TypeConverter";
+import { ParsingError, Parser } from "./parser";
 import { Err, Ok, Result } from "ts-results";
 
-export default TypeConverter({
+export const pPositiveNumber = Parser({
     type: "positive number",
 
-    convert(value: string): Result<number, ConversionError> {
+    parse(value: string): Result<number, ParsingError> {
         const number_regex = /^\d+(\.\d+)?$/;
         const match = value.match(number_regex);
 
         if (!match) {
-            return Err(new ConversionError(this.type, value));
+            return Err(new ParsingError(this.type, value));
         }
 
         return Ok(Number.parseFloat(match[0]));

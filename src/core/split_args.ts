@@ -1,5 +1,5 @@
 import { Err, Ok, Result } from "ts-results";
-import { range } from "../util";
+import { range } from "./util";
 
 /**
  * Splits a string of space-separated arguments into an array of strings, honoring quotes.
@@ -32,10 +32,8 @@ export function split_args(
 
     for (const i of range(0, param_count)) {
         if (!remaining_input) {
-            return Err("too few arguments");
-        }
-
-        if (is_last_param(i) && accept_remainder) {
+            args.push("");
+        } else if (is_last_param(i) && accept_remainder) {
             args.push(remaining_input);
             remaining_input = "";
         } else {
