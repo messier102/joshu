@@ -104,12 +104,12 @@ export class Command<T extends unknown[]> {
         const arg_param_pairs = [...zip(args, this.meta.parameters)];
 
         const maybe_converted_args = arg_param_pairs.map(([arg, param]) =>
-            param.parser
-                .parse(arg)
-                .mapErr(
-                    (error) =>
-                        `\`${error.actual_value}\` in parameter \`${param}\` is not a \`${error.expected_type}\``
-                )
+            param.parser.parse(arg).mapErr(
+                (error) =>
+                    error.actual_value
+                        ? `\`${error.actual_value}\` in parameter \`${param}\` is not a \`${error.expected_type}\``
+                        : "too few arguments" // TODO: figure out a proper way to generate this error
+            )
         );
 
         return Result.all(...maybe_converted_args) as Result<T, string>;
