@@ -1,3 +1,4 @@
+import { optional } from "./parsers/optional";
 import { Parser } from "./parsers/parser";
 
 // using a separate object for parameter definition allows us to give more
@@ -25,6 +26,19 @@ export class Parameter<T> {
 
     toString(): string {
         return `<${this.name.split(" ").join("-")}>`;
+    }
+}
+
+export class OptionalParameter<T> extends Parameter<T | undefined> {
+    readonly parser: Parser<T | undefined>;
+
+    constructor(meta: ParameterMetadata<T>) {
+        super(meta);
+        this.parser = optional(meta.parser);
+    }
+
+    toString(): string {
+        return `[${this.name.split(" ").join("-")}]`;
     }
 }
 

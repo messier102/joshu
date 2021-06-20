@@ -2,8 +2,7 @@ import { MessageEmbed } from "discord.js";
 import { sample } from "lodash";
 import config from "../../data/config";
 import { AnyCommand, Command, CommandMetadata } from "./command";
-import { Parameter, Parameters } from "./parameter";
-import { optional } from "./parsers/optional";
+import { OptionalParameter, Parameter, Parameters } from "./parameter";
 import { pString } from "./parsers/String";
 import { ValidatedRequest } from "./request";
 import { CommandNameResolver, CommandResponseNotFound } from "./resolver";
@@ -15,12 +14,13 @@ export function HelpCommand(
     return new Command(
         {
             name: "help",
-            description: "Displays command help pages",
+            description:
+                "Displays a list of available commands. If called with a command name, displays information about that particular command.",
             parameters: [
-                new Parameter({
-                    name: "command",
-                    parser: optional(pString),
-                    description: "The command to display help for",
+                new OptionalParameter({
+                    name: "command name",
+                    parser: pString,
+                    description: "The command to display help for.",
                     examples: ["help", "ban", "expire"],
                 }),
             ],

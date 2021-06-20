@@ -2,7 +2,7 @@ import { Ok } from "ts-results";
 import { Parser } from "./parser";
 
 export function optional<T>(parser: Parser<T>): Parser<T | undefined> {
-    const type = parser.type + "?";
+    const type = parser.type + ", optional";
 
     const parse = (value: string) =>
         value ? parser.parse(value) : Ok(undefined);
