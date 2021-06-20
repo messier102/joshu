@@ -10,7 +10,7 @@ import { CommandNameResolver, CommandResponseNotFound } from "./resolver";
 import { ResponseHelp } from "./response";
 
 export function HelpCommand(
-    resolver: () => CommandNameResolver
+    resolver: CommandNameResolver
 ): Command<[command?: string | undefined]> {
     return new Command(
         {
@@ -29,7 +29,7 @@ export function HelpCommand(
 
         async (_: ValidatedRequest, command_name?: string) => {
             if (command_name) {
-                const command = resolver().resolve(command_name);
+                const command = resolver.resolve(command_name);
 
                 if (command.ok) {
                     return new CommandHelp(command_name, command.val.meta);
@@ -38,14 +38,14 @@ export function HelpCommand(
                     return new CommandResponseNotFound(suggestion);
                 }
             } else {
-                return new CommandResponseCommandList(resolver().commands);
+                return new CommandResponseCommandList(resolver.commands);
             }
         }
     );
 }
 
 class CommandResponseCommandList extends ResponseHelp {
-    constructor(public readonly commands: AnyCommand[]) {
+    constructor(public readonly commands: readonly AnyCommand[]) {
         super();
     }
 

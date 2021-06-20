@@ -6,10 +6,16 @@ import { MessageEmbed } from "discord.js";
 
 export class CommandNameResolver {
     private readonly command_table: Map<string, AnyCommand> = new Map();
-    private readonly command_search: WordSearch;
+    private command_search: WordSearch = new WordSearch([]);
 
-    constructor(public readonly commands: AnyCommand[]) {
+    private _commands: AnyCommand[] = [];
+    get commands(): readonly AnyCommand[] {
+        return this._commands;
+    }
+
+    register_commands(...commands: AnyCommand[]): void {
         for (const command of commands) {
+            this._commands.push(command);
             this.register_command_name(command.meta.name, command);
 
             command.meta.aliases?.forEach((alias) =>

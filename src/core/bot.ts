@@ -14,10 +14,13 @@ export class Bot {
         private readonly prefix: string,
         commands: AnyCommand[]
     ) {
-        this.resolver = new CommandNameResolver([
-            ...commands,
-            HelpCommand(() => this.resolver) as AnyCommand,
-        ]);
+        this.resolver = new CommandNameResolver();
+        const help_command = HelpCommand(this.resolver);
+
+        this.resolver.register_commands(
+            help_command as AnyCommand,
+            ...commands
+        );
 
         this.client = new Discord.Client();
         this.client.on("ready", this.handle_ready.bind(this));
