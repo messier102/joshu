@@ -1,19 +1,23 @@
 import Discord from "discord.js";
 import { Request } from "./request";
-import { Router } from "./router";
 import { Response } from "./response";
 import { load_commands } from "./loader";
 import { AnyCommand } from "./command";
+import { CommandNameResolver, CommandResponseNotFound } from "./resolver";
+import { HelpCommand } from "./help";
 
 export class Bot {
     private readonly client: Discord.Client;
-    private readonly router: Router;
+    private readonly resolver: CommandNameResolver;
 
     private constructor(
         private readonly prefix: string,
         commands: AnyCommand[]
     ) {
-        this.router = new Router(commands);
+        this.resolver = new CommandNameResolver([
+            ...commands,
+            HelpCommand(() => this.resolver) as AnyCommand,
+        ]);
 
         this.client = new Discord.Client();
         this.client.on("ready", this.handle_ready.bind(this));
@@ -42,7 +46,14 @@ export class Bot {
 
         if (request.ok) {
             message.channel.startTyping();
-            const response = await this.router.route(request.val);
+
+            const maybe_command = this.resolver.resolve(request.val.name);
+
+            const response = await maybe_command
+                .map((command) => command.execute(request.val))
+                .mapErr((suggestion) => new CommandResponseNotFound(suggestion))
+                .val;
+
             message.channel.stopTyping();
 
             message.channel.send(response.to_embed());

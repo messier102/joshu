@@ -1,6 +1,8 @@
 import { AnyCommand } from "./command";
 import { find_similar_string, Weights } from "./find_similar_string";
 import { Err, Ok, Result } from "ts-results";
+import { ResponseError } from "./response";
+import { MessageEmbed } from "discord.js";
 
 export class CommandNameResolver {
     private readonly command_table: Map<string, AnyCommand> = new Map();
@@ -68,5 +70,22 @@ class WordSearch {
             this.max_distance,
             word
         );
+    }
+}
+
+export class CommandResponseNotFound extends ResponseError {
+    constructor(public readonly command_suggestion: string | undefined) {
+        super();
+    }
+
+    to_embed(): MessageEmbed {
+        return super
+            .to_embed()
+            .setDescription(
+                "Sorry, no such command." +
+                    (this.command_suggestion
+                        ? ` Did you mean \`${this.command_suggestion}\`?`
+                        : "")
+            );
     }
 }

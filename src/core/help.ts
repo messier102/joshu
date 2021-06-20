@@ -6,11 +6,11 @@ import { Parameter, Parameters } from "./parameter";
 import { optional } from "./parsers/optional";
 import { pString } from "./parsers/String";
 import { ValidatedRequest } from "./request";
+import { CommandNameResolver, CommandResponseNotFound } from "./resolver";
 import { ResponseHelp } from "./response";
-import { CommandResponseNotFound, Router } from "./router";
 
 export function HelpCommand(
-    router: Router
+    resolver: () => CommandNameResolver
 ): Command<[command?: string | undefined]> {
     return new Command(
         {
@@ -29,7 +29,7 @@ export function HelpCommand(
 
         async (_: ValidatedRequest, command_name?: string) => {
             if (command_name) {
-                const command = router.resolver.resolve(command_name);
+                const command = resolver().resolve(command_name);
 
                 if (command.ok) {
                     return new CommandHelp(command_name, command.val.meta);
@@ -38,7 +38,7 @@ export function HelpCommand(
                     return new CommandResponseNotFound(suggestion);
                 }
             } else {
-                return new CommandResponseCommandList(router.resolver.commands);
+                return new CommandResponseCommandList(resolver().commands);
             }
         }
     );
