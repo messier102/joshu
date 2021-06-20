@@ -6,7 +6,7 @@ export class CommandNameResolver {
     private readonly command_table: Map<string, AnyCommand> = new Map();
     private readonly command_search: WordSearch;
 
-    constructor(commands: AnyCommand[]) {
+    constructor(public readonly commands: AnyCommand[]) {
         for (const command of commands) {
             this.register_command_name(command.meta.name, command);
 
@@ -15,10 +15,7 @@ export class CommandNameResolver {
             );
         }
 
-        this.command_search = new WordSearch([
-            ...this.command_table.keys(),
-            "help", // help is a built-in, but we still want to provide suggestions for it
-        ]);
+        this.command_search = new WordSearch([...this.command_table.keys()]);
 
         console.log("Configured routes:");
         console.log(this.command_table);
