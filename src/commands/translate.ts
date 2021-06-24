@@ -10,7 +10,7 @@ export default translate_promise.then((translate) => {
     return new Command(
         {
             name: "translate",
-            description: "Translates text to a specified language.",
+            description: "Translates text into the specified language.",
             aliases: ["tl"],
 
             parameters: [
@@ -20,7 +20,7 @@ export default translate_promise.then((translate) => {
                     description:
                         "The name (in English) or ISO code of the language to translate into, case-insensitive." +
                         " [See all available languages.](https://cloud.google.com/translate/docs/languages)",
-                    examples: ["en", "ru", "ja", "French", "german"],
+                    examples: ["en", "ru", "ja", "French", "German"],
                 }),
                 new Parameter({
                     name: "source text",

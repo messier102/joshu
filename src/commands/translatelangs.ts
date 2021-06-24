@@ -41,7 +41,7 @@ export default translate_promise.then((translate) => {
                     );
                 } else {
                     return Response.Error(
-                        `Couldn't find the language: **${target_language_name}**`
+                        `Language not recognized: **${target_language_name}**`
                     );
                 }
             } else {
