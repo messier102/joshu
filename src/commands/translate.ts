@@ -39,33 +39,16 @@ export default translate_promise.then((translate) => {
             target_language_code: string,
             source_text: string
         ) => {
-            const [
-                translated_text,
-                metadata,
-            ] = await translate.client.translate(
-                source_text,
-                target_language_code
+            const translation = await translate.translate(
+                target_language_code,
+                source_text
             );
 
-            // `metadata` holds the entire API response body, as defined here:
-            // https://cloud.google.com/translate/docs/reference/rest/v2/translate#response-body
-            // Thanks for typing it as `any`, Google. :/
-            const detected_source_language_code =
-                metadata.data.translations[0].detectedSourceLanguage;
-
-            const languages = translate.supported_languages;
-            const source_language = languages.find(
-                (lang) => lang.code === detected_source_language_code
-            )?.name;
-            const target_language = languages.find(
-                (lang) => lang.code === target_language_code
-            )?.name;
-
             return new TranslateOk(
-                source_language as string,
-                target_language as string,
-                source_text,
-                translated_text
+                translation.source_language,
+                translation.target_language,
+                translation.source_text,
+                translation.translated_text
             );
         }
     );
