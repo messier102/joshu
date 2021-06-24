@@ -29,28 +29,23 @@ export default translate_promise.then((translate) => {
             permissions: [],
         },
 
-        async (_: ValidatedRequest, target_language?: string) => {
-            const languages = translate.supported_languages;
-
-            if (target_language) {
-                const target_language_lowercase = target_language.toLowerCase();
-
-                const match = languages.find(
-                    (lang) =>
-                        lang.name.toLowerCase() === target_language_lowercase
+        async (_: ValidatedRequest, target_language_name?: string) => {
+            if (target_language_name) {
+                const language = translate.get_language_by_name(
+                    target_language_name
                 );
 
-                if (match) {
+                if (language) {
                     return Response.Ok(
-                        `The language code for **${match.name}** is **${match.code}**`
+                        `The language code for **${language.name}** is **${language.code}**`
                     );
                 } else {
                     return Response.Error(
-                        `Couldn't find the language: **${target_language}**`
+                        `Couldn't find the language: **${target_language_name}**`
                     );
                 }
             } else {
-                return new TranslateLangsOk(languages);
+                return new TranslateLangsOk(translate.supported_languages);
             }
         }
     );
