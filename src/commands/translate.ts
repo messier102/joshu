@@ -1,5 +1,5 @@
 import { Command } from "../core/command";
-import { ResponseOk } from "../core/response";
+import { Response, ResponseOk } from "../core/response";
 import { Parameter } from "../core/parameter";
 import { pString } from "../core/parsers/String";
 import { ValidatedRequest } from "../core/request";
@@ -15,12 +15,12 @@ export default translate_promise.then((translate) => {
 
             parameters: [
                 new Parameter({
-                    name: "target language code",
+                    name: "target language",
                     parser: pString,
                     description:
-                        "The ISO code of the language to translate into." +
+                        "The name (in English) or ISO code of the language to translate into, case-insensitive." +
                         " [See all available languages.](https://cloud.google.com/translate/docs/languages)",
-                    examples: ["en", "ru", "ja", "fr", "de"],
+                    examples: ["en", "ru", "ja", "French", "german"],
                 }),
                 new Parameter({
                     name: "source text",
@@ -36,20 +36,30 @@ export default translate_promise.then((translate) => {
 
         async (
             _: ValidatedRequest,
-            target_language_code: string,
+            target_language_name_or_code: string,
             source_text: string
         ) => {
-            const translation = await translate.translate(
-                target_language_code,
-                source_text
+            const target_language = translate.resolve_language(
+                target_language_name_or_code
             );
 
-            return new TranslateOk(
-                translation.source_language,
-                translation.target_language,
-                translation.source_text,
-                translation.translated_text
-            );
+            if (target_language) {
+                const translation = await translate.translate(
+                    target_language?.code,
+                    source_text
+                );
+
+                return new TranslateOk(
+                    translation.source_language,
+                    translation.target_language,
+                    translation.source_text,
+                    translation.translated_text
+                );
+            } else {
+                return Response.Error(
+                    `Language not recognized: **${target_language_name_or_code}**`
+                );
+            }
         }
     );
 });

@@ -67,13 +67,22 @@ class GoogleTranslateService {
 
     get_language_by_code(language_code: string): LanguageResult | undefined {
         return this.supported_languages.find(
-            (lang) => lang.code === language_code
+            (lang) => lang.code.toLowerCase() === language_code.toLowerCase()
         );
     }
 
     get_language_by_name(language_name: string): LanguageResult | undefined {
         return this.supported_languages.find(
             (lang) => lang.name.toLowerCase() === language_name.toLowerCase()
+        );
+    }
+
+    resolve_language(
+        language_name_or_code: string
+    ): LanguageResult | undefined {
+        return (
+            this.get_language_by_name(language_name_or_code) ??
+            this.get_language_by_code(language_name_or_code)
         );
     }
 }
