@@ -25,7 +25,7 @@ export default translate_promise.then((translate) => {
                 new Parameter({
                     name: "source text",
                     parser: pString,
-                    description: "The text to translate.",
+                    description: "The text to translate, up to 500 characters.",
                     examples: ["Jajajaja mi amor donde estas holaaaaaa"],
                 }),
             ],
@@ -39,6 +39,15 @@ export default translate_promise.then((translate) => {
             target_language_name_or_code: string,
             source_text: string
         ) => {
+            // The text length is limited in order to fit into the embed field
+            // body (max 1024 characters, accounting for length change after
+            // translating). This should also help keep the API quota in check.
+            if (source_text.length > 500) {
+                return Response.Error(
+                    "Text is too long (more than 500 characters)."
+                );
+            }
+
             const target_language = translate.resolve_language(
                 target_language_name_or_code
             );
