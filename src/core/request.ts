@@ -19,7 +19,7 @@ export class Request {
     ): Result<Request, string> {
         const message_stripped = message.content.slice(prefix.length).trim();
 
-        const request_regex = /^(\S+) *(.*)$/;
+        const request_regex = /^(\S+) *([\s\S]*)$/;
         const match = message_stripped.match(request_regex);
 
         if (!match) {
