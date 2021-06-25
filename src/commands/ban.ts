@@ -34,6 +34,19 @@ export default new Command(
             "321",
             "immolate",
             "shadowbolt",
+            "enough",
+            "vaccinate",
+            "foreverbox",
+            "okand",
+            "goodbye",
+            "kong",
+            "opennsfwfor",
+            "decimate",
+            "annihilate",
+            "petrify",
+            "sunblast",
+            "injure",
+            "cease",
         ],
 
         parameters: [
@@ -223,6 +236,12 @@ const SPECIAL_BAN_MESSAGES = new Map([
             "i thought %banned_user% expired years ago",
             "i was waiting to see when %banned_user%'d expire",
             "i knew %banned_user% was gonna expire within 3 days",
+        ],
+    ],
+    [
+        "opennsfwfor",
+        [
+            "Opened the NSFW for %banned_user%. May they forever roam the promised lands...",
         ],
     ],
 ]);
