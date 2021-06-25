@@ -83,7 +83,7 @@ function split_quoted_arg(input: string): Result<[string, string], string> {
 }
 
 function split_simple_arg(input: string): Result<[string, string], string> {
-    const simple_arg_regex = /^(\S+)(.*)$/;
+    const simple_arg_regex = /^(\S+)([\s\S]*)$/;
     const match = input.match(simple_arg_regex);
 
     if (!match) {
