@@ -1,4 +1,4 @@
-import { MessageEmbed, PermissionResolvable } from "discord.js";
+import { MessageEmbed } from "discord.js";
 import { Response, ResponseError } from "./response";
 import { Request, ValidatedRequest } from "./request";
 import { Err, Ok, Result } from "ts-results";
@@ -6,13 +6,14 @@ import { split_args } from "./split_args";
 import { assert } from "node:console";
 import { zip } from "./util";
 import { Parameters } from "./parameter";
+import { DiscordPermission } from "./permissions";
 
 export type CommandMetadata<T extends unknown[]> = {
     name: string;
     description: string;
     aliases?: string[];
     parameters: Parameters<T>;
-    permissions: PermissionResolvable[];
+    permissions: DiscordPermission[];
     accept_remainder_arg?: boolean;
 };
 
@@ -66,16 +67,18 @@ export class Command<T extends unknown[]> {
         }
 
         const user_has_permission =
-            request.source.member?.hasPermission(this.meta.permissions) ??
-            false;
+            request.source.member?.hasPermission(
+                this.meta.permissions.map((p) => p.flag)
+            ) ?? false;
 
         if (!user_has_permission) {
             return Err("you don't have enough permissions to do that");
         }
 
         const bot_has_permission =
-            request.source.guild?.me?.hasPermission(this.meta.permissions) ??
-            false;
+            request.source.guild?.me?.hasPermission(
+                this.meta.permissions.map((p) => p.flag)
+            ) ?? false;
 
         if (!bot_has_permission) {
             return Err("I don't have enough permissions to do that");

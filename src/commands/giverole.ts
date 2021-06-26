@@ -1,10 +1,10 @@
 import { ValidatedRequest } from "../core/request";
-import { Permissions } from "discord.js";
 import { Command } from "../core/command";
 import { pMention } from "../core/parsers/Mention";
 import { pString } from "../core/parsers/String";
 import { Response } from "../core/response";
 import { Parameter } from "../core/parameter";
+import { DiscordPermission } from "../core/permissions";
 
 export default new Command(
     {
@@ -33,7 +33,7 @@ export default new Command(
                 examples: ["RED", "#f3dda1", "3e3455"],
             }),
         ],
-        permissions: [Permissions.FLAGS.MANAGE_ROLES],
+        permissions: [DiscordPermission.ManageRoles],
     },
 
     async (

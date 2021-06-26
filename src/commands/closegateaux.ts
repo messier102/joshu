@@ -1,9 +1,10 @@
 import { ValidatedRequest } from "../core/request";
 import { Command } from "../core/command";
-import { MessageEmbed, Permissions } from "discord.js";
+import { MessageEmbed } from "discord.js";
 import { reddit } from "../core/services/reddit";
 import { Response, ResponseOk } from "../core/response";
 import { pluralize } from "../core/util";
+import { DiscordPermission } from "../core/permissions";
 
 export default new Command(
     {
@@ -12,7 +13,7 @@ export default new Command(
             "Deletes advertising posts created by `opengateaux`, as well as associated invites.",
 
         parameters: [],
-        permissions: [Permissions.FLAGS.MANAGE_GUILD],
+        permissions: [DiscordPermission.ManageServer],
 
         accept_remainder_arg: true,
     },

@@ -1,12 +1,13 @@
 import { ValidatedRequest } from "../core/request";
 import { Command } from "../core/command";
-import { EmbedFieldData, MessageEmbed, Permissions } from "discord.js";
+import { EmbedFieldData, MessageEmbed } from "discord.js";
 import { pString } from "../core/parsers/String";
 import config from "../../data/config";
 import { absolute_url, post_stats, reddit } from "../core/services/reddit";
 import { Response, ResponseOk } from "../core/response";
 import { Post } from "snoots";
 import { Parameter } from "../core/parameter";
+import { DiscordPermission } from "../core/permissions";
 
 export default new Command(
     {
@@ -27,8 +28,8 @@ export default new Command(
             }),
         ],
         permissions: [
-            Permissions.FLAGS.CREATE_INSTANT_INVITE,
-            Permissions.FLAGS.MANAGE_GUILD,
+            DiscordPermission.CreateInvite,
+            DiscordPermission.ManageServer,
         ],
 
         accept_remainder_arg: true,
