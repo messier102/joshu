@@ -4,16 +4,12 @@ import { MessageEmbed, Permissions } from "discord.js";
 import { reddit } from "../core/services/reddit";
 import { Response, ResponseOk } from "../core/response";
 import { pluralize } from "../core/util";
-import dedent from "ts-dedent";
 
 export default new Command(
     {
         name: "closegateaux",
-        description: dedent`
-            Deletes advertising posts created by \`opengateaux\`, as well as associated invites.
-            
-            You must have "Manage server" permission to use it
-        `,
+        description:
+            "Deletes advertising posts created by `opengateaux`, as well as associated invites.",
 
         parameters: [],
         permissions: [Permissions.FLAGS.MANAGE_GUILD],

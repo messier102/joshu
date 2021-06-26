@@ -20,11 +20,7 @@ import { Parameter } from "../core/parameter";
 export default new Command(
     {
         name: "ban",
-        description: dedent`
-            Permanently bans a user from the server.
-
-            You must have ban permissions to use it. You can only ban people below you in the role hierarchy.
-        `,
+        description: "Permanently bans a user from the server.",
         aliases: [
             "axe",
             "expire",

@@ -4,17 +4,13 @@ import { Command } from "../core/command";
 import { pMention } from "../core/parsers/Mention";
 import { pString } from "../core/parsers/String";
 import { Response } from "../core/response";
-import dedent from "ts-dedent";
 import { Parameter } from "../core/parameter";
 
 export default new Command(
     {
         name: "giverole",
-        description: dedent`
-            Creates a new role with the given name and color and assigns it to the given user.
-            
-            You must have "Manage roles" permission to use it.
-        `,
+        description:
+            "Creates a new role with the given name and color and assigns it to the given user.",
 
         parameters: [
             new Parameter({
