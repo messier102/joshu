@@ -4,6 +4,7 @@ import config from "../../data/config";
 import { AnyCommand, Command, CommandMetadata } from "./command";
 import { OptionalParameter, Parameter, Parameters } from "./parameter";
 import { pString } from "./parsers/String";
+import { DiscordPermission } from "./permissions";
 import { ValidatedRequest } from "./request";
 import { CommandNameResolver, CommandResponseNotFound } from "./resolver";
 import { ResponseHelp } from "./response";
@@ -84,6 +85,13 @@ class CommandHelp extends ResponseHelp {
             embed.addField("Parameters", parameters);
         }
 
+        if (this.meta.permissions?.length > 0) {
+            embed.addField(
+                "Permissions required",
+                this.format_permissions(this.meta.permissions)
+            );
+        }
+
         if (this.meta.aliases) {
             const aliases = this.format_aliases(this.meta.aliases);
             embed.addField("Aliases", aliases);
@@ -130,6 +138,10 @@ class CommandHelp extends ResponseHelp {
         const name_normalized = name.split(" ").join("-");
 
         return `**${name_normalized}** \u2014 (${type}) ${description}`;
+    }
+
+    private format_permissions(permissions: DiscordPermission[]): string {
+        return permissions.map((p) => p.name).join(", ");
     }
 
     private format_aliases(aliases: string[]): string {

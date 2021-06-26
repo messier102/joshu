@@ -1,12 +1,6 @@
 import { ValidatedRequest } from "../core/request";
 import { Command } from "../core/command";
-import {
-    Client,
-    GuildMember,
-    MessageEmbed,
-    Permissions,
-    User,
-} from "discord.js";
+import { Client, GuildMember, MessageEmbed, User } from "discord.js";
 import dedent from "ts-dedent";
 import sample from "lodash/sample";
 import { pMention } from "../core/parsers/Mention";
@@ -16,15 +10,12 @@ import { either } from "../core/parsers/either";
 import { None, Option, Some } from "ts-results";
 import { Response, ResponseOk } from "../core/response";
 import { Parameter } from "../core/parameter";
+import { DiscordPermission } from "../core/permissions";
 
 export default new Command(
     {
         name: "ban",
-        description: dedent`
-            Permanently bans a user from the server.
-
-            You must have ban permissions to use it. You can only ban people below you in the role hierarchy.
-        `,
+        description: "Permanently bans a user from the server.",
         aliases: [
             "axe",
             "expire",
@@ -57,7 +48,7 @@ export default new Command(
                 examples: ["@Momo", "Momo#7675", "310061663162204160"],
             }),
         ],
-        permissions: [Permissions.FLAGS.BAN_MEMBERS],
+        permissions: [DiscordPermission.BanMembers],
     },
 
     async (
