@@ -3,7 +3,7 @@ import { Response, ResponseError } from "./response";
 import { Request, ValidatedRequest } from "./request";
 import { Err, Ok, Result } from "ts-results";
 import { split_args } from "./split_args";
-import { assert } from "node:console";
+import { assert } from "console";
 import { zip } from "./util";
 import { Parameters } from "./parameter";
 import { DiscordPermission } from "./permissions";
