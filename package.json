@@ -16,6 +16,7 @@
     "license": "ISC",
     "devDependencies": {
         "@types/lodash-es": "^4.17.4",
+        "@types/pg": "^8.6.0",
         "@typescript-eslint/eslint-plugin": "^4.22.0",
         "@typescript-eslint/parser": "^4.22.0",
         "eslint": "^7.24.0",
@@ -31,7 +32,9 @@
         "axios": "^0.21.1",
         "discord.js": "^12.5.3",
         "lodash": "^4.17.21",
+        "pg": "^8.6.0",
         "snoots": "1.0.0-dev.14",
+        "sql-template-strings": "^2.2.2",
         "ts-dedent": "^2.1.1",
         "ts-results": "^3.2.1"
     },

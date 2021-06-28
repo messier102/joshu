@@ -22,4 +22,12 @@ export default {
     },
 
     google_translation_api_key: "",
+
+    postgres_credentials: {
+        user: "joshu",
+        host: "localhost",
+        database: "joshu",
+        password: "password",
+        port: 5432,
+    },
 };

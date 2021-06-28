@@ -7,6 +7,7 @@ import { assert } from "node:console";
 import { zip } from "./util";
 import { Parameters } from "./parameter";
 import { DiscordPermission } from "./permissions";
+import config from "../../data/config";
 
 export type CommandMetadata<T extends unknown[]> = {
     name: string;
@@ -15,6 +16,7 @@ export type CommandMetadata<T extends unknown[]> = {
     parameters: Parameters<T>;
     permissions: DiscordPermission[];
     accept_remainder_arg?: boolean;
+    owner_only?: boolean;
 };
 
 type CommandHandler<T extends unknown[]> = (
@@ -61,6 +63,13 @@ export class Command<T extends unknown[]> {
     }
 
     private check_permissions(request: Request): Result<void, string> {
+        if (
+            this.meta.owner_only &&
+            request.source.author.id !== config.owner_id
+        ) {
+            return Err("this command is for the bot owner only");
+        }
+
         if (this.meta.permissions.length === 0) {
             // no permissions required
             return Ok.EMPTY;
