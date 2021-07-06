@@ -16,12 +16,10 @@ export default new Command(
         description: "Deletes roles that aren't assigned to any user.",
 
         parameters: [],
-        permissions: [
-            DiscordPermission.ManageRoles,
-            DiscordPermission.ManageMessages,
-        ],
+        permissions: [DiscordPermission.ManageRoles],
 
         accept_remainder_arg: true,
+        suppress_typing: true,
     },
 
     async ({ source }: ValidatedRequest) => {
@@ -45,7 +43,9 @@ export default new Command(
             return Response.Ok(
                 `Deleted **${unused_roles.size}** role${
                     unused_roles.size === 1 ? "" : "s"
-                }.`
+                }. Total role count is now **${
+                    source.guild.roles.cache.size - 1 // @everyone
+                }**.`
             );
         } else {
             return Response.Ok("Action canceled.");
