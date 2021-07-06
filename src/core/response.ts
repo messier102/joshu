@@ -16,6 +16,12 @@ export abstract class ResponseError implements Response {
     }
 }
 
+export abstract class ResponseWarning implements Response {
+    to_embed(): MessageEmbed {
+        return new MessageEmbed().setColor("#EEC800");
+    }
+}
+
 export abstract class ResponseHelp implements Response {
     to_embed(): MessageEmbed {
         return new MessageEmbed()

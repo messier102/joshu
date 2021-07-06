@@ -17,6 +17,7 @@ export type CommandMetadata<T extends unknown[]> = {
     permissions: DiscordPermission[];
     accept_remainder_arg?: boolean;
     owner_only?: boolean;
+    suppress_typing?: boolean;
 };
 
 type CommandHandler<T extends unknown[]> = (

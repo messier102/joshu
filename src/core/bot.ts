@@ -48,16 +48,22 @@ export class Bot {
         const request = Request.from_raw_message(message, this.prefix);
 
         if (request.ok) {
-            message.channel.startTyping();
-
             const maybe_command = this.resolver.resolve(request.val.name);
 
             const response = await maybe_command
-                .map((command) => command.execute(request.val))
+                .map((command) => {
+                    if (!command.meta.suppress_typing) {
+                        message.channel.startTyping();
+                    }
+
+                    const result = command.execute(request.val);
+
+                    message.channel.stopTyping();
+
+                    return result;
+                })
                 .mapErr((suggestion) => new CommandResponseNotFound(suggestion))
                 .val;
-
-            message.channel.stopTyping();
 
             message.channel.send(response.to_embed());
         } else {
