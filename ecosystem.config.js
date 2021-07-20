@@ -17,7 +17,7 @@ module.exports = {
             "pre-deploy": "node -v && npm -v",
             "post-deploy":
                 "mkdir -p ./data && \
-                cp /home/ubuntu/config.ts ./data/config.ts && \
+                cp /home/ubuntu/joshu/shared/config.ts ./data/config.ts && \
                 npm run build-production && \
                 pm2 reload ecosystem.config.js --env production",
         },
