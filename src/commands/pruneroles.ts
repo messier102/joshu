@@ -9,6 +9,7 @@ import {
     TextChannel,
     User,
 } from "discord.js";
+import { partition } from "lodash";
 
 export default new Command(
     {
@@ -23,26 +24,31 @@ export default new Command(
     },
 
     async ({ source }: ValidatedRequest) => {
-        const unused_roles = source.guild.roles.cache.filter(
-            (role) => role.members.size === 0
-        );
+        const unused_roles = source.guild.roles.cache
+            .filter((role) => role.members.size === 0)
+            .array();
 
-        if (unused_roles.size === 0) {
+        if (unused_roles.length === 0) {
             return Response.Ok("There are no unused roles. 👍");
         }
+
+        const [prunable, unprunable] = partition(
+            unused_roles,
+            (role) => role.editable
+        );
 
         const prompt_answer = await prompt_yes_no(
             source.channel as TextChannel,
             source.member.user,
-            new PrunePrompt(unused_roles.array())
+            new PrunePrompt(unused_roles, prunable, unprunable)
         );
 
         if (prompt_answer) {
-            await Promise.all(unused_roles.map((role) => role.delete()));
+            await Promise.all(prunable.map((role) => role.delete()));
 
             return Response.Ok(
-                `Deleted **${unused_roles.size}** role${
-                    unused_roles.size === 1 ? "" : "s"
+                `Deleted **${prunable.length}** role${
+                    prunable.length === 1 ? "" : "s"
                 }. Total role count is now **${
                     source.guild.roles.cache.size - 1 // @everyone
                 }**.`
@@ -90,7 +96,11 @@ async function prompt_yes_no(
 }
 
 class PrunePrompt extends ResponseWarning {
-    constructor(readonly unused_roles: Role[]) {
+    constructor(
+        readonly unused_roles: Role[],
+        readonly prunable: Role[],
+        readonly unprunable: Role[]
+    ) {
         super();
     }
 
@@ -107,6 +117,14 @@ class PrunePrompt extends ResponseWarning {
                     this.unused_roles.length === 1 ? "it" : "them"
                 }? *This cannot be undone.*`
             )
-            .addField("Roles", this.unused_roles.join(" "));
+            .addField("Roles", this.unused_roles.join(" "))
+            .addField(
+                "Prunable",
+                this.prunable.length ? this.prunable.join(" ") : "No roles"
+            )
+            .addField(
+                "Unprunable",
+                this.unprunable.length ? this.unprunable.join(" ") : "No roles"
+            );
     }
 }
