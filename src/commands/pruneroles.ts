@@ -1,6 +1,6 @@
 import { ValidatedRequest } from "../core/request";
 import { Command } from "../core/command";
-import { Response, ResponseWarning } from "../core/response";
+import { Response, ResponseOk, ResponseWarning } from "../core/response";
 import { DiscordPermission } from "../core/permissions";
 import {
     MessageEmbed,
@@ -9,6 +9,8 @@ import {
     TextChannel,
     User,
 } from "discord.js";
+import { partition } from "lodash";
+import { pluralize } from "../core/util";
 
 export default new Command(
     {
@@ -23,26 +25,55 @@ export default new Command(
     },
 
     async ({ source }: ValidatedRequest) => {
-        const unused_roles = source.guild.roles.cache.filter(
-            (role) => role.members.size === 0
+        const unused_roles = source.guild.roles.cache
+            .filter((role) => role.members.size === 0)
+            .array();
+
+        if (unused_roles.length === 0) {
+            return Response.Ok("There are no unused roles. 👍");
+        }
+
+        const [prunable, unprunable] = partition(
+            unused_roles,
+            (role) => role.editable
         );
 
-        if (unused_roles.size === 0) {
-            return Response.Ok("There are no unused roles. 👍");
+        if (prunable.length > 0) {
+            const prompt_answer = await prompt_yes_no(
+                source.channel as TextChannel,
+                source.member.user,
+                new PrunePrompt(unused_roles, prunable, unprunable)
+            );
+
+            if (prompt_answer) {
+                await Promise.all(prunable.map((role) => role.delete()));
+
+                return Response.Ok(
+                    `Deleted **${prunable.length}** role${
+                        prunable.length === 1 ? "" : "s"
+                    }. Total role count is now **${
+                        source.guild.roles.cache.size - 1 // @everyone
+                    }**.`
+                );
+            } else {
+                return Response.Ok("Action canceled.");
+            }
+        } else if (unprunable.length > 0) {
+            return new NoPrunableOk(unprunable);
         }
 
         const prompt_answer = await prompt_yes_no(
             source.channel as TextChannel,
             source.member.user,
-            new PrunePrompt(unused_roles.array())
+            new PrunePrompt(unused_roles, prunable, unprunable)
         );
 
         if (prompt_answer) {
-            await Promise.all(unused_roles.map((role) => role.delete()));
+            await Promise.all(prunable.map((role) => role.delete()));
 
             return Response.Ok(
-                `Deleted **${unused_roles.size}** role${
-                    unused_roles.size === 1 ? "" : "s"
+                `Deleted **${prunable.length}** role${
+                    prunable.length === 1 ? "" : "s"
                 }. Total role count is now **${
                     source.guild.roles.cache.size - 1 // @everyone
                 }**.`
@@ -90,23 +121,55 @@ async function prompt_yes_no(
 }
 
 class PrunePrompt extends ResponseWarning {
-    constructor(readonly unused_roles: Role[]) {
+    constructor(
+        readonly unused_roles: Role[],
+        readonly prunable: Role[],
+        readonly unprunable: Role[]
+    ) {
+        super();
+    }
+
+    to_embed(): MessageEmbed {
+        const embed = super
+            .to_embed()
+            .setTitle(
+                `Found ${pluralize(this.unused_roles.length, "unused role")}`
+            )
+            .setDescription(
+                `Are you sure you want to prune ${
+                    this.unused_roles.length === 1 ? "it" : "them"
+                }? *This cannot be undone.*`
+            )
+            .addField(
+                "This will delete the following roles",
+                this.prunable.join(" ")
+            );
+
+        if (this.unprunable.length) {
+            embed.addField(
+                "The following roles are unused, but cannot be deleted due to role order",
+                this.unprunable.join(" ")
+            );
+        }
+
+        return embed;
+    }
+}
+
+class NoPrunableOk extends ResponseOk {
+    constructor(public readonly unprunable: readonly Role[]) {
         super();
     }
 
     to_embed(): MessageEmbed {
         return super
             .to_embed()
-            .setTitle(
-                `There ${this.unused_roles.length === 1 ? "is" : "are"} ${
-                    this.unused_roles.length
-                } unused role${this.unused_roles.length === 1 ? "" : "s"}`
-            )
-            .setDescription(
-                `Are you sure you want to delete ${
-                    this.unused_roles.length === 1 ? "it" : "them"
-                }? *This cannot be undone.*`
-            )
-            .addField("Roles", this.unused_roles.join(" "));
+            .addField(
+                `Found ${pluralize(
+                    this.unprunable.length,
+                    "unused role"
+                )}, which can't be deleted due to role order.`,
+                this.unprunable.join(" ")
+            );
     }
 }
