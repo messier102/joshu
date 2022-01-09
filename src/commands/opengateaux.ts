@@ -71,7 +71,7 @@ export default new Command(
             return new GateauxOpenOk(new_post);
         } catch (reason) {
             console.log(reason);
-            return Response.Error(`Reddit error: \`${reason.toString()}\``);
+            return Response.Error(`Reddit error: \`${reason}\``);
         }
     }
 );

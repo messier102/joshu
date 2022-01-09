@@ -39,7 +39,7 @@ export default new Command(
             return new GateauxClosedOk(total_invite_uses);
         } catch (reason) {
             console.log(reason);
-            return Response.Error(`Reddit error: \`${reason.toString()}\``);
+            return Response.Error(`Reddit error: \`${reason}\``);
         }
     }
 );
