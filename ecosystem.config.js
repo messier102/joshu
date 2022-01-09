@@ -13,13 +13,11 @@ module.exports = {
             key: "./production.key",
             ref: "origin/master",
             repo: "git@github.com:messier102/joshu.git",
-            path: "/home/" + process.env.PROD_USER + "/joshu",
+            path: "/home/yuna/joshu",
             "pre-deploy": "node -v && npm -v",
             "post-deploy":
                 "mkdir -p ./data && \
-                cp /home/" +
-                process.env.PROD_USER +
-                "/joshu/shared/config.ts ./data/config.ts && \
+                cp /home/yuna/joshu/shared/config.ts ./data/config.ts && \
                 npm run build-production && \
                 pm2 reload ecosystem.config.js --env production",
         },
