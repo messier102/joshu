@@ -5,43 +5,45 @@ import {
     absolute_url,
     is_image_post,
     post_stats,
-    reddit,
     text_preview,
 } from "../core/services/reddit";
 import { Response, ResponseOk } from "../core/response";
 import { Post } from "snoots";
 import { MessageEmbed } from "discord.js";
 import { Parameter } from "../core/parameter";
+import RedditClient from "snoots";
 
-export default new Command(
-    {
-        name: "redditrandom",
-        description: "Displays a random recent post from a given subreddit.",
-        aliases: ["rr"],
+export default (reddit: RedditClient): Command<[subreddit: string]> =>
+    new Command(
+        {
+            name: "redditrandom",
+            description:
+                "Displays a random recent post from a given subreddit.",
+            aliases: ["rr"],
 
-        parameters: [
-            new Parameter({
-                name: "subreddit",
-                parser: pString,
-                description: `The subreddit to get a post from, without the "r/" part.`,
-                examples: ["r4r", "makenewfriendshere", "eyebleach"],
-            }),
-        ],
-        permissions: [],
-    },
+            parameters: [
+                new Parameter({
+                    name: "subreddit",
+                    parser: pString,
+                    description: `The subreddit to get a post from, without the "r/" part.`,
+                    examples: ["r4r", "makenewfriendshere", "eyebleach"],
+                }),
+            ],
+            permissions: [],
+        },
 
-    async (_: ValidatedRequest, subreddit: string) => {
-        try {
-            const random_post = await reddit.subreddits.getRandomPost(
-                subreddit
-            );
+        async (_: ValidatedRequest, subreddit: string) => {
+            try {
+                const random_post = await reddit.subreddits.getRandomPost(
+                    subreddit
+                );
 
-            return new RandomPostOk(random_post);
-        } catch (e) {
-            return Response.Error("Sorry, couldn't fetch that subreddit.");
+                return new RandomPostOk(random_post);
+            } catch (e) {
+                return Response.Error("Sorry, couldn't fetch that subreddit.");
+            }
         }
-    }
-);
+    );
 
 class RandomPostOk extends ResponseOk {
     constructor(public readonly post: Post) {

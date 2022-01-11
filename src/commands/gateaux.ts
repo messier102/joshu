@@ -1,37 +1,39 @@
 import { Command } from "../core/command";
-import { absolute_url, post_stats, reddit } from "../core/services/reddit";
+import { absolute_url, post_stats } from "../core/services/reddit";
 import { Response, ResponseOk } from "../core/response";
 import { EmbedFieldData, MessageEmbed } from "discord.js";
 import type { Post } from "snoots";
+import RedditClient from "snoots";
 
-export default new Command(
-    {
-        name: "gateaux",
-        description:
-            "Displays the information about currently active Reddit advertising posts created by `opengateaux`.",
+export default (reddit: RedditClient): Command<[]> =>
+    new Command(
+        {
+            name: "gateaux",
+            description:
+                "Displays the information about currently active Reddit advertising posts created by `opengateaux`.",
 
-        parameters: [],
-        permissions: [],
-    },
+            parameters: [],
+            permissions: [],
+        },
 
-    async () => {
-        try {
-            const bot_user = await reddit.users.fetchMe();
-            const posts_listing = bot_user.getPosts();
+        async () => {
+            try {
+                const bot_user = await reddit.users.fetchMe();
+                const posts_listing = bot_user.getPosts();
 
-            const posts = [];
-            for await (const post of posts_listing) {
-                posts.push(post);
+                const posts = [];
+                for await (const post of posts_listing) {
+                    posts.push(post);
+                }
+
+                return posts.length > 0
+                    ? new GateauxOpenOk(posts)
+                    : new GateauxClosedOk();
+            } catch (reason) {
+                return Response.Error(`Reddit error: \`${reason}\``);
             }
-
-            return posts.length > 0
-                ? new GateauxOpenOk(posts)
-                : new GateauxClosedOk();
-        } catch (reason) {
-            return Response.Error(`Reddit error: \`${reason}\``);
         }
-    }
-);
+    );
 
 class GateauxOpenOk extends ResponseOk {
     constructor(public readonly posts: Post[]) {

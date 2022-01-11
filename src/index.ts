@@ -2,6 +2,7 @@ import config from "../data/config";
 import { Bot } from "./core/bot";
 import { AnyCommand } from "./core/command";
 import { GoogleTranslateService } from "./core/services/google_translate";
+import RedditClient from "snoots";
 
 import _8ball from "./commands/8ball";
 import ban from "./commands/ban";
@@ -19,6 +20,7 @@ import translatelangs from "./commands/translatelangs";
 
 async function main() {
     const google_translate_service = await GoogleTranslateService.create();
+    const reddit_service = new RedditClient(config.reddit.client);
 
     const commands = [
         ping,
@@ -27,19 +29,19 @@ async function main() {
 
         ban,
 
-        gateaux,
-        opengateaux,
-        closegateaux,
+        gateaux(reddit_service),
+        opengateaux(reddit_service),
+        closegateaux(reddit_service),
 
         giverole,
         pruneroles,
 
         _8ball,
-        redditrandom,
+        redditrandom(reddit_service),
 
         translate(google_translate_service),
         translatelangs(google_translate_service),
-    ] as AnyCommand[];
+    ] as AnyCommand[]; // TODO: type safety
 
     const joshu = new Bot(config.prefix, commands);
 
