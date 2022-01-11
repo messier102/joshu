@@ -1,6 +1,7 @@
 import config from "../data/config";
 import { Bot } from "./core/bot";
 import { AnyCommand } from "./core/command";
+import { GoogleTranslateService } from "./core/services/google_translate";
 
 import _8ball from "./commands/8ball";
 import ban from "./commands/ban";
@@ -13,32 +14,36 @@ import ping from "./commands/ping";
 import pruneroles from "./commands/pruneroles";
 import redditrandom from "./commands/redditrandom";
 import say from "./commands/say";
-// import translate from "./commands/translate";
-// import translatelangs from "./commands/translatelangs";
+import translate from "./commands/translate";
+import translatelangs from "./commands/translatelangs";
 
-const commands = [
-    ping,
-    echo,
-    say,
+async function main() {
+    const google_translate_service = await GoogleTranslateService.create();
 
-    ban,
+    const commands = [
+        ping,
+        echo,
+        say,
 
-    gateaux,
-    opengateaux,
-    closegateaux,
+        ban,
 
-    giverole,
-    pruneroles,
+        gateaux,
+        opengateaux,
+        closegateaux,
 
-    _8ball,
-    redditrandom,
+        giverole,
+        pruneroles,
 
-    // These depend on an asynchronously initialized client, not sure how to
-    // best handle them at this time:
-    // translate,
-    // translatelangs,
-] as AnyCommand[];
+        _8ball,
+        redditrandom,
 
-const joshu = new Bot(config.prefix, commands);
+        translate(google_translate_service),
+        translatelangs(google_translate_service),
+    ] as AnyCommand[];
 
-joshu.run(config.discord_token);
+    const joshu = new Bot(config.prefix, commands);
+
+    joshu.run(config.discord_token);
+}
+
+main();

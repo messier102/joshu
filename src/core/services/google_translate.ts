@@ -23,7 +23,7 @@ type GoogleTranslateResponse = {
     translated_text: string;
 };
 
-class GoogleTranslateService {
+export class GoogleTranslateService {
     private constructor(
         private readonly client: Translate,
         // TODO: use a map
@@ -100,5 +100,3 @@ class GoogleTranslateService {
         );
     }
 }
-
-export const translate_promise = GoogleTranslateService.create();

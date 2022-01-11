@@ -3,10 +3,12 @@ import { Response, ResponseOk } from "../core/response";
 import { Parameter } from "../core/parameter";
 import { pString } from "../core/parsers/String";
 import { ValidatedRequest } from "../core/request";
-import { translate_promise } from "../core/services/google_translate";
 import { MessageEmbed } from "discord.js";
+import { GoogleTranslateService } from "../core/services/google_translate";
 
-export default translate_promise.then((translate) => {
+export default (
+    translate: GoogleTranslateService
+): Command<[target_language_name_or_code: string, source_text: string]> => {
     return new Command(
         {
             name: "translate",
@@ -71,7 +73,7 @@ export default translate_promise.then((translate) => {
             }
         }
     );
-});
+};
 
 class TranslateOk extends ResponseOk {
     constructor(
