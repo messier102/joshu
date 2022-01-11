@@ -17,17 +17,21 @@ import say from "./commands/say";
 // import translatelangs from "./commands/translatelangs";
 
 const commands = [
-    _8ball,
-    ban,
-    closegateaux,
-    echo,
-    gateaux,
-    giverole,
-    opengateaux,
     ping,
-    pruneroles,
-    redditrandom,
+    echo,
     say,
+
+    ban,
+
+    gateaux,
+    opengateaux,
+    closegateaux,
+
+    giverole,
+    pruneroles,
+
+    _8ball,
+    redditrandom,
 
     // These depend on an asynchronously initialized client, not sure how to
     // best handle them at this time:
