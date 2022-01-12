@@ -1,6 +1,6 @@
 import config from "../data/config";
 import { Bot } from "./core/bot";
-import { AnyCommand } from "./core/command";
+import { Command } from "./core/command";
 import { GoogleTranslateService } from "./core/services/google_translate";
 import RedditClient from "snoots";
 
@@ -24,7 +24,9 @@ async function main() {
     );
     const reddit_service = new RedditClient(config.reddit.client);
 
-    const commands = [
+    // Not sure how to make it work with `unknown`.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const commands: Command<any>[] = [
         ping,
         echo,
         say,
@@ -43,7 +45,7 @@ async function main() {
 
         translate(google_translate_service),
         translatelangs(google_translate_service),
-    ] as AnyCommand[]; // TODO: type safety
+    ];
 
     const joshu = new Bot(config.prefix, commands);
 
