@@ -19,7 +19,9 @@ import translate from "./commands/translate";
 import translatelangs from "./commands/translatelangs";
 
 async function main() {
-    const google_translate_service = await GoogleTranslateService.create();
+    const google_translate_service = await GoogleTranslateService.create(
+        config.google_translation_api_key
+    );
     const reddit_service = new RedditClient(config.reddit.client);
 
     const commands = [
