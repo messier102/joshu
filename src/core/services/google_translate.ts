@@ -2,7 +2,6 @@ import {
     LanguageResult,
     Translate,
 } from "@google-cloud/translate/build/src/v2";
-import config from "../../../data/config";
 
 // As defined here:
 // https://cloud.google.com/translate/docs/reference/rest/v2/translate#response-body
@@ -23,7 +22,7 @@ type GoogleTranslateResponse = {
     translated_text: string;
 };
 
-class GoogleTranslateService {
+export class GoogleTranslateService {
     private constructor(
         private readonly client: Translate,
         // TODO: use a map
@@ -32,10 +31,8 @@ class GoogleTranslateService {
         readonly supported_languages: readonly LanguageResult[]
     ) {}
 
-    static async create(): Promise<GoogleTranslateService> {
-        const client = new Translate({
-            key: config.google_translation_api_key,
-        });
+    static async create(api_key: string): Promise<GoogleTranslateService> {
+        const client = new Translate({ key: api_key });
 
         const [supported_languages, _] = await client.getLanguages();
 
@@ -100,5 +97,3 @@ class GoogleTranslateService {
         );
     }
 }
-
-export const translate_promise = GoogleTranslateService.create();

@@ -1,8 +1,5 @@
-import RedditClient, { Post } from "snoots";
-import config from "../../../data/config";
+import { Post } from "snoots";
 import { pluralize } from "../util";
-
-export const reddit = new RedditClient(config.reddit.client);
 
 export function absolute_url(post: Post): string {
     return "https://reddit.com" + post.permalink;

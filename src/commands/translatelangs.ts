@@ -1,14 +1,16 @@
 import { Command } from "../core/command";
 import { Response, ResponseOk } from "../core/response";
 import { ValidatedRequest } from "../core/request";
-import { translate_promise } from "../core/services/google_translate";
+import { GoogleTranslateService } from "../core/services/google_translate";
 import { LanguageResult } from "@google-cloud/translate/build/src/v2";
 import { MessageEmbed } from "discord.js";
 import { chunk } from "lodash";
 import { OptionalParameter } from "../core/parameter";
 import { pString } from "../core/parsers/String";
 
-export default translate_promise.then((translate) => {
+export default (
+    translate: GoogleTranslateService
+): Command<[target_language_name?: string | undefined]> => {
     return new Command(
         {
             name: "translatelangs",
@@ -31,9 +33,8 @@ export default translate_promise.then((translate) => {
 
         async (_: ValidatedRequest, target_language_name?: string) => {
             if (target_language_name) {
-                const language = translate.get_language_by_name(
-                    target_language_name
-                );
+                const language =
+                    translate.get_language_by_name(target_language_name);
 
                 if (language) {
                     return Response.Ok(
@@ -49,7 +50,7 @@ export default translate_promise.then((translate) => {
             }
         }
     );
-});
+};
 
 class TranslateLangsOk extends ResponseOk {
     constructor(public readonly languages: readonly LanguageResult[]) {

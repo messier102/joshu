@@ -1,7 +1,6 @@
 import Discord from "discord.js";
 import { Request } from "./request";
 import { Response } from "./response";
-import { load_commands } from "./loader";
 import { AnyCommand } from "./command";
 import { CommandNameResolver, CommandResponseNotFound } from "./resolver";
 import { HelpCommand } from "./help";
@@ -10,10 +9,7 @@ export class Bot {
     private readonly client: Discord.Client;
     private readonly resolver: CommandNameResolver;
 
-    private constructor(
-        private readonly prefix: string,
-        commands: AnyCommand[]
-    ) {
+    constructor(private readonly prefix: string, commands: AnyCommand[]) {
         this.resolver = new CommandNameResolver();
         const help_command = HelpCommand(this.resolver);
 
@@ -25,12 +21,6 @@ export class Bot {
         this.client = new Discord.Client();
         this.client.on("ready", this.handle_ready.bind(this));
         this.client.on("message", this.handle_message.bind(this));
-    }
-
-    static async with(prefix: string, commands_dir: string): Promise<Bot> {
-        const commands = await load_commands(commands_dir);
-
-        return new Bot(prefix, commands);
     }
 
     async run(discord_token: string): Promise<void> {
